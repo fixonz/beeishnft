@@ -6,7 +6,9 @@ import Image from "next/image"
 import { useAccount } from "wagmi"
 // import { useLoginWithAbstract } from "@abstract-foundation/agw-react"
 import { useBearishNFTs, type BearishNFT, getDefaultNFT } from "@/lib/bearish-api"
+import type { NFTToken } from "@/lib/api" // Import NFTToken type
 import CustomButton from "./custom-button"
+import NFTCard from "./nft-card" // Import NFTCard
 import {
   Loader2,
   Plus,
@@ -121,6 +123,26 @@ const beePresets = [
 
 // Fixed bee size in pixels - increased for better quality
 const BEE_SIZE = 60
+
+// Helper function to adapt BearishNFT to NFTToken for NFTCard component
+const adaptBearishToNFTToken = (nft: BearishNFT): NFTToken => {
+  // NFTToken requires a more complex price structure. 
+  // Since PhotoBooth doesn't use price, we can provide defaults or leave undefined.
+  // Let's create a minimal structure if needed, or pass undefined.
+  return {
+    tokenId: nft.tokenId,
+    name: nft.name,
+    image: nft.image,
+    owner: nft.owner,
+    // Provide a default structure for price or keep it undefined based on NFTCard's needs
+    // Assuming NFTCard can handle undefined price gracefully:
+    price: undefined, 
+    // Add other required fields from NFTToken if necessary, with default/null values
+    // mintedAt: undefined, // Example if NFTToken needs mintedAt
+  };
+};
+
+// --- END HELPER --- 
 
 export default function PhotoBoothFullscreen() {
   const { isConnected } = useAccount()
@@ -466,17 +488,17 @@ export default function PhotoBoothFullscreen() {
         scale: 2, // Higher quality
         imageTimeout: 0,
         logging: false,
-        ignoreElements: (element) => {
+        ignoreElements: (element: Element) => {
           // Don't ignore any elements to ensure everything is captured
           return false
         },
-        onclone: (clonedDoc) => {
+        onclone: (clonedDoc: Document) => {
           // Fix aspect ratios in the cloned document before capture
           const clonedCanvas = clonedDoc.querySelector('[ref="canvasRef"]')
-          if (clonedCanvas) {
+          if (clonedCanvas instanceof HTMLElement) { // Check if it's an HTMLElement
             // Make sure all images maintain aspect ratio
             const images = clonedCanvas.querySelectorAll("img")
-            images.forEach((img) => {
+            images.forEach((img: HTMLImageElement) => {
               img.style.objectFit = "contain"
               img.style.width = "auto"
               img.style.height = "auto"
@@ -486,14 +508,14 @@ export default function PhotoBoothFullscreen() {
 
             // Ensure the NFT is visible
             const nftContainer = clonedCanvas.querySelector('[class*="cursor-move"]')
-            if (nftContainer) {
+            if (nftContainer instanceof HTMLElement) { // Check if it's an HTMLElement
               nftContainer.style.display = "block"
               nftContainer.style.visibility = "visible"
               nftContainer.style.opacity = "1"
 
               // Make sure the NFT image is visible
               const nftImage = nftContainer.querySelector("img")
-              if (nftImage) {
+              if (nftImage instanceof HTMLImageElement) { // Check if it's an HTMLImageElement
                 nftImage.style.display = "block"
                 nftImage.style.visibility = "visible"
                 nftImage.style.opacity = "1"
@@ -638,8 +660,11 @@ export default function PhotoBoothFullscreen() {
          () => { 
            console.log("Rendering: Error Message", error); // DEBUG LOG
            return (
-        <div className="bg-red-100 p-4 rounded-lg border-4 border-red-300 mb-4 max-w-md mx-auto mt-[-50px]">
-              {/* ... error message ... */}
+        <div className="bg-red-100 p-4 rounded-lg border-4 border-red-300 text-red-700 mb-4 max-w-md mx-auto mt-[-50px]">
+              <p className="font-bold text-center">Error Loading NFTs</p>
+              <p className="text-sm text-center mt-1">Could not fetch your BEEISH NFTs at this time. Please try again later.</p>
+              {/* Display technical error details for debugging if needed */}
+              {/* <p className="text-xs mt-2 text-center">Details: {error.message || 'Unknown error'}</p> */}
           </div>
            );
          }
@@ -672,12 +697,12 @@ export default function PhotoBoothFullscreen() {
                             {nfts.map((nft) => {
                                console.log("[PhotoBooth] Mapping NFT:", nft?.tokenId); // DEBUG LOG
                                return (
-                                <NFTCard 
-                                  key={nft.tokenId} 
-                                  nft={nft} 
-                                  onClick={() => selectNFT(nft)} 
-                                  isSelected={false} // isSelected logic handled outside for now
-                                />
+                                <div key={nft.tokenId} onClick={() => selectNFT(nft)}>
+                                  <NFTCard 
+                                    nft={adaptBearishToNFTToken(nft)} // Use adapter function
+                                    onMint={() => {}}
+                                  />
+                                </div>
                                );
                             })}
                           </div>
@@ -688,7 +713,12 @@ export default function PhotoBoothFullscreen() {
                         {defaultNFT && (
                           <div className="mt-6 pt-4 border-t-2 border-[#3A1F16]/50 flex flex-col items-center">
                             <p className="mb-2 text-center text-[#3A1F16]">Or use the default Bee:</p>
-                            <NFTCard nft={defaultNFT} onClick={handleUseDefaultNFT} isSelected={false} />
+                            <div onClick={handleUseDefaultNFT}>
+                              <NFTCard 
+                                nft={adaptBearishToNFTToken(defaultNFT)} // Use adapter function
+                                onMint={() => {}}
+                              />
+                            </div>
                           </div>
                         )}
                       </div>

@@ -44,8 +44,9 @@ export async function fetchBearishNFTs(walletAddress: string): Promise<BearishNF
     console.error("Error fetching BEARISH NFTs:", error)
     if (error instanceof Error && error.message.includes("429")) {
       console.warn("Rate limit hit fetching user NFTs.")
+      throw new Error("Rate limit exceeded while fetching user NFTs.");
     }
-    return []
+    throw error;
   }
 }
 
