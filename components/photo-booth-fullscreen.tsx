@@ -6,9 +6,9 @@ import Image from "next/image"
 import { useAccount } from "wagmi"
 // import { useLoginWithAbstract } from "@abstract-foundation/agw-react"
 import { useBearishNFTs, type BearishNFT, getDefaultNFT } from "@/lib/bearish-api"
-import type { NFTToken } from "@/lib/api" // Import NFTToken type
+// import type { NFTToken } from "@/lib/api" // Remove NFTToken type import
 import CustomButton from "./custom-button"
-import NFTCard from "./nft-card" // Import NFTCard
+// import NFTCard from "./nft-card" // Remove NFTCard import
 import {
   Loader2,
   Plus,
@@ -124,23 +124,18 @@ const beePresets = [
 // Fixed bee size in pixels - increased for better quality
 const BEE_SIZE = 60
 
-// Helper function to adapt BearishNFT to NFTToken for NFTCard component
+// Remove the adapter function
+/*
 const adaptBearishToNFTToken = (nft: BearishNFT): NFTToken => {
-  // NFTToken requires a more complex price structure. 
-  // Since PhotoBooth doesn't use price, we can provide defaults or leave undefined.
-  // Let's create a minimal structure if needed, or pass undefined.
   return {
     tokenId: nft.tokenId,
     name: nft.name,
     image: nft.image,
     owner: nft.owner,
-    // Provide a default structure for price or keep it undefined based on NFTCard's needs
-    // Assuming NFTCard can handle undefined price gracefully:
     price: undefined, 
-    // Add other required fields from NFTToken if necessary, with default/null values
-    // mintedAt: undefined, // Example if NFTToken needs mintedAt
   };
 };
+*/
 
 // --- END HELPER --- 
 
@@ -697,11 +692,24 @@ export default function PhotoBoothFullscreen() {
                             {nfts.map((nft) => {
                                console.log("[PhotoBooth] Mapping NFT:", nft?.tokenId); // DEBUG LOG
                                return (
-                                <div key={nft.tokenId} onClick={() => selectNFT(nft)}>
-                                  <NFTCard 
-                                    nft={adaptBearishToNFTToken(nft)} // Use adapter function
-                                    onMint={() => {}}
-                                  />
+                                // Replace NFTCard with a simpler div structure
+                                <div 
+                                  key={nft.tokenId} 
+                                  onClick={() => selectNFT(nft)}
+                                  className="bg-white border-2 border-[#3A1F16] rounded-lg overflow-hidden shadow hover:shadow-md hover:border-amber-500 cursor-pointer transition-all aspect-square flex flex-col"
+                                >
+                                  <div className="relative w-full flex-grow">
+                                    <Image 
+                                      src={nft.image || "/placeholder.svg"}
+                                      alt={nft.name}
+                                      fill
+                                      className="object-cover"
+                                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                                    />
+                                  </div>
+                                  <p className="text-xs text-center p-1 bg-[#3A1F16] text-white truncate font-semibold" style={{ fontFamily }}>
+                                    {nft.name}
+                                  </p>
                                 </div>
                                );
                             })}
@@ -713,11 +721,23 @@ export default function PhotoBoothFullscreen() {
                         {defaultNFT && (
                           <div className="mt-6 pt-4 border-t-2 border-[#3A1F16]/50 flex flex-col items-center">
                             <p className="mb-2 text-center text-[#3A1F16]">Or use the default Bee:</p>
-                            <div onClick={handleUseDefaultNFT}>
-                              <NFTCard 
-                                nft={adaptBearishToNFTToken(defaultNFT)} // Use adapter function
-                                onMint={() => {}}
-                              />
+                            {/* Replace NFTCard with a simpler div structure */}
+                            <div 
+                              onClick={handleUseDefaultNFT}
+                              className="bg-white border-2 border-[#3A1F16] rounded-lg overflow-hidden shadow hover:shadow-md hover:border-amber-500 cursor-pointer transition-all aspect-square flex flex-col w-32 md:w-40"
+                            >
+                              <div className="relative w-full flex-grow">
+                                <Image 
+                                  src={defaultNFT.image || "/placeholder.svg"}
+                                  alt={defaultNFT.name}
+                                  fill
+                                  className="object-cover"
+                                  sizes="160px"
+                                />
+                              </div>
+                              <p className="text-xs text-center p-1 bg-[#3A1F16] text-white truncate font-semibold" style={{ fontFamily }}>
+                                {defaultNFT.name}
+                              </p>
                             </div>
                           </div>
                         )}
