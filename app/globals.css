@@ -1,0 +1,573 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 43 100% 95%;
+    --foreground: 30 100% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 30 100% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 100% 10%;
+
+    --primary: 36 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 36 100% 96%;
+    --secondary-foreground: 30 100% 10%;
+
+    --muted: 36 100% 96%;
+    --muted-foreground: 30 10% 40%;
+
+    --accent: 36 100% 96%;
+    --accent-foreground: 30 100% 10%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 36 100% 80%;
+    --input: 36 100% 80%;
+    --ring: 36 100% 50%;
+
+    --radius: 0.5rem;
+
+    /* Custom theme colors */
+    --bee-yellow: #ffb949;
+    --bee-brown: #3a1f16;
+    --bee-light-yellow: #fff8e1;
+    --bee-honey: #f2c94c;
+
+    /* Font variables */
+    --font-primary: "Super Lobster", "Comic Sans MS", cursive, sans-serif;
+    --font-mobile: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif;
+  }
+
+  body {
+    @apply bg-background text-[#F8F8F8];
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-primary);
+  }
+}
+
+@layer components {
+  .custom-button-text {
+  }
+}
+
+/* Font fallback system */
+@font-face {
+  font-family: "Super Lobster";
+  src: url("/SuperLobster.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(36, 100%, 96%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(36, 100%, 70%);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(36, 100%, 60%);
+}
+
+/* Ensure content is above background */
+section {
+  position: relative;
+}
+
+/* Improve text readability */
+.bg-white\/90 {
+  background-color: rgba(242, 201, 76, 0.9);
+}
+
+/* Add these custom background classes */
+.bg-bee-yellow {
+  background-color: var(--bee-yellow);
+}
+
+.bg-bee-brown {
+  background-color: var(--bee-brown);
+}
+
+.bg-bee-light-yellow {
+  background-color: var(--bee-light-yellow);
+}
+
+.bg-bee-honey {
+  background-color: var(--bee-honey);
+}
+
+/* Fix for full width */
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Fix for white lines on sides */
+#__next,
+main {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Additional fixes for white lines */
+html,
+body,
+#__next,
+main {
+  width: 100vw;
+  max-width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.fixed {
+  width: 100vw;
+  left: 0;
+  right: 0;
+}
+
+/* Ensure background covers entire viewport */
+.inset-0 {
+  width: 100vw;
+  left: 0;
+  right: 0;
+}
+
+/* Custom button text */
+.custom-button-text {
+  font-family: var(--font-primary);
+  font-size: 24px;
+  letter-spacing: 0.5px;
+}
+
+/* Fix for dialog positioning */
+.fixed.inset-0.z-50.flex.items-start.justify-center.sm\\:items-center {
+  width: 100vw !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+[role="dialog"] {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: 95vw;
+  max-height: 90vh;
+  margin: 0 !important;
+  overflow-y: auto;
+}
+
+/* Center content in dialogs */
+.dialog-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+[role="dialog"] {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: 95vw;
+  max-height: 90vh;
+  margin: 0 !important;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Center content in dialogs */
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Fix for modal content */
+.dialog-content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Fix for background images */
+.fixed.inset-0.z-0.overflow-hidden img {
+  object-fit: cover !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+}
+
+/* Global font styling */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-primary);
+}
+
+p,
+span,
+div,
+button,
+a {
+  font-family: var(--font-primary);
+}
+
+.text-primary {
+}
+
+.text-secondary {
+  color: #fff8e1 !important;
+}
+
+/* Add a new class for dark text on white background */
+.text-dark {
+  color: #3a1f16;
+  text-shadow: none;
+  font-weight: 500;
+}
+
+/* Add a new class for solid white text on dark backgrounds */
+.text-solid-white {
+  color: #fff8e1 !important;
+  font-weight: 500;
+}
+
+/* Add a new class for solid yellow text */
+.text-solid-yellow {
+  color: #ffb949 !important;
+  font-weight: 500;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Increase touch targets */
+  button,
+  [role="button"],
+  a {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Prevent text selection during taps */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  /* Optimize scrolling */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :root {
+    --font-primary: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif;
+  }
+
+  html {
+    font-size: 14px;
+  }
+
+  body,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  span,
+  div,
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    font-family: var(--font-primary) !important;
+  }
+
+  .custom-button-text {
+    font-family: var(--font-primary) !important;
+    font-size: 18px;
+  }
+
+  h1 {
+    font-size: 2rem !important;
+  }
+
+  h2 {
+    font-size: 1.75rem !important;
+  }
+
+  .mobile-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    padding-bottom: 1rem;
+    margin-bottom: -1rem;
+    width: 100%;
+  }
+
+  .mobile-scroll > * {
+    flex: 0 0 auto;
+    margin-right: 0.75rem;
+  }
+
+  .mobile-scroll > *:last-child {
+    margin-right: 0;
+    padding-right: 1rem;
+  }
+
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+
+  .mobile-stack > * {
+    width: 100% !important;
+    margin-bottom: 0.75rem;
+  }
+
+  .mobile-stack > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .mobile-center {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .mobile-visible {
+    display: block !important;
+  }
+
+  .mobile-p-4 {
+    padding: 1rem !important;
+  }
+
+  .mobile-text-sm {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Fix for mobile buttons */
+@media (max-width: 768px) {
+  button:active,
+  [role="button"]:active {
+    transform: scale(0.98);
+  }
+
+  .header-buttons {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    padding-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  .header-buttons > * {
+    flex: 0 0 auto;
+    margin-right: 0.5rem;
+  }
+
+  .header-buttons > *:last-child {
+    margin-right: 0;
+    padding-right: 1rem;
+  }
+
+  .mobile-button {
+    transform: scale(0.85);
+    transform-origin: center;
+  }
+}
+
+/* Improved modal positioning */
+[role="dialog"] {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: 95vw;
+  max-height: 90vh;
+  margin: 0 !important;
+  overflow-y: auto;
+}
+
+/* Mobile optimizations for modals */
+@media (max-width: 768px) {
+  [role="dialog"] {
+    width: 95% !important;
+    max-height: 85vh;
+    padding: 1rem !important;
+  }
+
+  .dialog-content {
+    padding: 1rem !important;
+  }
+
+  .dialog-header {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .dialog-footer {
+    margin-top: 0.5rem !important;
+  }
+}
+
+/* Font fallback classes */
+.font-fallback body,
+.font-fallback p,
+.font-fallback h1,
+.font-fallback h2,
+.font-fallback h3,
+.font-fallback h4,
+.font-fallback h5,
+.font-fallback h6,
+.font-fallback span,
+.font-fallback div,
+.font-fallback button,
+.font-fallback a,
+.font-fallback input,
+.font-fallback textarea,
+.font-fallback select {
+  font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif !important;
+}
+
+/* Ensure buttons are properly sized and centered on mobile */
+@media (max-width: 768px) {
+  .dialog-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .dialog-buttons > * {
+    flex: 1;
+    margin: 0 0.25rem;
+  }
+}
+
+/* Add these at the end of your globals.css file */
+
+/* Shimmer effect for reveal button */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-effect {
+  animation: shimmer 2s infinite;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 5px rgba(255, 185, 73, 0.7));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(255, 185, 73, 0.9));
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Fade in animation for revealed NFT */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse animation for reveal button text */
+.pulse-text {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Add a light yellow background color for the bee theme */
+.bg-bee-light-yellow {
+  background-color: #fff3d4;
+}
