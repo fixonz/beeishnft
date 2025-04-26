@@ -25,7 +25,7 @@ export default function PhotoBoothPage() {
     <>
       <FontFixer />
       <FallbackFontLoader />
-      <main className="relative min-h-screen overflow-hidden flex flex-col">
+      <main className="relative h-screen overflow-hidden flex flex-col">
         {/* Forest Background */}
         <ForestBackground />
 
