@@ -9,10 +9,15 @@ import FontFixer from "@/components/font-fixer"
 import FallbackFontLoader from "@/components/fallback-font-loader"
 import CustomButton from "@/components/custom-button"
 import RevealNFT from "@/components/reveal-nft"
+// Import MintButton and MintModal
+import MintButton from "@/components/mint-button"
+import MintModal from "@/components/mint-modal"
 
 export default function FreeABeePage() {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
+  // Add state for Mint Modal visibility
+  const [isMintModalOpen, setIsMintModalOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -20,12 +25,16 @@ export default function FreeABeePage() {
 
   if (!mounted) return null
 
+  // Functions to open/close modal
+  const openMintModal = () => setIsMintModalOpen(true)
+  const closeMintModal = () => setIsMintModalOpen(false)
+
   return (
     // Wrap in a fragment
     <>
       <FontFixer />
       <FallbackFontLoader />
-      <main className="relative min-h-screen overflow-hidden flex flex-col">
+      <main className="relative h-screen overflow-hidden flex flex-col">
         {/* Forest Background */}
         <ForestBackground />
 
@@ -54,14 +63,27 @@ export default function FreeABeePage() {
           </div>
         </header>
 
-        {/* Content Container: Centering content */}
-        <div className="flex-1 flex flex-col items-center justify-center relative z-10 p-4 md:p-6 overflow-hidden">
-          {/* Apply negative margin (-mt-8) to nudge content up ~30px */}
-          <div className="-mt-8">
+        {/* Content Container - Use flex-grow to take available space */}
+        <div className="flex-grow flex items-center justify-center relative z-10">
+          {/* Inner wrapper to contain RevealNFT and the new button */}
+          {/* Remove negative margin, use flex-col to stack */}
+          <div className="flex flex-col items-center justify-center">
             <RevealNFT />
+            {/* Replace placeholder button with functional MintButton */}
+            <div className="mt-4"> 
+              <MintButton onClick={openMintModal} />
+            </div>
           </div>
         </div>
+
+        {/* Add the footer back */}
+        <footer className="bg-[#FFB949] py-4 px-4 z-20 relative shrink-0">
+          <div className="h-8"> {/* Placeholder height */} </div> 
+        </footer>
       </main>
+
+      {/* Render the MintModal, controlled by state */}
+      <MintModal open={isMintModalOpen} onClose={closeMintModal} />
     </>
   )
 }
