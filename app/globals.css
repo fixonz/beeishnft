@@ -135,6 +135,7 @@ main {
 }
 
 /* Additional fixes for white lines */
+/* Commenting out problematic width rules
 html,
 body,
 #__next,
@@ -145,9 +146,10 @@ main {
   margin: 0;
   padding: 0;
 }
+*/
 
 .fixed {
-  width: 100vw;
+  width: 100vw; /* Keep this for fixed header? Re-evaluate if needed */
   left: 0;
   right: 0;
 }
