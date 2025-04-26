@@ -13,6 +13,9 @@ import SuccessAnimation from "./success-animation"
 import MintButton from "./mint-button"
 import MintModal from "./mint-modal"
 
+// Define items per page
+const ITEMS_PER_PAGE = 20;
+
 interface BeeishNFT {
   tokenId: string
   name: string
@@ -38,6 +41,8 @@ export default function RevealNFT() {
   const [activeTab, setActiveTab] = useState<"unrevealed" | "revealed">("unrevealed")
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
   const [isMintModalOpen, setIsMintModalOpen] = useState(false)
+  // Add state for pagination
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Check if we're on mobile
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -89,6 +94,11 @@ export default function RevealNFT() {
       setSelectedNFT(null)
     }
   }, [isConnected, address, revealedTokenIds])
+
+  // Reset current page when NFTs change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [nfts]);
 
   // Fetch user's BEEISH NFTs from the Abstract API
   const fetchUserNFTs = async (walletAddress: string) => {
@@ -338,13 +348,24 @@ export default function RevealNFT() {
     }
 
     if (nfts.length > 0) {
+      // --- Pagination Logic ---
+      const totalPages = Math.ceil(nfts.length / ITEMS_PER_PAGE);
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const displayedNfts = nfts.slice(startIndex, endIndex);
+
+      const goToPreviousPage = () => setCurrentPage((prev) => Math.max(1, prev - 1));
+      const goToNextPage = () => setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+      // --- End Pagination Logic ---
+
       return (
         <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16]">
           <h2 className="text-center text-3xl font-bold text-[#3A1F16] mb-6 custom-button-text">
             Free Your Bee!
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
-            {nfts.map((nft: BeeishNFT) => (
+          {/* Grid for displayed NFTs */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6 overflow-y-auto max-h-[400px]">
+            {displayedNfts.map((nft: BeeishNFT) => (
               <motion.div
                 key={nft.tokenId}
                 className={`p-2 border-4 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200 scale-105 shadow-lg' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500 hover:scale-102'}`}
@@ -365,6 +386,32 @@ export default function RevealNFT() {
               </motion.div>
             ))}
           </div>
+
+          {/* --- Pagination Controls --- */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mb-6">
+              <CustomButton 
+                variant="blank" 
+                onClick={goToPreviousPage} 
+                disabled={currentPage === 1}
+                className="w-auto px-4 h-10" // Adjust size
+              >
+                Previous
+              </CustomButton>
+              <span className="text-[#3A1F16] font-semibold">
+                Page {currentPage} of {totalPages}
+              </span>
+              <CustomButton 
+                variant="blank" 
+                onClick={goToNextPage} 
+                disabled={currentPage === totalPages}
+                className="w-auto px-4 h-10" // Adjust size
+              >
+                Next
+              </CustomButton>
+            </div>
+          )}
+          {/* --- End Pagination Controls --- */}
 
           <div className="flex justify-center">
             <CustomButton

@@ -63,10 +63,9 @@ export default function FreeABeePage() {
           </div>
         </header>
 
-        {/* Content Container - Use flex-grow to take available space */}
-        <div className="flex-grow flex items-center justify-center relative z-10">
-          {/* Inner wrapper to contain RevealNFT and the new button */}
-          {/* Remove negative margin, use flex-col to stack */}
+        {/* Content Container */}
+        {/* Add vertical padding py-6 */} 
+        <div className="flex-grow flex items-center justify-center relative z-10 py-6">
           <div className="flex flex-col items-center justify-center">
             <RevealNFT />
             {/* Replace placeholder button with functional MintButton */}
