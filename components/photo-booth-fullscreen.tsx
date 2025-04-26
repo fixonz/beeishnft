@@ -622,8 +622,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
         // Ensure content fits properly on all screen sizes with flexible container
         <div className="flex items-center justify-center w-full max-w-[1400px] px-4 mx-auto h-full">
           {selectedNFT ? (
-            // Make this container fill the height provided by the parent
-            <div className="flex flex-row w-full justify-center gap-4 h-full">
+            // Make this container fill the height provided by the parent and stretch items
+            <div className="flex flex-row w-full justify-center gap-4 h-full items-stretch">
               {/* Canvas for editing - remove fixed height, let flex control it */}
               <div
                 className="aspect-square border-4 border-[#3A1F16] rounded-xl overflow-hidden"
@@ -710,8 +710,9 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
 
               {/* Controls - make panel fill height and scroll internally */}
               <div className="w-[350px] overflow-y-auto h-full">
-                <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4">
-                  <h3 className="text-xl font-bold mb-3 text-primary text-center" style={{ fontFamily }}>
+                {/* Make inner div fill height and layout content vertically */}
+                <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4 h-full flex flex-col">
+                  <h3 className="text-xl font-bold mb-3 text-primary text-center shrink-0" style={{ fontFamily }}>
                     {selectedNFT.name}
                   </h3>
 
@@ -720,7 +721,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                       href={selectedNFT.marketplaceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center text-[#3A1F16] hover:underline mb-3 text-sm"
+                      className="flex items-center justify-center text-[#3A1F16] hover:underline mb-3 text-sm shrink-0"
                     >
                       <ExternalLink className="h-4 w-4 mr-1" />
                       View on Magic Eden
@@ -728,8 +729,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     </a>
                   )}
 
-                  {/* Tab navigation */}
-                  <div className="flex border-b-4 border-[#3A1F16] mb-4">
+                  {/* Tab navigation - should not grow/shrink */}
+                  <div className="flex border-b-4 border-[#3A1F16] mb-4 shrink-0">
                     <button
                       className={`py-2 px-4 text-sm font-medium rounded-t-lg flex-1 ${
                         activeTab === "nft"
@@ -754,336 +755,340 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     </button>
                   </div>
 
-                  {activeTab === "nft" ? (
-                    <div className="grid gap-4">
-                      {/* Background Selection */}
-                      <div>
-                        <p className="text-dark font-medium text-sm mb-2" style={{ fontFamily }}>
-                          <ImageIcon className="h-4 w-4 inline mr-1" /> Background
-                        </p>
-                        <div className="flex flex-wrap gap-2 justify-center">
-                          {backgrounds.map((bg) => (
-                            <button
-                              key={bg.id}
-                              type="button"
-                              onClick={() => setSelectedBackground(bg)}
-                              className={`p-2 border-2 rounded-lg text-center ${
-                                selectedBackground.id === bg.id
-                                  ? "border-[#3A1F16] ring-2 ring-amber-500"
-                                  : "border-[#3A1F16] hover:ring-1 hover:ring-amber-300"
-                              }`}
-                              style={{
-                                backgroundColor: bg.color === "transparent" ? "#fff8e1" : bg.color,
-                                width: "48px",
-                                height: "32px",
-                              }}
-                              title={bg.name}
-                            >
-                              <span className="sr-only">{bg.name}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* NFT Controls */}
-                      <div>
-                        <p className="text-dark font-medium text-sm mb-2" style={{ fontFamily }}>
-                          <Move className="h-4 w-4 inline mr-1" /> Position NFT
-                        </p>
-                        <p className="text-dark text-sm mb-3" style={{ fontFamily }}>
-                          Drag the NFT to position it or use these controls:
-                        </p>
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                          <button
-                            type="button"
-                            onClick={() => scaleNFT(true)}
-                            className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
-                          >
-                            <ZoomIn className="h-5 w-5 text-[#3A1F16]" />
-                            <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                              Zoom In
-                            </span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => scaleNFT(false)}
-                            className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
-                          >
-                            <ZoomOut className="h-5 w-5 text-[#3A1F16]" />
-                            <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                              Zoom Out
-                            </span>
-                          </button>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={centerNFT}
-                          className="w-full flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
-                        >
-                          <span className="text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                            Center NFT
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid gap-4">
-                      {/* Bee Type Selection */}
-                      <div>
-                        <p className="text-dark font-medium text-sm mb-2 text-center" style={{ fontFamily }}>
-                          Choose Bee Type
-                        </p>
-                        <div className="grid grid-cols-3 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedBeeType("normal")
-                              if (activeBeeId !== null) changeBeeType("normal")
-                            }}
-                            className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
-                              (activeBeeId === null && selectedBeeType === "normal") ||
-                              (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "normal")
-                                ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
-                                : "bg-[#FFB949] hover:bg-amber-400"
-                            }`}
-                          >
-                            <div className="flex flex-col items-center">
-                              <div className="relative w-10 h-10">
-                                <Image
-                                  src={beeImages.normal || "/placeholder.svg"}
-                                  alt="Normal Bee"
-                                  width={40}
-                                  height={40}
-                                  className="w-full h-full"
-                                />
-                              </div>
-                              <span
-                                className={`${(
-                                  (activeBeeId === null && selectedBeeType === "normal") ||
-                                  (
-                                    activeBeeId !== null &&
-                                      bees.find((bee) => bee.id === activeBeeId)?.type === "normal"
-                                  )
-                                )
-                                  ? "text-white"
-                                  : "text-[#3A1F16]"
-                                } text-xs font-medium mt-1`}
-                                style={{ fontFamily }}
-                              >
-                                Normal
-                              </span>
-                            </div>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedBeeType("zombie")
-                              if (activeBeeId !== null) changeBeeType("zombie")
-                            }}
-                            className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
-                              (activeBeeId === null && selectedBeeType === "zombie") ||
-                              (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "zombie")
-                                ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
-                                : "bg-[#FFB949] hover:bg-amber-400"
-                            }`}
-                          >
-                            <div className="flex flex-col items-center">
-                              <div className="relative w-10 h-10">
-                                <Image
-                                  src={beeImages.zombie || "/placeholder.svg"}
-                                  alt="Zombie Bee"
-                                  width={40}
-                                  height={40}
-                                  className="w-full h-full"
-                                />
-                              </div>
-                              <span
-                                className={`${(
-                                  (activeBeeId === null && selectedBeeType === "zombie") ||
-                                  (
-                                    activeBeeId !== null &&
-                                      bees.find((bee) => bee.id === activeBeeId)?.type === "zombie"
-                                  )
-                                )
-                                  ? "text-white"
-                                  : "text-[#3A1F16]"
-                                } text-xs font-medium mt-1`}
-                                style={{ fontFamily }}
-                              >
-                                Zombie
-                              </span>
-                            </div>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedBeeType("robot")
-                              if (activeBeeId !== null) changeBeeType("robot")
-                            }}
-                            className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
-                              (activeBeeId === null && selectedBeeType === "robot") ||
-                              (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "robot")
-                                ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
-                                : "bg-[#FFB949] hover:bg-amber-400"
-                            }`}
-                          >
-                            <div className="flex flex-col items-center">
-                              <div className="relative w-10 h-10">
-                                <Image
-                                  src={beeImages.robot || "/placeholder.svg"}
-                                  alt="Robot Bee"
-                                  width={40}
-                                  height={40}
-                                  className="w-full h-full"
-                                />
-                              </div>
-                              <span
-                                className={`${(
-                                  (activeBeeId === null && selectedBeeType === "robot") ||
-                                  (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "robot")
-                                )
-                                  ? "text-white"
-                                  : "text-[#3A1F16]"
-                                } text-xs font-medium mt-1`}
-                                style={{ fontFamily }}
-                              >
-                                Robot
-                              </span>
-                            </div>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div>
-                        <p className="text-dark font-medium text-sm mb-2 text-center" style={{ fontFamily }}>
-                          Bee Presets
-                        </p>
-                        <div className="grid grid-cols-2 gap-2">
-                          {beePresets.map((preset) => (
-                            <button
-                              key={preset.id}
-                              type="button"
-                              onClick={() => applyBeePreset(preset.id)}
-                              className="p-2 border-2 border-[#3A1F16] rounded-lg text-center bg-[#FFB949] hover:bg-[#3A1F16] hover:text-white text-sm"
-                            >
-                              <span className="text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                                {preset.name}
-                              </span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={addBee}
-                          className="flex-1 flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-[#3A1F16] hover:text-white text-sm"
-                        >
-                          <Plus className="h-5 w-5 text-[#3A1F16]" />
-                          <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                            Add Bee
-                          </span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={removeBee}
-                          className="flex-1 flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-[#3A1F16] hover:text-white text-sm"
-                          disabled={activeBeeId === null}
-                        >
-                          <Minus className="h-5 w-5 text-[#3A1F16]" />
-                          <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                            Remove
-                          </span>
-                        </button>
-                      </div>
-
-                      {activeBeeId !== null && (
+                  {/* Tab Content Area - This part should scroll */}
+                  <div className="flex-grow overflow-y-auto">
+                    {activeTab === "nft" ? (
+                      <div className="grid gap-4">
+                        {/* Background Selection */}
                         <div>
-                          <p className="text-dark font-medium text-sm mb-2 text-center" style={{ fontFamily }}>
-                            Customize selected bee
+                          <p className="text-dark font-medium text-sm mb-2" style={{ fontFamily }}>
+                            <ImageIcon className="h-4 w-4 inline mr-1" /> Background
+                          </p>
+                          <div className="flex flex-wrap gap-2 justify-center">
+                            {backgrounds.map((bg) => (
+                              <button
+                                key={bg.id}
+                                type="button"
+                                onClick={() => setSelectedBackground(bg)}
+                                className={`p-2 border-2 rounded-lg text-center ${
+                                  selectedBackground.id === bg.id
+                                    ? "border-[#3A1F16] ring-2 ring-amber-500"
+                                    : "border-[#3A1F16] hover:ring-1 hover:ring-amber-300"
+                                }`}
+                                style={{
+                                  backgroundColor: bg.color === "transparent" ? "#fff8e1" : bg.color,
+                                  width: "48px",
+                                  height: "32px",
+                                }}
+                                title={bg.name}
+                              >
+                                <span className="sr-only">{bg.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* NFT Controls */}
+                        <div>
+                          <p className="text-dark font-medium text-sm mb-2" style={{ fontFamily }}>
+                            <Move className="h-4 w-4 inline mr-1" /> Position NFT
+                          </p>
+                          <p className="text-dark text-sm mb-3" style={{ fontFamily }}>
+                            Drag the NFT to position it or use these controls:
                           </p>
                           <div className="grid grid-cols-2 gap-2 mb-3">
                             <button
                               type="button"
-                              onClick={() => scaleBee(true)}
+                              onClick={() => scaleNFT(true)}
                               className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
                             >
-                              <Plus className="h-5 w-5 text-[#3A1F16]" />
+                              <ZoomIn className="h-5 w-5 text-[#3A1F16]" />
                               <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                                Size
+                                Zoom In
                               </span>
                             </button>
 
                             <button
                               type="button"
-                              onClick={() => scaleBee(false)}
+                              onClick={() => scaleNFT(false)}
                               className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
                             >
-                              <Minus className="h-5 w-5 text-[#3A1F16]" />
+                              <ZoomOut className="h-5 w-5 text-[#3A1F16]" />
                               <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                                Size
-                              </span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => rotateBee(true)}
-                              className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
-                            >
-                              <RotateCw className="h-5 w-5 text-[#3A1F16]" />
-                              <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                                Rotate
-                              </span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => rotateBee(false)}
-                              className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
-                            >
-                              <RotateCcw className="h-5 w-5 text-[#3A1F16]" />
-                              <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                                Rotate
+                                Zoom Out
                               </span>
                             </button>
                           </div>
-
-                          {/* Add Flip button for bees */}
                           <button
                             type="button"
-                            onClick={flipBee}
-                            className="w-full flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm mb-3"
+                            onClick={centerNFT}
+                            className="w-full flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
                           >
-                            <FlipHorizontal className="h-5 w-5 text-[#3A1F16]" />
-                            <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
-                              Flip Horizontally
+                            <span className="text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                              Center NFT
                             </span>
                           </button>
                         </div>
-                      )}
-
-                      <div>
-                        <p className="text-dark font-medium text-sm mb-1 text-center" style={{ fontFamily }}>
-                          <Move className="h-4 w-4 inline mr-1" /> Drag bees to position them
-                        </p>
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="grid gap-4">
+                        {/* Bee Type Selection */}
+                        <div>
+                          <p className="text-dark font-medium text-sm mb-2 text-center" style={{ fontFamily }}>
+                            Choose Bee Type
+                          </p>
+                          <div className="grid grid-cols-3 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedBeeType("normal")
+                                if (activeBeeId !== null) changeBeeType("normal")
+                              }}
+                              className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
+                                (activeBeeId === null && selectedBeeType === "normal") ||
+                                (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "normal")
+                                  ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
+                                  : "bg-[#FFB949] hover:bg-amber-400"
+                              }`}
+                            >
+                              <div className="flex flex-col items-center">
+                                <div className="relative w-10 h-10">
+                                  <Image
+                                    src={beeImages.normal || "/placeholder.svg"}
+                                    alt="Normal Bee"
+                                    width={40}
+                                    height={40}
+                                    className="w-full h-full"
+                                  />
+                                </div>
+                                <span
+                                  className={`${(
+                                    (activeBeeId === null && selectedBeeType === "normal") ||
+                                    (
+                                      activeBeeId !== null &&
+                                        bees.find((bee) => bee.id === activeBeeId)?.type === "normal"
+                                    )
+                                  )
+                                    ? "text-white"
+                                    : "text-[#3A1F16]"
+                                  } text-xs font-medium mt-1`}
+                                  style={{ fontFamily }}
+                                >
+                                  Normal
+                                </span>
+                              </div>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedBeeType("zombie")
+                                if (activeBeeId !== null) changeBeeType("zombie")
+                              }}
+                              className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
+                                (activeBeeId === null && selectedBeeType === "zombie") ||
+                                (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "zombie")
+                                  ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
+                                  : "bg-[#FFB949] hover:bg-amber-400"
+                              }`}
+                            >
+                              <div className="flex flex-col items-center">
+                                <div className="relative w-10 h-10">
+                                  <Image
+                                    src={beeImages.zombie || "/placeholder.svg"}
+                                    alt="Zombie Bee"
+                                    width={40}
+                                    height={40}
+                                    className="w-full h-full"
+                                  />
+                                </div>
+                                <span
+                                  className={`${(
+                                    (activeBeeId === null && selectedBeeType === "zombie") ||
+                                    (
+                                      activeBeeId !== null &&
+                                        bees.find((bee) => bee.id === activeBeeId)?.type === "zombie"
+                                    )
+                                  )
+                                    ? "text-white"
+                                    : "text-[#3A1F16]"
+                                  } text-xs font-medium mt-1`}
+                                  style={{ fontFamily }}
+                                >
+                                  Zombie
+                                </span>
+                              </div>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedBeeType("robot")
+                                if (activeBeeId !== null) changeBeeType("robot")
+                              }}
+                              className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
+                                (activeBeeId === null && selectedBeeType === "robot") ||
+                                (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "robot")
+                                  ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
+                                  : "bg-[#FFB949] hover:bg-amber-400"
+                              }`}
+                            >
+                              <div className="flex flex-col items-center">
+                                <div className="relative w-10 h-10">
+                                  <Image
+                                    src={beeImages.robot || "/placeholder.svg"}
+                                    alt="Robot Bee"
+                                    width={40}
+                                    height={40}
+                                    className="w-full h-full"
+                                  />
+                                </div>
+                                <span
+                                  className={`${(
+                                    (activeBeeId === null && selectedBeeType === "robot") ||
+                                    (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "robot")
+                                  )
+                                    ? "text-white"
+                                    : "text-[#3A1F16]"
+                                  } text-xs font-medium mt-1`}
+                                  style={{ fontFamily }}
+                                >
+                                  Robot
+                                </span>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="text-dark font-medium text-sm mb-2 text-center" style={{ fontFamily }}>
+                            Bee Presets
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            {beePresets.map((preset) => (
+                              <button
+                                key={preset.id}
+                                type="button"
+                                onClick={() => applyBeePreset(preset.id)}
+                                className="p-2 border-2 border-[#3A1F16] rounded-lg text-center bg-[#FFB949] hover:bg-[#3A1F16] hover:text-white text-sm"
+                              >
+                                <span className="text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  {preset.name}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={addBee}
+                            className="flex-1 flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-[#3A1F16] hover:text-white text-sm"
+                          >
+                            <Plus className="h-5 w-5 text-[#3A1F16]" />
+                            <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                              Add Bee
+                            </span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={removeBee}
+                            className="flex-1 flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-[#3A1F16] hover:text-white text-sm"
+                            disabled={activeBeeId === null}
+                          >
+                            <Minus className="h-5 w-5 text-[#3A1F16]" />
+                            <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                              Remove
+                            </span>
+                          </button>
+                        </div>
+
+                        {activeBeeId !== null && (
+                          <div>
+                            <p className="text-dark font-medium text-sm mb-2 text-center" style={{ fontFamily }}>
+                              Customize selected bee
+                            </p>
+                            <div className="grid grid-cols-2 gap-2 mb-3">
+                              <button
+                                type="button"
+                                onClick={() => scaleBee(true)}
+                                className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
+                              >
+                                <Plus className="h-5 w-5 text-[#3A1F16]" />
+                                <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  Size
+                                </span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => scaleBee(false)}
+                                className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
+                              >
+                                <Minus className="h-5 w-5 text-[#3A1F16]" />
+                                <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  Size
+                                </span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => rotateBee(true)}
+                                className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
+                              >
+                                <RotateCw className="h-5 w-5 text-[#3A1F16]" />
+                                <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  Rotate
+                                </span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => rotateBee(false)}
+                                className="flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm"
+                              >
+                                <RotateCcw className="h-5 w-5 text-[#3A1F16]" />
+                                <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  Rotate
+                                </span>
+                              </button>
+                            </div>
+
+                            {/* Add Flip button for bees */}
+                            <button
+                              type="button"
+                              onClick={flipBee}
+                              className="w-full flex items-center justify-center p-2 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-sm mb-3"
+                            >
+                              <FlipHorizontal className="h-5 w-5 text-[#3A1F16]" />
+                              <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                Flip Horizontally
+                              </span>
+                            </button>
+                          </div>
+                        )}
+
+                        <div>
+                          <p className="text-dark font-medium text-sm mb-1 text-center" style={{ fontFamily }}>
+                            <Move className="h-4 w-4 inline mr-1" /> Drag bees to position them
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   {downloadError && (
-                    <div className="bg-red-100 p-3 rounded-lg border border-red-300 mt-4">
+                    <div className="bg-red-100 p-3 rounded-lg border border-red-300 mt-4 shrink-0">
                       <p className="text-red-800 font-medium text-sm" style={{ fontFamily }}>
                         {downloadError}
                       </p>
                     </div>
                   )}
 
-                  <div className="mt-4">
+                  {/* Download Button - should not grow/shrink */}
+                  <div className="mt-4 shrink-0">
                     <button
                       type="button"
                       onClick={downloadImage}
