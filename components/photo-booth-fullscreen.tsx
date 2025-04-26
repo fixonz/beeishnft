@@ -708,8 +708,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                 </div>
               </div>
 
-              {/* Controls - remove fixed height, let flex control it */}
-              <div className="w-[350px] overflow-y-auto">
+              {/* Controls - make panel fill height and scroll internally */}
+              <div className="w-[350px] overflow-y-auto h-full">
                 <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4">
                   <h3 className="text-xl font-bold mb-3 text-primary text-center" style={{ fontFamily }}>
                     {selectedNFT.name}
