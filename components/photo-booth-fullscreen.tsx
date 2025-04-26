@@ -709,9 +709,9 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
               </div>
 
               {/* Controls - make panel fill height and scroll internally */}
-              <div className="w-[350px] overflow-y-auto h-full">
-                {/* Make inner div fill height and layout content vertically */}
-                <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4 h-full flex flex-col">
+              <div className="w-[350px] h-full">
+                {/* Make inner div fill height and layout content vertically. Remove mb-4 */}
+                <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] h-full flex flex-col">
                   <h3 className="text-xl font-bold mb-3 text-primary text-center shrink-0" style={{ fontFamily }}>
                     {selectedNFT.name}
                   </h3>
@@ -755,8 +755,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     </button>
                   </div>
 
-                  {/* Tab Content Area - This part should scroll */}
-                  <div className="flex-grow overflow-y-auto">
+                  {/* Tab Content Area - This part should scroll. Add min-h-0 */}
+                  <div className="flex-grow overflow-y-auto min-h-0">
                     {activeTab === "nft" ? (
                       <div className="grid gap-4">
                         {/* Background Selection */}
