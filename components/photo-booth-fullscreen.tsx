@@ -620,7 +620,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
       />
 
       {!isConnected ? (
-        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4 max-w-md mx-auto mt-[-50px]">
+        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4 max-w-md mx-auto">
           <p className="text-dark font-medium text-lg mb-3" style={{ fontFamily }}>
             Connect your wallet to use the Photo Booth with your NFTs
           </p>
@@ -629,14 +629,14 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
           </div>
         </div>
       ) : loading || loadingDefaultNFT ? (
-        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4 max-w-md mx-auto mt-[-50px] flex items-center justify-center">
+        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4 max-w-md mx-auto flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-[#3A1F16] mr-3" />
           <p className="text-dark font-medium text-lg" style={{ fontFamily }}>
             Loading BEARISH NFTs...
           </p>
         </div>
       ) : error ? (
-        <div className="bg-red-100 p-4 rounded-lg border-4 border-red-300 mb-4 max-w-md mx-auto mt-[-50px]">
+        <div className="bg-red-100 p-4 rounded-lg border-4 border-red-300 mb-4 max-w-md mx-auto">
           <p className="text-red-800 font-medium text-lg" style={{ fontFamily }}>
             {error}
           </p>
