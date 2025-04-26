@@ -59,7 +59,7 @@ export default function PhotoBoothPage() {
         </header>
 
         {/* Content Container - flex-grow to fill available space */}
-        <div className="flex-grow flex justify-center relative z-10">
+        <div className="flex-grow flex justify-center relative z-10 pt-4">
           {/* Full-screen Photo Booth - Pass props */}
           <PhotoBooth isConnected={isConnected} login={login} />
         </div>

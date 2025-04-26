@@ -138,7 +138,6 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
   const canvasCaptureRef = useRef<HTMLDivElement>(null)
   const canvasDisplayRef = useRef<HTMLDivElement>(null)
   const controlsPanelRef = useRef<HTMLDivElement>(null)
-  const canvasContainerRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [usingDefaultNFT, setUsingDefaultNFT] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -157,9 +156,9 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
 
   // Update canvas size when container size changes
   useEffect(() => {
-    if (canvasContainerRef.current && selectedNFT) {
+    if (canvasCaptureRef.current && selectedNFT) {
       const updateCanvasSize = () => {
-        const container = canvasContainerRef.current
+        const container = canvasCaptureRef.current
         if (container) {
           const width = container.clientWidth
           const height = container.clientHeight
@@ -178,7 +177,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
         window.removeEventListener("resize", updateCanvasSize)
       }
     }
-  }, [selectedNFT, canvasContainerRef.current])
+  }, [selectedNFT])
 
   // Effect to match panel height to canvas height - runs on NFT, tab, or bee changes
   useEffect(() => {
