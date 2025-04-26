@@ -1,111 +1,103 @@
-// src/app/api/reveal/route.ts (or wherever your route file is)
+// src/app/api/reveal/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import crypto from "crypto"
-import { ethers } from "ethers"
 
 // --- Configuration ---
-// **ONLY** read from environment variables. Ensure these are set in your .env.local or deployment environment.
-const API_SECRET_KEY = process.env.API_SECRET_KEY
-const FLASK_API_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || "https://api.beeish.xyz" // Or your Flask API endpoint
-
-// Assuming your ABI is imported correctly
-import YourContractABI from "@/lib/YourContractABI.json" // Replace with your actual ABI path
-
-// Ensure environment variables are loaded
-const RPC_URL = process.env.RPC_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+// **ONLY** read from environment variables. Ensure these are set in your Vercel deployment environment.
+const API_SECRET_KEY = process.env.API_SECRET_KEY;
+const FLASK_API_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || "https://api.beeish.xyz"; // Or your Flask API endpoint
 
 export async function POST(request: NextRequest) {
-  console.log("--- Reveal API Start ---");
+  console.log("--- Proxy Reveal API Start ---");
 
-  // Log environment variable status (avoid logging the key itself directly)
-  console.log(`RPC_URL Loaded: ${RPC_URL ? 'Yes' : 'No'}`);
-  console.log(`PRIVATE_KEY Loaded: ${PRIVATE_KEY ? 'Yes' : 'No'}`);
-  console.log(`CONTRACT_ADDRESS Loaded: ${CONTRACT_ADDRESS ? 'Yes' : 'No'}`);
-
-  // Basic validation of environment variables
-  if (!RPC_URL || !PRIVATE_KEY || !CONTRACT_ADDRESS) {
-    console.error("Missing required environment variables");
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+  // --- Security Check ---
+  if (!API_SECRET_KEY) {
+    console.error("CRITICAL: API_SECRET_KEY is not configured in environment variables.");
+    // Do not expose details about the missing key to the client
+    return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+  }
+  if (!FLASK_API_URL) {
+      console.error("CRITICAL: NEXT_PUBLIC_FLASK_API_URL is not configured.");
+      return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
   }
 
   let requestBody;
   try {
     requestBody = await request.json();
-    console.log("Request Body:", JSON.stringify(requestBody)); // Log incoming data
+    console.log("Proxy Request Body:", JSON.stringify(requestBody));
   } catch (error) {
-    console.error("Failed to parse request body:", error);
+    console.error("Proxy: Failed to parse request body:", error);
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
   const { tokenId, address } = requestBody;
 
-  // Validate incoming data
+  // --- Input Validation ---
   if (!tokenId || !address) {
-    console.error("Missing tokenId or address in request body");
-    return NextResponse.json({ error: "Missing tokenId or address" }, { status: 400 });
+    console.warn("Proxy: Missing tokenId or address in request body:", requestBody);
+    return NextResponse.json({ error: "Missing required parameters: tokenId and address" }, { status: 400 });
   }
 
   try {
-    console.log(`Attempting reveal for tokenId: ${tokenId}, address: ${address}`);
+    // --- Signature Generation (Matching Flask Logic) ---
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const dataToSign = { address }; // Data to be signed and sent in body
+    // Use separators and sorted keys to match Flask API's generation
+    const message = `${timestamp}:${JSON.stringify(dataToSign, Object.keys(dataToSign).sort(), 0).replace(/: /g, ":")}`; // Compact JSON, sorted keys
 
-    // Setup provider and signer
-    console.log("Setting up provider...");
-    const provider = new ethers.JsonRpcProvider(RPC_URL);
-    console.log("Setting up signer...");
-    const signer = new ethers.Wallet(PRIVATE_KEY, provider);
-    console.log(`Signer address: ${signer.address}`);
+    const signature = crypto
+      .createHmac("sha256", API_SECRET_KEY)
+      .update(message)
+      .digest("hex");
 
-    // Instantiate contract
-    console.log(`Instantiating contract at: ${CONTRACT_ADDRESS}`);
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, YourContractABI.abi, signer);
+    // --- Logging ---
+    console.log(`Proxy: Forwarding reveal request for token ${tokenId} to ${FLASK_API_URL}`);
+    // console.log(`Proxy: Generated message: ${message}`); // Optional: Log message if debugging signature issues
+    // console.log(`Proxy: Generated signature: ${signature}`); // Optional: Log signature if debugging
 
-    // Call the reveal function (replace 'revealToken' with your actual function name)
-    console.log(`Calling contract reveal function for tokenId: ${tokenId}...`);
-    // Example: const tx = await contract.revealToken(tokenId, { gasLimit: 500000 }); // Adjust gas limit if needed
-    // --- Replace with your actual contract call ---
-    const tx = await contract.revealFunction(tokenId); // <--- REPLACE 'revealFunction' !!!
-    console.log("Transaction sent:", tx.hash);
+    // --- Call Flask API ---
+    const flaskApiEndpoint = `${FLASK_API_URL}/reveal/${tokenId}`;
+    console.log(`Proxy: Calling Flask endpoint: ${flaskApiEndpoint}`);
 
-    // Wait for transaction confirmation (optional but recommended for debugging)
-    console.log("Waiting for transaction confirmation...");
-    const receipt = await tx.wait();
-    console.log("Transaction confirmed:", receipt);
+    const flaskApiResponse = await fetch(flaskApiEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Signature": signature,
+        "X-Timestamp": timestamp,
+      },
+      body: JSON.stringify(dataToSign), // Send the data expected by Flask
+    });
 
-    // You might need to fetch the new metadata URI after reveal here
-    // depending on your contract logic.
-    // const newMetadataUri = await contract.tokenURI(tokenId);
-    // console.log("New Metadata URI:", newMetadataUri);
+    // --- Forward Response ---
+    const result = await flaskApiResponse.json();
+    console.log(`Proxy: Flask API response status: ${flaskApiResponse.status}`);
+    // console.log(`Proxy: Flask API response body:`, result); // Optional: Log full response body
 
-    console.log("--- Reveal API Success ---");
-    // Return success (adjust response payload as needed)
-    return NextResponse.json({ success: true, txHash: tx.hash });
+    // Return the exact response (status and body) from Flask API
+    return NextResponse.json(result, { status: flaskApiResponse.status });
 
   } catch (error: any) {
-    console.error("--- Reveal API Error ---:");
-    console.error("Full Error Object:", error); // Log the entire error object
-    if (error.reason) {
-        console.error("Contract Revert Reason:", error.reason);
+    // --- Error Handling ---
+    console.error("Proxy Error in /api/reveal:", error);
+    // Avoid exposing internal error details unless necessary for the client
+    let errorMessage = "Failed to reveal NFT due to an internal server error.";
+    if (error instanceof SyntaxError) {
+      // Handle potential JSON parsing errors from request body
+      errorMessage = "Invalid request format.";
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
-    if (error.transaction) {
-        console.error("Error Transaction:", error.transaction);
-    }
-     if (error.receipt) {
-        console.error("Error Receipt:", error.receipt);
-    }
-    return NextResponse.json({ error: "Failed to reveal NFT", details: error.message || error.reason }, { status: 500 });
+    return NextResponse.json({ error: errorMessage, details: error.message }, { status: 500 });
   }
 }
 
 // Optional: Add OPTIONS handler if needed for CORS preflight requests,
-// although Next.js API routes often handle basic CORS automatically or
-// you might configure CORS globally in next.config.js
+// although your Flask app seems to handle CORS.
 // export async function OPTIONS(request: NextRequest) {
 //   // Handle CORS preflight request
 //   const headers = new Headers();
 //   headers.set('Access-Control-Allow-Origin', '*'); // Adjust as needed
 //   headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-//   headers.set('Access-Control-Allow-Headers', 'Content-Type');
+//   headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Signature, X-Timestamp'); // Match Flask
 //   return new NextResponse(null, { status: 204, headers });
 // }
