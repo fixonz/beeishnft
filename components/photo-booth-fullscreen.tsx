@@ -135,7 +135,9 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
   const [startPos, setStartPos] = useState({ x: 0, y: 0 })
   const [nftPosition, setNftPosition] = useState<NFTPosition>({ x: 50, y: 50, scale: 1.2 })
   const [isMovingNFT, setIsMovingNFT] = useState(false)
-  const canvasRef = useRef<HTMLDivElement>(null)
+  const canvasCaptureRef = useRef<HTMLDivElement>(null)
+  const canvasDisplayRef = useRef<HTMLDivElement>(null)
+  const controlsPanelRef = useRef<HTMLDivElement>(null)
   const canvasContainerRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [usingDefaultNFT, setUsingDefaultNFT] = useState(false)
@@ -177,6 +179,33 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
       }
     }
   }, [selectedNFT, canvasContainerRef.current])
+
+  // Effect to match panel height to canvas height - runs on NFT, tab, or bee changes
+  useEffect(() => {
+    const setPanelHeight = () => {
+      if (canvasDisplayRef.current && controlsPanelRef.current) {
+        const canvasHeight = canvasDisplayRef.current.offsetHeight;
+        // Only set height if canvasHeight is positive to avoid issues during render
+        if (canvasHeight > 0) {
+           controlsPanelRef.current.style.height = `${canvasHeight}px`;
+        }
+      }
+    }
+
+    // Set height initially and whenever dependencies change
+    if (selectedNFT) {
+      // Use requestAnimationFrame for potentially smoother updates after render
+      const id = requestAnimationFrame(setPanelHeight);
+      // Add resize listener
+      window.addEventListener("resize", setPanelHeight);
+
+      // Cleanup
+      return () => {
+        cancelAnimationFrame(id);
+        window.removeEventListener("resize", setPanelHeight);
+      };
+    }
+  }, [selectedNFT, activeTab, bees.length]); // Rerun when NFT, tab, or bee count changes
 
   // Add a new bee to the canvas
   const addBee = () => {
@@ -430,7 +459,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
 
   // Download with html2canvas (static image)
   const downloadImage = () => {
-    if (!selectedNFT || !canvasRef.current || !html2canvasLoaded) {
+    if (!selectedNFT || !canvasCaptureRef.current || !html2canvasLoaded) {
       setDownloadError("Cannot capture image. Please try again.")
       return
     }
@@ -450,7 +479,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
       }
 
       // Prepare the canvas for capture by creating a temporary version with all elements positioned absolutely
-      const tempCanvas = canvasRef.current.cloneNode(true) as HTMLDivElement
+      const tempCanvas = canvasCaptureRef.current.cloneNode(true) as HTMLDivElement
       tempCanvas.style.position = "absolute"
       tempCanvas.style.top = "0"
       tempCanvas.style.left = "0"
@@ -461,7 +490,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
       document.body.appendChild(tempCanvas)
 
       // Capture the canvas element
-      html2canvas(canvasRef.current, {
+      html2canvas(canvasCaptureRef.current, {
         allowTaint: true,
         useCORS: true,
         backgroundColor: selectedBackground.color,
@@ -474,7 +503,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
         },
         onclone: (clonedDoc: Document) => {
           // Fix aspect ratios in the cloned document before capture
-          const clonedCanvas = clonedDoc.querySelector('[ref="canvasRef"]')
+          const clonedCanvas = clonedDoc.querySelector('[ref="canvasCaptureRef"]')
           if (clonedCanvas instanceof HTMLElement) {
             // Make sure all images maintain aspect ratio
             const images = clonedCanvas.querySelectorAll("img")
@@ -624,19 +653,18 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
           {selectedNFT ? (
             // Make this container fill the height provided by the parent and stretch items
             <div className="flex flex-row w-full justify-center gap-4 h-full items-stretch">
-              {/* Canvas for editing - remove fixed height, let flex control it */}
+              {/* Canvas for editing - Assign ref */}
               <div
+                ref={canvasDisplayRef}
                 className="aspect-square border-4 border-[#3A1F16] rounded-xl overflow-hidden"
-                ref={canvasContainerRef}
                 style={{
                   backgroundColor: selectedBackground.color,
                   position: "relative",
-                  // maxHeight: "calc(100vh-160px)", // Remove fixed height calculation
                 }}
               >
-                {/* Inner canvas with fixed positioning */}
+                {/* Inner canvas with fixed positioning - Assign renamed ref for capture */}
                 <div
-                  ref={canvasRef}
+                  ref={canvasCaptureRef}
                   className="w-full relative"
                   style={{
                     height: "calc(100% + 50px)",
@@ -708,14 +736,14 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                 </div>
               </div>
 
-              {/* Controls - make panel fill height and scroll internally */}
-              <div className="w-[350px] h-full">
-                {/* Make inner div fill height and layout content vertically. Remove mb-4 */}
-                <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] h-full flex flex-col">
+              {/* Controls - Height set by JS, scrolls internally - Assign ref */}
+              <div ref={controlsPanelRef} className="w-[350px] overflow-y-auto">
+                {/* Inner div structures content, add back mb-4 if needed */}
+                <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4 flex flex-col">
+                  {/* Header content - shrink */}
                   <h3 className="text-xl font-bold mb-3 text-primary text-center shrink-0" style={{ fontFamily }}>
                     {selectedNFT.name}
                   </h3>
-
                   {selectedNFT.marketplaceUrl && (
                     <a
                       href={selectedNFT.marketplaceUrl}
@@ -728,8 +756,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                       {selectedNFT.price && <span className="ml-1">({selectedNFT.price})</span>}
                     </a>
                   )}
-
-                  {/* Tab navigation - should not grow/shrink */}
+                  {/* Tab navigation - shrink */}
                   <div className="flex border-b-4 border-[#3A1F16] mb-4 shrink-0">
                     <button
                       className={`py-2 px-4 text-sm font-medium rounded-t-lg flex-1 ${
@@ -755,8 +782,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     </button>
                   </div>
 
-                  {/* Tab Content Area - This part should scroll. Add min-h-0 */}
-                  <div className="flex-grow overflow-y-auto min-h-0">
+                  {/* Tab Content Area - Remove flex/overflow/min-height */}
+                  <div>
                     {activeTab === "nft" ? (
                       <div className="grid gap-4">
                         {/* Background Selection */}
@@ -1079,6 +1106,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     )}
                   </div>
 
+                  {/* Error message - shrink */}
                   {downloadError && (
                     <div className="bg-red-100 p-3 rounded-lg border border-red-300 mt-4 shrink-0">
                       <p className="text-red-800 font-medium text-sm" style={{ fontFamily }}>
@@ -1087,7 +1115,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     </div>
                   )}
 
-                  {/* Download Button - should not grow/shrink */}
+                  {/* Download Button - shrink */}
                   <div className="mt-4 shrink-0">
                     <button
                       type="button"
