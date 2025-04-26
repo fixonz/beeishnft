@@ -581,7 +581,7 @@ export default function PhotoBoothFullscreen() {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex items-start justify-center">
       {/* Load html2canvas library */}
       <Script
         src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"
