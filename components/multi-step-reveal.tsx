@@ -9,11 +9,12 @@ import { motion } from "framer-motion"
 interface MultiStepRevealProps {
   tokenId: string
   address: string
+  unrevealedImageUrl: string
   onComplete: (imageUrl: string) => void
   onCancel: () => void
 }
 
-export default function MultiStepReveal({ tokenId, address, onComplete, onCancel }: MultiStepRevealProps) {
+export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, onComplete, onCancel }: MultiStepRevealProps) {
   const [step, setStep] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -23,10 +24,10 @@ export default function MultiStepReveal({ tokenId, address, onComplete, onCancel
   // Get the appropriate image based on press count
   const getRevealImage = () => {
     if (showAnimation) return "/images/reveal-animation.gif"
-    if (pressCount === 0) return "/images/reveal-nopress.png"
+    if (pressCount === 0) return unrevealedImageUrl
     if (pressCount === 1) return "/images/reveal-press1.png"
     if (pressCount === 2) return "/images/reveal-press2.png"
-    return "/images/reveal-nopress.png"
+    return unrevealedImageUrl
   }
 
   // Handle the reveal button press

@@ -246,9 +246,16 @@ export default function RevealNFT() {
   const renderUnrevealedSection = () => {
     if (!isConnected) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16]">
-          <p className="text-[#3A1F16] mb-4 text-center font-semibold">Connect your wallet to free your bees!</p>
-          <p>(Connect Button Removed)</p>
+        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] min-h-[200px]">
+          <p className="text-[#3A1F16] mb-4 text-center font-semibold">Please connect your wallet to free your bees!</p>
+          <CustomButton 
+            variant="connect"
+            className="w-auto px-6 h-12"
+            disabled={true}
+          >
+            Connect Wallet
+          </CustomButton>
+          <p className="text-xs text-[#3A1F16] text-center mt-2">(Use header button to connect)</p> 
         </div>
       )
     }
@@ -259,6 +266,7 @@ export default function RevealNFT() {
           <MultiStepReveal
             tokenId={selectedNFT!.tokenId}
             address={address!}
+            unrevealedImageUrl={selectedNFT!.image || "/placeholder.jpg"}
             onComplete={handleRevealComplete}
             onCancel={cancelReveal}
           />
@@ -359,7 +367,10 @@ export default function RevealNFT() {
       // --- End Pagination Logic ---
 
       return (
-        <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16]">
+        <motion.div 
+          layout
+          className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16]"
+        >
           <h2 className="text-center text-3xl font-bold text-[#3A1F16] mb-6 custom-button-text">
             Free Your Bee!
           </h2>
@@ -440,7 +451,7 @@ export default function RevealNFT() {
               </div>
             </div>
           )}
-        </div>
+        </motion.div>
       )
     }
 
