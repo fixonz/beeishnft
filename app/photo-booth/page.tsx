@@ -59,6 +59,13 @@ export default function PhotoBoothPage() {
           {/* Full-screen Photo Booth */}
           <PhotoBooth />
         </div>
+
+        {/* Add a yellow footer specific to this page */}
+        <footer className="bg-[#FFB949] py-4 px-4 z-20 relative shrink-0">
+          {/* You can add footer content here if needed, or leave it empty */}
+          <div className="h-8"> {/* Placeholder height */} </div> 
+        </footer>
+
       </main>
     </>
   )
