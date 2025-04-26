@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/custom-dialog"
 import { useAccount } from "wagmi"
-// import { useLoginWithAbstract } from "@abstract-foundation/agw-react" // Commented out
+import { useLoginWithAbstract } from "@abstract-foundation/agw-react"
 import { useBearishNFTs, type BearishNFT, getDefaultNFT } from "@/lib/bearish-api"
 import CustomButton from "./custom-button"
 import {
@@ -127,7 +127,7 @@ const BEE_SIZE = 60
 
 export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { isConnected } = useAccount()
-  // const { login } = useLoginWithAbstract() // Commented out
+  const { login } = useLoginWithAbstract()
   const { nfts, defaultNFT, loading, loadingDefaultNFT, error } = useBearishNFTs()
   const [selectedNFT, setSelectedNFT] = useState<BearishNFT | null>(null)
   const [bees, setBees] = useState<BeeOverlay[]>([])
@@ -476,24 +476,24 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
       document.body.appendChild(tempCanvas)
 
       // Capture the canvas element
-      html2canvas(canvasRef.current, {
+      html2canvas(canvasRef.current!, {
         allowTaint: true,
         useCORS: true,
         backgroundColor: selectedBackground.color,
         scale: 2, // Higher quality
         imageTimeout: 0,
         logging: false,
-        ignoreElements: (element) => {
+        ignoreElements: (element: Element) => {
           // Don't ignore any elements to ensure everything is captured
           return false
         },
-        onclone: (clonedDoc) => {
+        onclone: (clonedDoc: Document) => {
           // Fix aspect ratios in the cloned document before capture
-          const clonedCanvas = clonedDoc.querySelector('[ref="canvasRef"]')
+          const clonedCanvas = clonedDoc.querySelector('[data-ref="canvasRef"]')
           if (clonedCanvas) {
             // Make sure all images maintain aspect ratio
             const images = clonedCanvas.querySelectorAll("img")
-            images.forEach((img) => {
+            images.forEach((img: HTMLImageElement) => {
               img.style.objectFit = "contain"
               img.style.width = "auto"
               img.style.height = "auto"
@@ -502,15 +502,15 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
             })
 
             // Ensure the NFT is visible
-            const nftContainer = clonedCanvas.querySelector('[class*="cursor-move"]')
-            if (nftContainer) {
+            const nftContainer = clonedDoc.querySelector('[class*="cursor-move"]')
+            if (nftContainer && nftContainer instanceof HTMLElement) {
               nftContainer.style.display = "block"
               nftContainer.style.visibility = "visible"
               nftContainer.style.opacity = "1"
 
               // Make sure the NFT image is visible
               const nftImage = nftContainer.querySelector("img")
-              if (nftImage) {
+              if (nftImage && nftImage instanceof HTMLImageElement) {
                 nftImage.style.display = "block"
                 nftImage.style.visibility = "visible"
                 nftImage.style.opacity = "1"
@@ -620,13 +620,13 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
 
         <div className="mt-2">
           {!isConnected ? (
-            <div className="bg-bee-light-yellow p-3 rounded-lg border border-[#3A1F16] mb-3">
-              <p className="text-dark font-medium text-sm mb-2" style={{ fontFamily }}>
-                Connect your wallet to use the Photo Booth with your NFTs
+            <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-3 text-center">
+              <p className="text-dark font-semibold text-lg mb-2" style={{ fontFamily }}>
+                Please connect your wallet
               </p>
-              <div className="mt-2 flex justify-center">
-                <CustomButton variant="connect" className="w-[150px]" onClick={login} />
-              </div>
+              <p className="text-dark font-medium text-sm" style={{ fontFamily }}>
+                (Use the button in the header to connect and use the Photo Booth)
+              </p>
             </div>
           ) : loading || loadingDefaultNFT ? (
             <div className="bg-bee-light-yellow p-3 rounded-lg border border-[#3A1F16] mb-3 flex items-center justify-center">
@@ -805,34 +805,37 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
                               Drag the NFT to position it or use these controls:
                             </p>
                             <div className="grid grid-cols-2 gap-1 mb-2">
+                              {/* Zoom In - Apply hover */}
                               <button
                                 type="button"
                                 onClick={() => scaleNFT(true)}
-                                className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                                className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                               >
-                                <ZoomIn className="h-4 w-4 text-[#3A1F16]" />
-                                <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                <ZoomIn className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                                <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                   Zoom In
                                 </span>
                               </button>
 
+                              {/* Zoom Out - Apply hover */}
                               <button
                                 type="button"
                                 onClick={() => scaleNFT(false)}
-                                className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                                className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                               >
-                                <ZoomOut className="h-4 w-4 text-[#3A1F16]" />
-                                <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                <ZoomOut className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                                <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                   Zoom Out
                                 </span>
                               </button>
                             </div>
+                            {/* Center NFT - Apply hover */}
                             <button
                               type="button"
                               onClick={centerNFT}
-                              className="w-full flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                              className="group w-full flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                             >
-                              <span className="text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                              <span className="text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                 Center NFT
                               </span>
                             </button>
@@ -938,7 +941,7 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
                             </div>
                           </div>
 
-                          {/* Bee Presets */}
+                          {/* Bee Presets - Apply hover */}
                           <div>
                             <p className="text-dark font-medium text-xs mb-1" style={{ fontFamily }}>
                               Bee Presets
@@ -949,9 +952,9 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
                                   key={preset.id}
                                   type="button"
                                   onClick={() => applyBeePreset(preset.id)}
-                                  className="p-1 border-2 border-[#3A1F16] rounded-lg text-center bg-[#FFB949] hover:bg-amber-400 text-xs"
+                                  className="group p-1 border-2 border-[#3A1F16] rounded-lg text-center bg-[#FFB949] hover:bg-amber-400 hover:text-white text-xs"
                                 >
-                                  <span className="text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  <span className="text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                     {preset.name}
                                   </span>
                                 </button>
@@ -963,10 +966,10 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
                             <button
                               type="button"
                               onClick={addBee}
-                              className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                              className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                             >
-                              <Plus className="h-4 w-4 text-[#3A1F16]" />
-                              <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                              <Plus className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                              <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                 Add Bee
                               </span>
                             </button>
@@ -974,11 +977,11 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
                             <button
                               type="button"
                               onClick={removeBee}
-                              className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                              className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                               disabled={activeBeeId === null}
                             >
-                              <Minus className="h-4 w-4 text-[#3A1F16]" />
-                              <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                              <Minus className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                              <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                 Remove
                               </span>
                             </button>
@@ -990,59 +993,63 @@ export default function PhotoBooth({ open, onClose }: { open: boolean; onClose: 
                                 Customize selected bee
                               </p>
                               <div className="grid grid-cols-2 gap-1 mb-2">
+                                {/* Size+ - Apply hover */} 
                                 <button
                                   type="button"
                                   onClick={() => scaleBee(true)}
-                                  className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                                  className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                                 >
-                                  <Plus className="h-4 w-4 text-[#3A1F16]" />
-                                  <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  <Plus className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                                  <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                     Size
                                   </span>
                                 </button>
 
+                                {/* Size- - Apply hover */} 
                                 <button
                                   type="button"
                                   onClick={() => scaleBee(false)}
-                                  className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                                  className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                                 >
-                                  <Minus className="h-4 w-4 text-[#3A1F16]" />
-                                  <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  <Minus className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                                  <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                     Size
                                   </span>
                                 </button>
 
+                                {/* Rotate CW - Apply hover */} 
                                 <button
                                   type="button"
                                   onClick={() => rotateBee(true)}
-                                  className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                                  className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                                 >
-                                  <RotateCw className="h-4 w-4 text-[#3A1F16]" />
-                                  <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  <RotateCw className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                                  <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                     Rotate
                                   </span>
                                 </button>
 
+                                {/* Rotate CCW - Apply hover */} 
                                 <button
                                   type="button"
                                   onClick={() => rotateBee(false)}
-                                  className="flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs"
+                                  className="group flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs"
                                 >
-                                  <RotateCcw className="h-4 w-4 text-[#3A1F16]" />
-                                  <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                  <RotateCcw className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                                  <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                     Rotate
                                   </span>
                                 </button>
                               </div>
 
-                              {/* Add Flip button for bees */}
+                              {/* Flip - Apply hover */} 
                               <button
                                 type="button"
                                 onClick={flipBee}
-                                className="w-full flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 text-xs mb-2"
+                                className="group w-full flex items-center justify-center p-1 bg-[#FFB949] border-2 border-[#3A1F16] rounded-lg hover:bg-amber-400 hover:text-white text-xs mb-2"
                               >
-                                <FlipHorizontal className="h-4 w-4 text-[#3A1F16]" />
-                                <span className="ml-1 text-[#3A1F16] font-medium" style={{ fontFamily }}>
+                                <FlipHorizontal className="h-4 w-4 text-[#3A1F16] group-hover:text-white" />
+                                <span className="ml-1 text-[#3A1F16] group-hover:text-white font-medium" style={{ fontFamily }}>
                                   Flip Horizontally
                                 </span>
                               </button>

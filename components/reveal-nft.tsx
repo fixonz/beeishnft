@@ -247,15 +247,12 @@ export default function RevealNFT() {
     if (!isConnected) {
       return (
         <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] min-h-[200px]">
-          <p className="text-[#3A1F16] mb-4 text-center font-semibold">Please connect your wallet to free your bees!</p>
-          <CustomButton 
-            variant="connect"
-            className="w-auto px-6 h-12"
-            disabled={true}
-          >
-            Connect Wallet
-          </CustomButton>
-          <p className="text-xs text-[#3A1F16] text-center mt-2">(Use header button to connect)</p> 
+          <p className="text-[#3A1F16] mb-4 text-center font-semibold text-lg">
+            Please connect your wallet
+          </p>
+          <p className="text-[#3A1F16] text-center text-sm">
+            (Use the button in the header to connect and free your bees!)
+          </p>
         </div>
       )
     }

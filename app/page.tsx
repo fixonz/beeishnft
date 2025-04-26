@@ -156,13 +156,14 @@ export default function Home() {
                 />
               </div>
 
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-primary" style={{ fontFamily }}>
-                Exclusive NFT Collection
-              </h1>
-
-              <p className="text-lg md:text-xl mb-8 max-w-2xl text-solid-white" style={{ fontFamily }}>
-                Join the hive and collect unique bee-inspired digital art on the Abstract Chain Network
-              </p>
+              <div className="text-center mb-12">
+                <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white" style={{ fontFamily }}>
+                  Exclusive NFT Collection
+                </h1>
+                <p className="text-lg md:text-xl text-white max-w-2xl mx-auto" style={{ fontFamily }}>
+                  Join the hive and collect unique bee-inspired digital art on the Abstract Chain Network
+                </p>
+              </div>
 
               <MintButton onClick={() => setShowMintModal(true)} />
             </motion.div>

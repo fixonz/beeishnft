@@ -56,7 +56,7 @@ export default function NFTCard({ nft, onMint }: NFTCardProps) {
           className="font-bold text-xl mb-2"
           style={{
             fontFamily,
-            color: "#FFB949",
+            color: "white",
             textShadow:
               "2px 0 0 #3A1F16, -2px 0 0 #3A1F16, 0 2px 0 #3A1F16, 0 -2px 0 #3A1F16, 1px 1px 0 #3A1F16, -1px 1px 0 #3A1F16, 1px -1px 0 #3A1F16, -1px -1px 0 #3A1F16",
           }}

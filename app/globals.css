@@ -252,6 +252,7 @@ a {
 }
 
 .text-primary {
+  color: white !important; /* Force white color */
 }
 
 .text-secondary {
