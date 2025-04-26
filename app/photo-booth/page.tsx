@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import PhotoBooth from "@/components/photo-booth-fullscreen"
 import ForestBackground from "@/components/forest-background"
+import { useAccount } from "wagmi"
+import { useLoginWithAbstract } from "@abstract-foundation/agw-react"
 // import { AbstractWalletProviderWrapper } from "@/components/abstract-wallet-provider"
 import FontFixer from "@/components/font-fixer"
 import FallbackFontLoader from "@/components/fallback-font-loader"
@@ -13,6 +15,8 @@ import CustomButton from "@/components/custom-button"
 export default function PhotoBoothPage() {
   const router = useRouter()
   const [mounted, setMounted] = useState(false)
+  const { isConnected } = useAccount()
+  const { login } = useLoginWithAbstract()
 
   useEffect(() => {
     setMounted(true)
@@ -55,9 +59,9 @@ export default function PhotoBoothPage() {
         </header>
 
         {/* Content Container - flex-grow to fill available space */}
-        <div className="flex-grow flex items-center justify-center relative z-10 p-4 md:p-6">
-          {/* Full-screen Photo Booth */}
-          <PhotoBooth />
+        <div className="flex-grow flex justify-center relative z-10">
+          {/* Full-screen Photo Booth - Pass props */}
+          <PhotoBooth isConnected={isConnected} login={login} />
         </div>
 
         {/* Add a yellow footer specific to this page */}

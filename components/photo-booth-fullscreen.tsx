@@ -3,8 +3,6 @@
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { useAccount } from "wagmi"
-import { useLoginWithAbstract } from "@abstract-foundation/agw-react"
 import { useBearishNFTs, type BearishNFT, getDefaultNFT } from "@/lib/bearish-api"
 import CustomButton from "./custom-button"
 import {
@@ -23,6 +21,12 @@ import {
 } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import Script from "next/script"
+
+// Define component props
+interface PhotoBoothFullscreenProps {
+  isConnected: boolean;
+  login: () => void;
+}
 
 // Define bee types
 type BeeType = "normal" | "zombie" | "robot"
@@ -122,9 +126,7 @@ const beePresets = [
 // Fixed bee size in pixels - increased for better quality
 const BEE_SIZE = 60
 
-export default function PhotoBoothFullscreen() {
-  const { isConnected } = useAccount()
-  const { login } = useLoginWithAbstract()
+export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothFullscreenProps) {
   const { nfts, defaultNFT, loading, loadingDefaultNFT, error } = useBearishNFTs()
   const [selectedNFT, setSelectedNFT] = useState<BearishNFT | null>(null)
   const [bees, setBees] = useState<BeeOverlay[]>([])
@@ -581,7 +583,7 @@ export default function PhotoBoothFullscreen() {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full">
       {/* Load html2canvas library */}
       <Script
         src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"
@@ -620,15 +622,16 @@ export default function PhotoBoothFullscreen() {
         // Ensure content fits properly on all screen sizes with flexible container
         <div className="flex items-center justify-center w-full max-w-[1400px] px-4 mx-auto h-full">
           {selectedNFT ? (
-            <div className="flex flex-row w-full justify-center gap-4">
-              {/* Canvas for editing - square container that fills available height */}
+            // Make this container fill the height provided by the parent
+            <div className="flex flex-row w-full justify-center gap-4 h-full">
+              {/* Canvas for editing - remove fixed height, let flex control it */}
               <div
-                className="h-[calc(100vh-160px)] aspect-square border-4 border-[#3A1F16] rounded-xl overflow-hidden"
+                className="aspect-square border-4 border-[#3A1F16] rounded-xl overflow-hidden"
                 ref={canvasContainerRef}
                 style={{
                   backgroundColor: selectedBackground.color,
                   position: "relative",
-                  maxHeight: "calc(100vh-160px)",
+                  // maxHeight: "calc(100vh-160px)", // Remove fixed height calculation
                 }}
               >
                 {/* Inner canvas with fixed positioning */}
@@ -705,8 +708,8 @@ export default function PhotoBoothFullscreen() {
                 </div>
               </div>
 
-              {/* Controls - fixed width for better alignment */}
-              <div className="w-[350px] h-[calc(100vh-160px)] overflow-y-auto">
+              {/* Controls - remove fixed height, let flex control it */}
+              <div className="w-[350px] overflow-y-auto">
                 <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] mb-4">
                   <h3 className="text-xl font-bold mb-3 text-primary text-center" style={{ fontFamily }}>
                     {selectedNFT.name}
