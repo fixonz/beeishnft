@@ -156,12 +156,14 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           </div>
         )}
       </div>
-      <div className="flex gap-4 justify-center mb-4">
+      
+      {/* Make buttons more prominent with larger size and spacing */}
+      <div className="flex gap-6 justify-center mb-6 w-full">
         {buttonLabels.map((label, idx) => (
           <CustomButton
             key={label}
             variant={idx === step ? "mint" : "blank"}
-            className="min-w-[140px] w-auto"
+            className="min-w-[140px] py-3 text-lg w-full"
             onClick={handleStep}
             disabled={step !== idx || isLoading || !!revealedImage}
           >
@@ -169,9 +171,10 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           </CustomButton>
         ))}
       </div>
+      
       <CustomButton
         variant="blank"
-        className="w-[120px]"
+        className="w-[140px] py-3 text-lg"
         onClick={handleCancel}
         disabled={isLoading}
       >

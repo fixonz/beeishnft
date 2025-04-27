@@ -368,7 +368,7 @@ function RevealNFT() {
             React.createElement("p", { className: "text-center text-[#3A1F16] font-medium mb-4" }, status || "No unrevealed BEEISH NFTs found in your wallet"),
             revealedNFTs.length > 0 && (React.createElement("p", { className: "text-center text-[#3A1F16]" },
                 "You've already freed all your bees! ",
-                isMobile && 'Check the "Freed Bees" tab.'))));
+                React.createElement("button", { className: "ml-2 underline font-bold hover:text-amber-700", onClick: function () { return setActiveTab("revealed"); } }, "View your freed bees")))));
     };
     // Render the revealed NFTs section
     var renderRevealedSection = function () {

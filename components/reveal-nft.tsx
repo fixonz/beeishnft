@@ -469,12 +469,12 @@ export default function RevealNFT() {
                 Press the button to free your bee from the honey!
               </p>
               <div className="flex items-center gap-4">
-                  <CustomButton variant="blank" onClick={() => setSelectedNFT(null)}>
-                      Cancel
-                  </CustomButton>
-                  <CustomButton variant="free" onClick={startReveal}>
-                      Press to free
-                  </CustomButton>
+                <CustomButton variant="blank" onClick={() => setSelectedNFT(null)}>
+                  Cancel
+                </CustomButton>
+                <CustomButton variant="free" onClick={startReveal}>
+                  Press to free
+                </CustomButton>
               </div>
             </div>
           )}
@@ -489,7 +489,13 @@ export default function RevealNFT() {
         </p>
         {revealedNFTs.length > 0 && (
           <p className="text-center text-[#3A1F16]">
-            You've already freed all your bees! {isMobile && 'Check the "Freed Bees" tab.'}
+            You've already freed all your bees! {/* Show a button to switch to Freed Bees tab */}
+            <button 
+              className="ml-2 underline font-bold hover:text-amber-700"
+              onClick={() => setActiveTab("revealed")}
+            >
+              View your freed bees
+            </button>
           </p>
         )}
       </div>
