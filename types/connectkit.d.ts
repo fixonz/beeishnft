@@ -18,11 +18,13 @@ declare module 'connectkit' {
     children: React.ReactNode;
   }>;
 
-  export const ConnectKitButton: React.FC<{
-    Custom?: React.FC<{
+  export interface ConnectKitButtonComponent extends React.FC {
+    Custom: React.FC<{
       children: (props: ConnectKitButtonProps) => React.ReactNode;
     }>;
-  }>;
+  }
+
+  export const ConnectKitButton: ConnectKitButtonComponent;
 
   export const useModal: () => {
     open: boolean;
