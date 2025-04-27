@@ -51,6 +51,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Custom CSS to ensure modal is compact and centered
   // This will be injected into the page
   const modalCss = `
+    .connectkit-modal, .connectkit-overlay, .connectkit-modal * {
+      box-shadow: none !important;
+      filter: none !important;
+    }
     .connectkit-modal { max-width: 420px !important; width: 100% !important; margin: 0 auto !important; }
     .connectkit-overlay { background: rgba(0,0,0,0.7) !important; }
   `;
