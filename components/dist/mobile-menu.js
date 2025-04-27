@@ -4,7 +4,7 @@ exports.__esModule = true;
 var sheet_1 = require("@/components/ui/sheet");
 var button_1 = require("@/components/ui/button");
 var lucide_react_1 = require("lucide-react");
-var ConnectKitButton_1 = require("connectkit/dist/components/ConnectKitButton");
+var connectkit_1 = require("connectkit");
 var twitter_button_1 = require("./twitter-button");
 var custom_button_1 = require("./custom-button");
 function MobileMenu(_a) {
@@ -17,7 +17,7 @@ function MobileMenu(_a) {
             React.createElement(sheet_1.SheetHeader, null,
                 React.createElement(sheet_1.SheetTitle, { className: "text-2xl font-bold text-primary mb-6 custom-button-text" }, "Menu")),
             React.createElement("div", { className: "flex flex-col gap-4 items-center" },
-                React.createElement(ConnectKitButton_1.ConnectKitButton.Custom, null, function (_a) {
+                React.createElement(connectkit_1.ConnectKitButton.Custom, null, function (_a) {
                     var isConnected = _a.isConnected, show = _a.show, truncatedAddress = _a.truncatedAddress, ensName = _a.ensName;
                     return (React.createElement(custom_button_1["default"], { variant: isConnected ? "blank" : "connect", className: "w-full px-4", onClick: show }, isConnected ? (ensName !== null && ensName !== void 0 ? ensName : truncatedAddress) : "Connect Wallet"));
                 }),

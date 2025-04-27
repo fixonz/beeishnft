@@ -3,7 +3,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { MenuIcon } from "lucide-react"
-import { ConnectKitButton } from "connectkit/dist/components/ConnectKitButton"
+import { ConnectKitButton } from "connectkit"
 import TwitterButton from "./twitter-button"
 import CustomButton from "./custom-button"
 
@@ -26,7 +26,12 @@ export default function MobileMenu({ onPhotoBoothClick, onFreeABeeClick }: Mobil
         </SheetHeader>
         <div className="flex flex-col gap-4 items-center">
           <ConnectKitButton.Custom>
-            {({ isConnected, show, truncatedAddress, ensName }) => {
+            {({ isConnected, show, truncatedAddress, ensName }: {
+              isConnected?: boolean;
+              show?: () => void;
+              truncatedAddress?: string;
+              ensName?: string;
+            }) => {
               return (
                 <CustomButton
                   variant={isConnected ? "blank" : "connect"}
