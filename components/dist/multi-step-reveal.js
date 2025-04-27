@@ -158,7 +158,7 @@ function MultiStepReveal(_a) {
         React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: handleCancel, disabled: isLoading }, "Cancel"),
         error && React.createElement("p", { className: "text-red-500 mt-2" }, error),
         showStepModal && (React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/70" },
-            React.createElement("div", { className: "relative w-full max-w-2xl aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4" },
+            React.createElement("div", { className: "relative w-full max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4" },
                 React.createElement("div", { className: "absolute inset-0" },
                     React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", fill: true, className: "object-contain rounded-lg", priority: true }),
                     React.createElement(image_1["default"], { src: overlayGifs[modalStep], alt: "Reveal overlay " + (modalStep + 1), fill: true, className: "object-contain", priority: true }))))),

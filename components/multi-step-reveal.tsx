@@ -150,7 +150,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for each reveal step */}
       {showStepModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="relative w-full max-w-2xl aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
+          <div className="relative w-full max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
             <div className="absolute inset-0">
               <Image
                 src={revealedImage || unrevealedImageUrl}
