@@ -17,7 +17,8 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import MobileMenu from "@/components/mobile-menu"
 import FontFixer from "@/components/font-fixer"
 import FallbackFontLoader from "@/components/fallback-font-loader"
-import { ConnectKitButton, useModal } from "connectkit"
+import { ConnectKitButton } from "connectkit/dist/components/ConnectKitButton"
+import { useModal } from "connectkit/dist/hooks/useModal"
 import { useAccount } from "wagmi"
 
 export default function Home() {
@@ -130,12 +131,7 @@ export default function Home() {
                   <CustomButton variant="blank" className="w-[120px] md:w-[180px]">BeE-Dega</CustomButton>
                 </div>
                 <ConnectKitButton.Custom>
-                  {({ isConnected, show, truncatedAddress, ensName }: { 
-                    isConnected: boolean;
-                    show: () => void;
-                    truncatedAddress: string;
-                    ensName?: string;
-                  }) => {
+                  {({ isConnected, show, truncatedAddress, ensName }) => {
                     return (
                       <CustomButton
                         variant={isConnected ? "blank" : "connect"}

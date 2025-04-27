@@ -3,7 +3,7 @@
 import React from 'react'
 import { WagmiProvider } from 'wagmi' 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ConnectKitProvider } from 'connectkit'
+import { ConnectKitProvider } from 'connectkit/dist/components/ConnectKitProvider'
 import { ThemeProvider } from "@/components/theme-provider"
 import { config } from '@/lib/wagmi' // Import the new Wagmi config
 

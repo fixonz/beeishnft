@@ -3,7 +3,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { MenuIcon } from "lucide-react"
-import { ConnectKitButton } from "connectkit"
+import { ConnectKitButton } from "connectkit/dist/components/ConnectKitButton"
 import TwitterButton from "./twitter-button"
 import CustomButton from "./custom-button"
 

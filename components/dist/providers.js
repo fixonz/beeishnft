@@ -5,7 +5,7 @@ exports.Providers = void 0;
 var react_1 = require("react");
 var wagmi_1 = require("wagmi");
 var react_query_1 = require("@tanstack/react-query");
-var connectkit_1 = require("connectkit");
+var ConnectKitProvider_1 = require("connectkit/dist/components/ConnectKitProvider");
 var theme_provider_1 = require("@/components/theme-provider");
 var wagmi_2 = require("@/lib/wagmi"); // Import the new Wagmi config
 // Create a React Query client
@@ -50,7 +50,7 @@ function Providers(_a) {
     return (react_1["default"].createElement(wagmi_1.WagmiProvider, { config: wagmi_2.config },
         react_1["default"].createElement(react_query_1.QueryClientProvider, { client: queryClient },
             react_1["default"].createElement("style", null, modalCss),
-            react_1["default"].createElement(connectkit_1.ConnectKitProvider, { theme: "custom", customTheme: connectKitTheme, options: {
+            react_1["default"].createElement(ConnectKitProvider_1.ConnectKitProvider, { theme: "custom", customTheme: connectKitTheme, options: {
                     // Only show the connectors we want (Abstract and Metamask)
                     hideNoWalletCTA: true,
                     hideQuestionMarkCTA: true,
