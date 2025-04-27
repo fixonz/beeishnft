@@ -196,9 +196,9 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for revealed NFT */}
       {showRevealedModal && revealedImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[70vw] md:w-[50vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh]">
+          <div className="bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-4 text-center w-[80vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh] relative">
             <button
-              className="absolute top-2 right-2 text-[#3A1F16] hover:text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center"
+              className="absolute top-2 right-2 text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center"
               onClick={() => {
                 setShowRevealedModal(false);
                 // Force page refresh to update the "Freed Bees" section
@@ -208,13 +208,15 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
               ×
             </button>
             <h3 className="text-xl font-bold text-[#3A1F16] mb-3">Your Bee is Revealed!</h3>
-            <Image
-              src={revealedImage}
-              alt="Revealed NFT"
-              width={320}
-              height={320}
-              className="object-contain rounded-lg mb-4 border-4 border-[#3A1F16] bg-white"
-            />
+            <div className="bg-white border-4 border-[#3A1F16] rounded-lg p-2 mx-auto">
+              <Image
+                src={revealedImage}
+                alt="Revealed NFT"
+                width={300}
+                height={300}
+                className="object-contain mx-auto"
+              />
+            </div>
           </div>
         </div>
       )}

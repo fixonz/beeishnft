@@ -182,13 +182,14 @@ function MultiStepReveal(_a) {
                 React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", fill: true, className: "object-contain p-4", priority: true }),
                 React.createElement(image_1["default"], { src: overlayGifs[modalStep], alt: "Reveal overlay " + (modalStep + 1), fill: true, className: "object-contain p-4", priority: true })))),
         showRevealedModal && revealedImage && (React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/80" },
-            React.createElement("div", { className: "bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[70vw] md:w-[50vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh]" },
-                React.createElement("button", { className: "absolute top-2 right-2 text-[#3A1F16] hover:text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center", onClick: function () {
+            React.createElement("div", { className: "bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-4 text-center w-[80vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh] relative" },
+                React.createElement("button", { className: "absolute top-2 right-2 text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center", onClick: function () {
                         setShowRevealedModal(false);
                         // Force page refresh to update the "Freed Bees" section
                         window.location.reload();
                     } }, "\u00D7"),
                 React.createElement("h3", { className: "text-xl font-bold text-[#3A1F16] mb-3" }, "Your Bee is Revealed!"),
-                React.createElement(image_1["default"], { src: revealedImage, alt: "Revealed NFT", width: 320, height: 320, className: "object-contain rounded-lg mb-4 border-4 border-[#3A1F16] bg-white" }))))));
+                React.createElement("div", { className: "bg-white border-4 border-[#3A1F16] rounded-lg p-2 mx-auto" },
+                    React.createElement(image_1["default"], { src: revealedImage, alt: "Revealed NFT", width: 300, height: 300, className: "object-contain mx-auto" })))))));
 }
 exports["default"] = MultiStepReveal;
