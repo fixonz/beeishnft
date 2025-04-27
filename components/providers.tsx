@@ -89,64 +89,52 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Custom CSS to ensure modal is compact and centered
   // This will be injected into the page
   const modalCss = `
-    /* Completely remove all shadows and side elements */
-    .sc-dhKdcB, 
-    .jXJXoi, 
-    [class*="sc-"].sc-dhKdcB,
-    div[style*="pointer-events: none"][style*="position: absolute"][style*="transform: translateX(-50%)"],
-    div[style*="pointer-events: none"] {
-      display: none !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-    }
-    
-    /* Make modal container have solid background with no shadows */
-    .sc-gFqAkR, 
-    .cMtGuS, 
-    [style*="--height"],
-    [style*="--width"],
-    .sc-kpDqfm,
-    div[class^="sc-"] {
+    /* Fixed Shadow Box Styles - Completely Override */
+    .sc-gFqAkR {
       box-shadow: none !important;
       -webkit-box-shadow: none !important;
       filter: none !important;
-      -webkit-filter: none !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
       border: 4px solid #3A1F16 !important;
-      background-color: #FFB949 !important;
       overflow: hidden !important;
-    }
-    
-    /* Target wallet buttons to ensure they have proper styling */
-    button[class*="sc-hIUJlX"] {
-      box-shadow: none !important;
-      filter: none !important;
-    }
-    
-    /* Make the background completely solid */
-    div[class*="sc-"] {
+      border-radius: 12px !important;
+      margin: 0 auto !important;
+      max-width: 420px !important;
       background: #FFB949 !important;
     }
     
-    /* Hide any text about additional wallets */
-    div[class*="sc-kAkpmW"],
-    span:has(svg[width="11"][height="12"]) {
+    /* Remove the shadow container completely */
+    .sc-dhKdcB {
       display: none !important;
     }
     
-    /* Force hide any wallets we don't want */
-    button[class*="sc-hIUJlX"]:not(:nth-child(1)):not(:nth-child(2)) {
+    /* Hide the transform container causing shadows */
+    div[style*="pointer-events: none"][style*="transform: translateX(-50%)"] {
       display: none !important;
     }
     
-    /* Keep only the first two wallet buttons (Metamask and Abstract) */
-    div.sc-gFVvzn > div.sc-ggpjZQ {
-      display: flex;
-      flex-direction: column;
+    /* Reset any unwanted borders or elements */
+    .sc-gFqAkR::before,
+    .sc-gFqAkR::after,
+    .sc-kpDqfm::before,
+    .sc-kpDqfm::after {
+      display: none !important;
+      content: none !important;
     }
     
-    div.sc-gFVvzn > div.sc-ggpjZQ > button:nth-child(n+3) {
+    /* Fix the inner container */
+    .sc-kpDqfm {
+      border-radius: 8px !important;
+      overflow: hidden !important;
+      box-shadow: none !important;
+    }
+    
+    /* Target additional wallets text */
+    .sc-kAkpmW {
+      display: none !important;
+    }
+    
+    /* Hide wallet buttons beyond the first two */
+    .sc-ggpjZQ button:nth-child(n+3) {
       display: none !important;
     }
   `;
