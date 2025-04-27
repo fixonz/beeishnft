@@ -55,6 +55,7 @@ var mobile_menu_1 = require("@/components/mobile-menu");
 var font_fixer_1 = require("@/components/font-fixer");
 var fallback_font_loader_1 = require("@/components/fallback-font-loader");
 var connectkit_1 = require("connectkit");
+var wagmi_1 = require("wagmi");
 function Home() {
     var _this = this;
     var router = navigation_1.useRouter();
@@ -68,6 +69,8 @@ function Home() {
     }), stats = _c[0], setStats = _c[1];
     var _d = react_1.useState(true), loading = _d[0], setLoading = _d[1];
     var isMobile = use_media_query_1.useMediaQuery("(max-width: 768px)");
+    var isConnected = wagmi_1.useAccount().isConnected;
+    var modal = connectkit_1.ConnectKitButton.useModal();
     // Font family based on device
     var fontFamily = isMobile
         ? "'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif"
@@ -107,6 +110,23 @@ function Home() {
     }, []);
     // Style for disabled buttons
     var disabledButtonStyle = "opacity-50 cursor-not-allowed";
+    // Handlers for navigation with wallet check
+    var handlePhotoBooth = function () {
+        if (isConnected) {
+            router.push("/photo-booth");
+        }
+        else {
+            modal.setOpen(true);
+        }
+    };
+    var handleFreeABee = function () {
+        if (isConnected) {
+            router.push("/free-a-bee");
+        }
+        else {
+            modal.setOpen(true);
+        }
+    };
     return (
     // Remove boxed flex-col wrapper, use old structure
     react_1["default"].createElement(react_1["default"].Fragment, null,
@@ -121,14 +141,14 @@ function Home() {
                             react_1["default"].createElement(image_1["default"], { src: "/images/bee-mascot.png", alt: "Bee Mascot", width: 64, height: 64, className: "object-contain" }))),
                     isMobile ? (
                     // Mobile hamburger menu only
-                    react_1["default"].createElement(mobile_menu_1["default"], { onPhotoBoothClick: function () { return router.push("/photo-booth"); }, onFreeABeeClick: function () { return router.push("/free-a-bee"); } })) : (
+                    react_1["default"].createElement(mobile_menu_1["default"], { onPhotoBoothClick: handlePhotoBooth, onFreeABeeClick: handleFreeABee })) : (
                     // Desktop header buttons
                     react_1["default"].createElement("div", { className: "flex items-center space-x-2 md:space-x-4 flex-wrap justify-end" },
                         react_1["default"].createElement("div", { className: disabledButtonStyle },
                             react_1["default"].createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px] md:w-[180px]" }, "Hive")),
-                        react_1["default"].createElement("div", { onClick: function () { return router.push("/photo-booth"); }, className: "cursor-pointer" },
-                            react_1["default"].createElement(custom_button_1["default"], { variant: "photoBooth", className: "w-[120px] md:w-[180px]", onClick: function () { return router.push("/photo-booth"); } }, "Photo booth")),
-                        react_1["default"].createElement("div", { onClick: function () { return router.push("/free-a-bee"); }, className: "cursor-pointer" },
+                        react_1["default"].createElement("div", { onClick: handlePhotoBooth, className: "cursor-pointer" },
+                            react_1["default"].createElement(custom_button_1["default"], { variant: "photoBooth", className: "w-[120px] md:w-[180px]" }, "Photo booth")),
+                        react_1["default"].createElement("div", { onClick: handleFreeABee, className: "cursor-pointer" },
                             react_1["default"].createElement(custom_button_1["default"], { variant: "mint", className: "w-[120px] md:w-[180px]" }, "free-A-BeE")),
                         react_1["default"].createElement("div", { className: disabledButtonStyle },
                             react_1["default"].createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px] md:w-[180px]" }, "BeE-Dega")),

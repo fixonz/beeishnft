@@ -14,8 +14,8 @@ const queryClient = new QueryClient()
 
 // Explicitly define the connectors we want ConnectKit to use
 const connectors = [
-  abstractWalletConnector(),
-  injected(),
+  abstractWalletConnector(), // Abstract
+  injected(),               // Metamask
 ];
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -49,17 +49,31 @@ export function Providers({ children }: { children: React.ReactNode }) {
     '--ck-connectbutton-background': '#3A1F16',
     '--ck-connectbutton-color': '#FFFFFF',
     '--ck-connectbutton-hover-background': '#5a3a2f',
+    // Custom modal width (compact)
+    '--ck-modal-max-width': '420px',
+    '--ck-modal-width': '100%',
   };
 
+  // Custom CSS to ensure modal is compact and centered
+  // This will be injected into the page
+  const modalCss = `
+    .connectkit-modal { max-width: 420px !important; width: 100% !important; margin: 0 auto !important; }
+    .connectkit-overlay { background: rgba(0,0,0,0.7) !important; }
+  `;
+
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={{ ...config, connectors }}>
       <QueryClientProvider client={queryClient}>
+        <style>{modalCss}</style>
         <ConnectKitProvider
           theme="custom"
           customTheme={connectKitTheme}
           options={{
-            // connectors: connectors, // Pass only our desired connectors (Might not be the correct option name, check ConnectKit docs if needed)
-            // Or maybe filter wallets here - consult ConnectKit documentation for exact filtering options
+            // Only show the connectors we want (Abstract and Metamask)
+            hideNoWalletCTA: true,
+            hideQuestionMarkCTA: true,
+            hideRecentBadge: true,
+            // Modal is dismissible by clicking outside by default
           }}
         >
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>

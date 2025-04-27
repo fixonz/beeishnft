@@ -18,6 +18,7 @@ import MobileMenu from "@/components/mobile-menu"
 import FontFixer from "@/components/font-fixer"
 import FallbackFontLoader from "@/components/fallback-font-loader"
 import { ConnectKitButton } from "connectkit"
+import { useAccount } from "wagmi"
 
 export default function Home() {
   const router = useRouter()
@@ -31,6 +32,8 @@ export default function Home() {
   })
   const [loading, setLoading] = useState(true)
   const isMobile = useMediaQuery("(max-width: 768px)")
+  const { isConnected } = useAccount()
+  const modal = ConnectKitButton.useModal()
 
   // Font family based on device
   const fontFamily = isMobile
@@ -62,6 +65,22 @@ export default function Home() {
   // Style for disabled buttons
   const disabledButtonStyle = "opacity-50 cursor-not-allowed"
 
+  // Handlers for navigation with wallet check
+  const handlePhotoBooth = () => {
+    if (isConnected) {
+      router.push("/photo-booth")
+    } else {
+      modal.setOpen(true)
+    }
+  }
+  const handleFreeABee = () => {
+    if (isConnected) {
+      router.push("/free-a-bee")
+    } else {
+      modal.setOpen(true)
+    }
+  }
+
   return (
     // Remove boxed flex-col wrapper, use old structure
     <>
@@ -90,8 +109,8 @@ export default function Home() {
             {isMobile ? (
               // Mobile hamburger menu only
               <MobileMenu
-                onPhotoBoothClick={() => router.push("/photo-booth")}
-                onFreeABeeClick={() => router.push("/free-a-bee")}
+                onPhotoBoothClick={handlePhotoBooth}
+                onFreeABeeClick={handleFreeABee}
               />
             ) : (
               // Desktop header buttons
@@ -101,10 +120,10 @@ export default function Home() {
                     Hive
                   </CustomButton>
                 </div>
-                <div onClick={() => router.push("/photo-booth")} className="cursor-pointer">
-                  <CustomButton variant="photoBooth" className="w-[120px] md:w-[180px]" onClick={() => router.push("/photo-booth")}>Photo booth</CustomButton>
+                <div onClick={handlePhotoBooth} className="cursor-pointer">
+                  <CustomButton variant="photoBooth" className="w-[120px] md:w-[180px]">Photo booth</CustomButton>
                 </div>
-                <div onClick={() => router.push("/free-a-bee")} className="cursor-pointer">
+                <div onClick={handleFreeABee} className="cursor-pointer">
                   <CustomButton variant="mint" className="w-[120px] md:w-[180px]">free-A-BeE</CustomButton>
                 </div>
                 <div className={disabledButtonStyle}>
