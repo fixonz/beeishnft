@@ -170,11 +170,41 @@ export default function RevealNFT() {
   // Handle reveal completion
   const handleRevealComplete = (imageUrl: string) => {
     setRevealedImage(imageUrl)
-
-    // Show the success animation first
     setShowSuccessAnimation(true)
 
-    // The rest of the process will continue after the animation completes
+    // Poll for updated metadata after reveal
+    if (selectedNFT) {
+      pollForRevealedImage(selectedNFT.tokenId, imageUrl)
+    }
+  }
+
+  // Polling function to check for updated metadata
+  const pollForRevealedImage = async (tokenId: string, oldImageUrl: string) => {
+    const MAX_ATTEMPTS = 10
+    const DELAY_MS = 1000
+    let attempts = 0
+    let updated = false
+    while (attempts < MAX_ATTEMPTS && !updated) {
+      await new Promise((res) => setTimeout(res, DELAY_MS))
+      try {
+        // Fetch metadata from your API (update this URL if needed)
+        const response = await fetch(`/api/metadata/${tokenId}`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.image && data.image !== oldImageUrl) {
+            setRevealedImage(data.image)
+            updated = true
+            break
+          }
+        }
+      } catch (e) {
+        // Ignore errors and keep polling
+      }
+      attempts++
+    }
+    if (!updated) {
+      setStatus("Reveal complete, but new image is not available yet. Please refresh in a few seconds.")
+    }
   }
 
   // Handle success animation completion

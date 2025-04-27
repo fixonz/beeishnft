@@ -223,7 +223,7 @@ export default function Home() {
                           >
                             <div className="aspect-square bg-amber-100 relative">
                               <Image
-                                src="/images/beeish-nft.gif"
+                                src="/images/beeish-nft.png"
                                 alt={`BEEISH #${index + 1}`}
                                 fill
                                 className="object-cover"
