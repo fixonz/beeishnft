@@ -6,17 +6,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConnectKitProvider } from 'connectkit'
 import { ThemeProvider } from "@/components/theme-provider"
 import { config } from '@/lib/wagmi' // Import the new Wagmi config
-import { abstractWalletConnector } from '@abstract-foundation/agw-react/connectors'
-import { injected } from 'wagmi/connectors'
 
 // Create a React Query client
 const queryClient = new QueryClient()
-
-// Explicitly define the connectors we want ConnectKit to use
-const connectors = [
-  abstractWalletConnector(), // Abstract
-  injected(),               // Metamask
-];
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // ConnectKit theme options
@@ -35,7 +27,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // General Modal styling (keep previous refinements)
     '--ck-modal-background': '#FFB949',
     '--ck-overlay-background': 'rgba(0, 0, 0, 0.7)',
-    '--ck-modal-box-shadow': '0px 8px 24px rgba(0, 0, 0, 0.3)',
+    '--ck-modal-box-shadow': 'none',
     '--ck-body-background': '#FFB949',
     '--ck-body-color': '#3A1F16',
     '--ck-body-color-muted': '#5a3a2f',
@@ -62,7 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   `;
 
   return (
-    <WagmiProvider config={{ ...config, connectors }}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <style>{modalCss}</style>
         <ConnectKitProvider
