@@ -150,20 +150,19 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for each reveal step */}
       {showStepModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-white rounded-lg shadow-lg p-4 flex flex-col items-center max-w-xs w-full relative">
-            <Image
-              src={revealedImage || unrevealedImageUrl}
-              alt="NFT to reveal"
-              width={320}
-              height={320}
-              className="object-contain rounded-lg mb-2"
-            />
-            <div className="absolute inset-0 flex items-end justify-center pointer-events-none">
+          <div className="relative w-full max-w-2xl aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
+            <div className="absolute inset-0">
+              <Image
+                src={revealedImage || unrevealedImageUrl}
+                alt="NFT to reveal"
+                fill
+                className="object-contain rounded-lg"
+                priority={true}
+              />
               <Image
                 src={overlayGifs[modalStep]}
                 alt={`Reveal overlay ${modalStep + 1}`}
-                width={320}
-                height={320}
+                fill
                 className="object-contain"
                 priority={true}
               />
