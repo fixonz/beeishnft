@@ -285,7 +285,7 @@ function RevealNFT() {
         }
     };
     // Render mobile tabs for switching between unrevealed and revealed NFTs
-    var renderMobileTabs = function () {
+    var renderTabs = function () {
         return (React.createElement("div", { className: "flex w-full mb-4 border-4 border-[#3A1F16] rounded-lg overflow-hidden" },
             React.createElement("button", { className: "flex-1 py-3 text-center font-bold " + (activeTab === "unrevealed" ? "bg-[#3A1F16] text-[#FFB949]" : "bg-[#FFB949] text-[#3A1F16]"), onClick: function () { return setActiveTab("unrevealed"); } }, "Free a Bee"),
             React.createElement("button", { className: "flex-1 py-3 text-center font-bold " + (activeTab === "revealed" ? "bg-[#3A1F16] text-[#FFB949]" : "bg-[#FFB949] text-[#3A1F16]"), onClick: function () { return setActiveTab("revealed"); } },
@@ -410,14 +410,10 @@ function RevealNFT() {
                     React.createElement(custom_button_1["default"], { variant: "blank", onClick: closeRevealedNFT }, "Close")))));
     };
     return (React.createElement("div", { className: "w-full max-w-5xl mx-auto" },
-        isMobile && renderMobileTabs(),
+        renderTabs(),
         React.createElement("div", { className: "space-y-8 pb-8" },
-            !isMobile && !isRevealing && !showRevealedNFT && (React.createElement(React.Fragment, null,
-                renderUnrevealedSection(),
-                revealedNFTs.length > 0 && renderRevealedSection())),
-            isMobile && activeTab === "unrevealed" && renderUnrevealedSection(),
-            isMobile && activeTab === "revealed" && renderRevealedSection(),
-            !isMobile && (isRevealing || showRevealedNFT) && renderUnrevealedSection()),
+            activeTab === "unrevealed" && renderUnrevealedSection(),
+            activeTab === "revealed" && renderRevealedSection()),
         status && !loading && !isRevealing && !showRevealedNFT && (React.createElement("p", { className: "mt-6 text-center text-lg font-semibold text-red-700" }, status)),
         showRevealedNFT && selectedNFT && revealedImage && renderRevealedNFTDisplay(selectedNFT, revealedImage),
         React.createElement(mint_modal_1["default"], { open: isMintModalOpen, onClose: function () { return setIsMintModalOpen(false); } })));

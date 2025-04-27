@@ -249,7 +249,7 @@ export default function RevealNFT() {
   }
 
   // Render mobile tabs for switching between unrevealed and revealed NFTs
-  const renderMobileTabs = () => {
+  const renderTabs = () => {
     return (
       <div className="flex w-full mb-4 border-4 border-[#3A1F16] rounded-lg overflow-hidden">
         <button
@@ -615,20 +615,12 @@ export default function RevealNFT() {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {isMobile && renderMobileTabs()}
+      {/* Always show tabs for both mobile and desktop */}
+      {renderTabs()}
 
       <div className="space-y-8 pb-8">
-        {!isMobile && !isRevealing && !showRevealedNFT && (
-          <>
-            {renderUnrevealedSection()}
-            {revealedNFTs.length > 0 && renderRevealedSection()}
-          </>
-        )}
-
-        {isMobile && activeTab === "unrevealed" && renderUnrevealedSection()}
-        {isMobile && activeTab === "revealed" && renderRevealedSection()}
-
-        {!isMobile && (isRevealing || showRevealedNFT) && renderUnrevealedSection()}
+        {activeTab === "unrevealed" && renderUnrevealedSection()}
+        {activeTab === "revealed" && renderRevealedSection()}
       </div>
 
       {status && !loading && !isRevealing && !showRevealedNFT && (
