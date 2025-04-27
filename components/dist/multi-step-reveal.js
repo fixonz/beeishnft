@@ -49,8 +49,10 @@ function MultiStepReveal(_a) {
     var _c = react_1.useState(false), isLoading = _c[0], setIsLoading = _c[1];
     var _d = react_1.useState(null), error = _d[0], setError = _d[1];
     var _e = react_1.useState(null), revealedImage = _e[0], setRevealedImage = _e[1];
-    var _f = react_1.useState(false), showOverlay = _f[0], setShowOverlay = _f[1];
+    var _f = react_1.useState(false), showStepModal = _f[0], setShowStepModal = _f[1];
     var _g = react_1.useState(false), showRevealedModal = _g[0], setShowRevealedModal = _g[1];
+    var _h = react_1.useState(0), modalStep = _h[0], setModalStep = _h[1];
+    var audioRef = react_1.useRef(null);
     // Overlay GIFs for each step (corrected paths)
     var overlayGifs = [
         "/images/1reveal.gif",
@@ -67,13 +69,21 @@ function MultiStepReveal(_a) {
     var handleStep = function () { return __awaiter(_this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
-            setShowOverlay(true);
+            setModalStep(step);
+            setShowStepModal(true);
+            // Play sound
+            setTimeout(function () {
+                if (audioRef.current) {
+                    audioRef.current.currentTime = 0;
+                    audioRef.current.play();
+                }
+            }, 100);
             setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
                 var response, errorData, metaRes, meta_1, err_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            setShowOverlay(false);
+                            setShowStepModal(false);
                             if (!(step < 2)) return [3 /*break*/, 1];
                             setStep(step + 1);
                             return [3 /*break*/, 10];
@@ -130,24 +140,28 @@ function MultiStepReveal(_a) {
     // Reset on cancel or new NFT
     var handleCancel = function () {
         setStep(0);
-        setShowOverlay(false);
+        setShowStepModal(false);
         setRevealedImage(null);
         setShowRevealedModal(false);
         setError(null);
         onCancel();
     };
     return (React.createElement("div", { className: "flex flex-col items-center" },
+        React.createElement("audio", { ref: audioRef, src: "/sound/shot.mp3", preload: "auto" }),
         React.createElement("h2", { className: "text-xl font-bold text-center mb-4 text-[#3A1F16]" }, "Free Your Bee!"),
         React.createElement("div", { className: "relative w-full max-w-md mx-auto mb-6" },
             React.createElement(framer_motion_1.motion.div, { className: "relative aspect-square bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden", initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, transition: { type: "spring", damping: 12 } },
-                React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", fill: true, className: "object-contain", priority: true }),
-                showOverlay && step <= 2 && (React.createElement("div", { className: "absolute inset-0 z-20 flex items-end justify-center pointer-events-none" },
-                    React.createElement(image_1["default"], { src: overlayGifs[step], alt: "Reveal overlay " + (step + 1), fill: true, className: "object-contain", priority: true })))),
+                React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", fill: true, className: "object-contain", priority: true })),
             isLoading && (React.createElement("div", { className: "absolute inset-0 flex items-center justify-center bg-black/50 z-30" },
                 React.createElement(lucide_react_1.Loader2, { className: "h-12 w-12 animate-spin text-amber-400" })))),
         React.createElement("div", { className: "flex gap-4 justify-center mb-4" }, buttonLabels.map(function (label, idx) { return (React.createElement(custom_button_1["default"], { key: label, variant: idx === step ? "mint" : "blank", className: "w-[140px]", onClick: handleStep, disabled: step !== idx || isLoading || !!revealedImage }, label)); })),
         React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: handleCancel, disabled: isLoading }, "Cancel"),
         error && React.createElement("p", { className: "text-red-500 mt-2" }, error),
+        showStepModal && (React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/70" },
+            React.createElement("div", { className: "bg-white rounded-lg shadow-lg p-4 flex flex-col items-center max-w-xs w-full relative" },
+                React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", width: 320, height: 320, className: "object-contain rounded-lg mb-2" }),
+                React.createElement("div", { className: "absolute inset-0 flex items-end justify-center pointer-events-none" },
+                    React.createElement(image_1["default"], { src: overlayGifs[modalStep], alt: "Reveal overlay " + (modalStep + 1), width: 320, height: 320, className: "object-contain", priority: true }))))),
         showRevealedModal && revealedImage && (React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/70" },
             React.createElement("div", { className: "bg-white rounded-lg shadow-lg p-6 flex flex-col items-center max-w-xs w-full relative" },
                 React.createElement("button", { className: "absolute top-2 right-2 text-gray-500 hover:text-gray-800", onClick: function () { return setShowRevealedModal(false); } }, "\u00D7"),

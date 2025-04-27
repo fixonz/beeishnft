@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
 import { Loader2 } from "lucide-react"
 import CustomButton from "./custom-button"
@@ -19,8 +19,10 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [revealedImage, setRevealedImage] = useState<string | null>(null)
-  const [showOverlay, setShowOverlay] = useState(false)
+  const [showStepModal, setShowStepModal] = useState(false)
   const [showRevealedModal, setShowRevealedModal] = useState(false)
+  const [modalStep, setModalStep] = useState(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Overlay GIFs for each step (corrected paths)
   const overlayGifs = [
@@ -38,9 +40,17 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
 
   // Handle each step
   const handleStep = async () => {
-    setShowOverlay(true)
+    setModalStep(step)
+    setShowStepModal(true)
+    // Play sound
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play()
+      }
+    }, 100)
     setTimeout(async () => {
-      setShowOverlay(false)
+      setShowStepModal(false)
       if (step < 2) {
         setStep(step + 1)
       } else {
@@ -82,7 +92,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
   // Reset on cancel or new NFT
   const handleCancel = () => {
     setStep(0)
-    setShowOverlay(false)
+    setShowStepModal(false)
     setRevealedImage(null)
     setShowRevealedModal(false)
     setError(null)
@@ -91,6 +101,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
 
   return (
     <div className="flex flex-col items-center">
+      <audio ref={audioRef} src="/sound/shot.mp3" preload="auto" />
       <h2 className="text-xl font-bold text-center mb-4 text-[#3A1F16]">Free Your Bee!</h2>
       <div className="relative w-full max-w-md mx-auto mb-6">
         <motion.div
@@ -106,18 +117,6 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
             className="object-contain"
             priority={true}
           />
-          {/* Overlay GIF with improved visibility */}
-          {showOverlay && step <= 2 && (
-            <div className="absolute inset-0 z-20 flex items-end justify-center pointer-events-none">
-              <Image
-                src={overlayGifs[step]}
-                alt={`Reveal overlay ${step + 1}`}
-                fill
-                className="object-contain"
-                priority={true}
-              />
-            </div>
-          )}
         </motion.div>
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
@@ -147,6 +146,31 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
         Cancel
       </CustomButton>
       {error && <p className="text-red-500 mt-2">{error}</p>}
+
+      {/* Modal for each reveal step */}
+      {showStepModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-white rounded-lg shadow-lg p-4 flex flex-col items-center max-w-xs w-full relative">
+            <Image
+              src={revealedImage || unrevealedImageUrl}
+              alt="NFT to reveal"
+              width={320}
+              height={320}
+              className="object-contain rounded-lg mb-2"
+            />
+            <div className="absolute inset-0 flex items-end justify-center pointer-events-none">
+              <Image
+                src={overlayGifs[modalStep]}
+                alt={`Reveal overlay ${modalStep + 1}`}
+                width={320}
+                height={320}
+                className="object-contain"
+                priority={true}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal for revealed NFT */}
       {showRevealedModal && revealedImage && (
