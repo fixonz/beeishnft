@@ -129,7 +129,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           <CustomButton
             key={label}
             variant={idx === step ? "mint" : "blank"}
-            className="w-[140px]"
+            className="min-w-[140px] w-auto"
             onClick={handleStep}
             disabled={step !== idx || isLoading || !!revealedImage}
           >
@@ -150,7 +150,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for each reveal step */}
       {showStepModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="relative w-full max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
+          <div className="relative w-[85vw] h-[85vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
             <div className="absolute inset-0">
               <Image
                 src={revealedImage || unrevealedImageUrl}
