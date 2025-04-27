@@ -135,52 +135,63 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
     <div className="flex flex-col items-center">
       <audio ref={audioRef} src="/sound/shot.mp3" preload="auto" />
       <h2 className="text-xl font-bold text-center mb-4 text-[#3A1F16]">Free Your Bee!</h2>
-      <div className="relative w-full max-w-md mx-auto mb-6">
-        <motion.div
-          className="relative aspect-square bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: "spring", damping: 12 }}
-        >
-          <Image
-            src={revealedImage || unrevealedImageUrl}
-            alt="NFT to reveal"
-            fill
-            className="object-contain"
-            priority={true}
-          />
-        </motion.div>
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
-            <Loader2 className="h-12 w-12 animate-spin text-amber-400" />
-          </div>
-        )}
-      </div>
       
-      {/* Make buttons more prominent with larger size and spacing */}
-      <div className="flex gap-6 justify-center mb-6 w-full">
-        {buttonLabels.map((label, idx) => (
-          <CustomButton
-            key={label}
-            variant={idx === step ? "mint" : "blank"}
-            className="min-w-[140px] py-3 text-lg w-full"
-            onClick={handleStep}
-            disabled={step !== idx || isLoading || !!revealedImage}
+      {/* Side-by-side layout for NFT and buttons */}
+      <div className="w-full flex flex-col md:flex-row gap-6 mb-6">
+        {/* NFT Container - left side on desktop, top on mobile */}
+        <div className="relative w-full md:w-1/2">
+          <motion.div
+            className="relative aspect-square bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", damping: 12 }}
           >
-            {label}
-          </CustomButton>
-        ))}
+            <Image
+              src={revealedImage || unrevealedImageUrl}
+              alt="NFT to reveal"
+              fill
+              className="object-contain"
+              priority={true}
+            />
+          </motion.div>
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
+              <Loader2 className="h-12 w-12 animate-spin text-amber-400" />
+            </div>
+          )}
+        </div>
+        
+        {/* Buttons Container - right side on desktop, bottom on mobile */}
+        <div className="w-full md:w-1/2 border-4 border-[#3A1F16] rounded-lg p-4 bg-[#fff3d4] flex flex-col justify-center">
+          <h3 className="text-center font-bold text-lg text-[#3A1F16] mb-4">Step {step + 1} of 3: {buttonLabels[step]}</h3>
+          <div className="grid grid-cols-1 gap-4">
+            {buttonLabels.map((label, idx) => (
+              <CustomButton
+                key={label}
+                variant={idx === step ? "mint" : "blank"}
+                className={`py-4 text-xl font-bold ${
+                  idx === step ? "border-4 border-[#3A1F16] shadow-lg transform scale-105" : ""
+                }`}
+                onClick={handleStep}
+                disabled={step !== idx || isLoading || !!revealedImage}
+              >
+                {label}
+              </CustomButton>
+            ))}
+            
+            <CustomButton
+              variant="blank"
+              className="py-3 text-lg mt-2"
+              onClick={handleCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </CustomButton>
+          </div>
+          
+          {error && <p className="text-red-500 mt-4 font-bold text-center">{error}</p>}
+        </div>
       </div>
-      
-      <CustomButton
-        variant="blank"
-        className="w-[140px] py-3 text-lg"
-        onClick={handleCancel}
-        disabled={isLoading}
-      >
-        Cancel
-      </CustomButton>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
 
       {/* Modal for each reveal step */}
       {showStepModal && (
