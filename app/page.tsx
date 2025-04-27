@@ -130,7 +130,12 @@ export default function Home() {
                   <CustomButton variant="blank" className="w-[120px] md:w-[180px]">BeE-Dega</CustomButton>
                 </div>
                 <ConnectKitButton.Custom>
-                  {({ isConnected, show, truncatedAddress, ensName }) => {
+                  {({ isConnected, show, truncatedAddress, ensName }: { 
+                    isConnected: boolean;
+                    show: () => void;
+                    truncatedAddress: string;
+                    ensName?: string;
+                  }) => {
                     return (
                       <CustomButton
                         variant={isConnected ? "blank" : "connect"}

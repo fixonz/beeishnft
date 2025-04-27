@@ -50,17 +50,19 @@ function MultiStepReveal(_a) {
     var _d = react_1.useState(null), error = _d[0], setError = _d[1];
     var _e = react_1.useState(0), pressCount = _e[0], setPressCount = _e[1];
     var _f = react_1.useState(false), showAnimation = _f[0], setShowAnimation = _f[1];
+    var _g = react_1.useState(null), revealedImage = _g[0], setRevealedImage = _g[1];
     // Get the appropriate image based on press count
     var getRevealImage = function () {
-        // On the final press, show the NFT image (hive/unrevealed)
+        if (revealedImage)
+            return revealedImage;
         if (pressCount === 2 && !showAnimation)
             return unrevealedImageUrl;
         if (showAnimation)
-            return "/images/reveal-press1.png"; // fallback to PNG
+            return "/images/reveal-press1.png";
         if (pressCount === 0)
-            return "/images/reveal-press1.png"; // honeycomb only
+            return "/images/reveal-press1.png";
         if (pressCount === 1)
-            return "/images/reveal-press1.png"; // fallback to PNG for honey drip
+            return "/images/reveal-press1.png";
         return "/images/reveal-press1.png";
     };
     // Handle the reveal button press
@@ -81,7 +83,7 @@ function MultiStepReveal(_a) {
     }); };
     // Start the actual reveal process
     var startRevealProcess = function () { return __awaiter(_this, void 0, void 0, function () {
-        var response, errorData, data, err_1;
+        var response, errorData, data_1, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -107,13 +109,14 @@ function MultiStepReveal(_a) {
                 case 3:
                     errorData = _a.sent();
                     throw new Error(errorData.message || "Failed to reveal NFT");
-                case 4: return [4 /*yield*/, response.json()
-                    // Complete the reveal with the revealed image URL
-                ];
+                case 4: return [4 /*yield*/, response.json()];
                 case 5:
-                    data = _a.sent();
-                    // Complete the reveal with the revealed image URL
-                    onComplete(data.imageUrl);
+                    data_1 = _a.sent();
+                    setRevealedImage(data_1.imageUrl);
+                    // Wait for the animation to complete before calling onComplete
+                    setTimeout(function () {
+                        onComplete(data_1.imageUrl);
+                    }, 2000);
                     return [3 /*break*/, 8];
                 case 6:
                     err_1 = _a.sent();
@@ -133,26 +136,28 @@ function MultiStepReveal(_a) {
         React.createElement("h2", { className: "text-xl font-bold text-center mb-4 text-[#3A1F16]" }, "Free Your Bee!"),
         React.createElement("div", { className: "relative w-full max-w-md mx-auto mb-6" },
             React.createElement(framer_motion_1.motion.div, { className: "relative aspect-square bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden", initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, transition: { type: "spring", damping: 12 } },
-                React.createElement(image_1["default"], { src: getRevealImage() || "/placeholder.svg", alt: "Reveal your bee", fill: true, className: "object-contain", priority: true }),
+                React.createElement(framer_motion_1.AnimatePresence, { mode: "wait" }, revealedImage ? (React.createElement(framer_motion_1.motion.div, { key: "revealed", initial: { opacity: 0, scale: 0.8 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.8 }, transition: { duration: 0.5, type: "spring", stiffness: 100 }, className: "absolute inset-0" },
+                    React.createElement(image_1["default"], { src: revealedImage, alt: "Your revealed bee", fill: true, className: "object-contain", priority: true }),
+                    React.createElement(framer_motion_1.motion.div, { className: "absolute inset-0 bg-gradient-to-b from-transparent via-amber-400/20 to-transparent", initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5, delay: 0.3 } }))) : (React.createElement(framer_motion_1.motion.div, { key: "unrevealed", initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, className: "absolute inset-0" },
+                    React.createElement(image_1["default"], { src: getRevealImage() || "/placeholder.svg", alt: "Reveal your bee", fill: true, className: "object-contain", priority: true })))),
                 isLoading && (React.createElement("div", { className: "absolute inset-0 flex items-center justify-center bg-black/50" },
                     React.createElement(lucide_react_1.Loader2, { className: "h-12 w-12 animate-spin text-amber-400" })))),
-            React.createElement("div", { className: "absolute top-0 left-0 right-0 pointer-events-none" },
-                React.createElement(image_1["default"], { src: "/images/honey-drip.png", alt: "", width: 400, height: 100, className: "w-full object-contain" }))),
-        React.createElement("p", { className: "text-center text-[#3A1F16] mb-6 max-w-md" },
-            pressCount === 0 && "Press the button to free your bee from the honey!",
-            pressCount === 1 && "Press again! The honey is starting to break...",
-            pressCount === 2 && "One more press to free your bee!",
-            showAnimation && "Your bee is breaking free!"),
+            !revealedImage && (React.createElement(framer_motion_1.motion.div, { className: "absolute top-0 left-0 right-0 pointer-events-none", initial: { opacity: 0, y: -20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5 } },
+                React.createElement(image_1["default"], { src: "/images/honey-drip.png", alt: "", width: 400, height: 100, className: "w-full object-contain" })))),
+        React.createElement("p", { className: "text-center text-[#3A1F16] mb-6 max-w-md" }, revealedImage ? "Your bee has been freed!" : (pressCount === 0 ? "Press the button to free your bee from the honey!" :
+            pressCount === 1 ? "Press again! The honey is starting to break..." :
+                pressCount === 2 ? "One more press to free your bee!" :
+                    showAnimation ? "Your bee is breaking free!" : "")),
         React.createElement("div", { className: "flex gap-4 justify-center" }, !isLoading ? (React.createElement(React.Fragment, null,
-            React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: onCancel, disabled: isLoading || showAnimation }, "Cancel"),
-            React.createElement(framer_motion_1.motion.div, { whileTap: { scale: 0.95 }, className: "relative" },
+            React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: onCancel, disabled: isLoading || showAnimation || !!revealedImage }, "Cancel"),
+            !revealedImage && (React.createElement(framer_motion_1.motion.div, { whileTap: { scale: 0.95 }, className: "relative" },
                 React.createElement(custom_button_1["default"], { variant: "mint", className: "w-[180px] relative overflow-hidden", onClick: handleRevealPress, disabled: isLoading },
                     React.createElement("span", { className: "relative z-10" },
                         pressCount === 0 && "Press to Free",
                         pressCount === 1 && "Press Again",
                         pressCount === 2 && "Final Press!",
                         showAnimation && "Freeing..."),
-                    React.createElement("div", { className: "absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/30 to-transparent shimmer-effect" }))))) : (React.createElement("div", { className: "text-center" },
+                    React.createElement("div", { className: "absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/30 to-transparent shimmer-effect" })))))) : (React.createElement("div", { className: "text-center" },
             React.createElement("p", { className: "text-[#3A1F16] font-bold animate-pulse" }, "Freeing your bee...")))),
         error && (React.createElement("div", { className: "mt-4 p-3 bg-red-100 border border-red-300 rounded-lg text-red-800 text-sm" },
             error,
