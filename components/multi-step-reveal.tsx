@@ -23,10 +23,11 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
 
   // Get the appropriate image based on press count
   const getRevealImage = () => {
+    // On the final press, show the NFT image (hive/unrevealed)
+    if (pressCount === 2 && !showAnimation) return unrevealedImageUrl
     if (showAnimation) return "/images/reveal-animation.gif"
     if (pressCount === 0) return "/images/reveal-press1.png" // honeycomb only
     if (pressCount === 1) return "/images/reveal-press2.gif" // honey drip only
-    if (pressCount === 2) return unrevealedImageUrl // hive (bee silhouette)
     return "/images/reveal-press1.png"
   }
 
@@ -37,11 +38,8 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       setPressCount(pressCount + 1)
       return
     }
-
-    // On third press, show animation and start the reveal process
+    // On third (final) press, show the NFT image, then trigger the reveal animation
     setShowAnimation(true)
-
-    // Wait a moment to show the animation before proceeding
     setTimeout(() => {
       startRevealProcess()
     }, 1500)
