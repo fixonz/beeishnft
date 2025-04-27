@@ -76,7 +76,6 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           const metaRes = await fetch(`https://api.beeish.xyz/metadata/${tokenId}`)
           const meta = await metaRes.json()
           setRevealedImage(meta.image)
-          setShowRevealedModal(true)
           
           // Store the revealed NFT token ID and image in localStorage
           const revealedTokens = JSON.parse(localStorage.getItem('beeish-revealed-tokens') || '[]')
@@ -98,10 +97,13 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           }
           localStorage.setItem('beeish-revealed-nfts', JSON.stringify(revealedNFTs))
           
-          // Wait for animation to complete before calling onComplete
+          // Show the reveal modal
+          setShowRevealedModal(true)
+          
+          // Complete the reveal process
           setTimeout(() => {
             onComplete(meta.image)
-          }, 1000)
+          }, 1500)
         } catch (err: any) {
           setError(err.message || "An error occurred during the reveal process")
         } finally {
@@ -171,21 +173,21 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
 
       {/* Modal for each reveal step */}
       {showStepModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[50vw] md:h-[50vw] lg:w-[40vw] lg:h-[40vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
-            <div className="absolute inset-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[50vw] md:h-[50vw] lg:w-[40vw] lg:h-[40vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-3">
+            <div className="absolute inset-0 flex items-center justify-center">
               <Image
                 src={revealedImage || unrevealedImageUrl}
                 alt="NFT to reveal"
                 fill
-                className="object-contain rounded-lg"
+                className="object-contain rounded-lg p-2"
                 priority={true}
               />
               <Image
                 src={overlayGifs[modalStep]}
                 alt={`Reveal overlay ${modalStep + 1}`}
                 fill
-                className="object-contain"
+                className="object-contain p-2"
                 priority={true}
               />
             </div>
@@ -195,22 +197,26 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
 
       {/* Modal for revealed NFT */}
       {showRevealedModal && revealedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh] relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh] relative">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-              onClick={() => setShowRevealedModal(false)}
+              className="absolute top-2 right-2 text-[#3A1F16] hover:text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center"
+              onClick={() => {
+                setShowRevealedModal(false);
+                // Force page refresh to update the "Freed Bees" section
+                window.location.reload();
+              }}
             >
               ×
             </button>
+            <h3 className="text-xl font-bold text-[#3A1F16] mb-3">Your Bee is Revealed!</h3>
             <Image
               src={revealedImage}
               alt="Revealed NFT"
               width={320}
               height={320}
-              className="object-contain rounded-lg mb-4"
+              className="object-contain rounded-lg mb-4 border-4 border-[#3A1F16] p-1 bg-white"
             />
-            <p className="text-lg font-bold text-[#3A1F16] text-center">Your Bee is Revealed!</p>
           </div>
         </div>
       )}
