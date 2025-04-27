@@ -15,7 +15,7 @@ function Providers(_a) {
     // ConnectKit theme options
     var connectKitTheme = {
         '--ck-font-family': 'Super Lobster, cursive',
-        '--ck-border-radius': '12px',
+        '--ck-border-radius': '8px',
         // Set custom button colors within the modal
         // These variables target the wallet buttons inside the list
         '--ck-secondary-button-background': '#FFB949',
@@ -54,11 +54,32 @@ function Providers(_a) {
         '--ck-overlay-backdrop-filter': 'none',
         '--ck-overlay-background-blur': '0px',
         '--ck-dropdown-box-shadow': 'none',
-        '--ck-dropdown-active-box-shadow': 'none'
+        '--ck-dropdown-active-box-shadow': 'none',
+        // Ensure flat borders and no rounded edges
+        '--ck-secondary-button-border-radius': '8px',
+        '--ck-primary-button-border-radius': '8px',
+        '--ck-connectbutton-border-radius': '8px',
+        // More shadow overrides
+        '--ck-default-box-shadow': 'none',
+        '--ck-graphic-box-shadow': 'none',
+        '--ck-graphic-hover-box-shadow': 'none',
+        '--ck-qr-dot-box-shadow': 'none',
+        '--ck-qr-background-box-shadow': 'none',
+        '--ck-qr-container-box-shadow': 'none',
+        '--ck-body-disclaimer-background-box-shadow': 'none',
+        '--ck-body-disclaimer-box-shadow': 'none',
+        '--ck-body-disclaimer-font-family': 'Super Lobster, cursive',
+        // Force flat transparent background
+        '--ck-body-background-transparent': 'transparent',
+        '--ck-body-background-secondary': '#FFB949',
+        '--ck-body-background-tertiary': '#FFB949',
+        // Remove any dropdown shadows
+        '--ck-dropdown-shadow': 'none',
+        '--ck-dropdown-active-shadow': 'none'
     };
     // Custom CSS to ensure modal is compact and centered
     // This will be injected into the page
-    var modalCss = "\n    /* Remove all shadows, filters, and extra visual effects */\n    .connectkit-modal, \n    .connectkit-overlay, \n    .connectkit-modal *,\n    .connectkit-card *,\n    .connectkit-portal *,\n    .connectkit-drawer *,\n    .connectkit-card,\n    .connectkit-portal,\n    .connectkit-drawer {\n      box-shadow: none !important;\n      filter: none !important;\n      -webkit-filter: none !important;\n      backdrop-filter: none !important;\n      -webkit-backdrop-filter: none !important;\n      text-shadow: none !important;\n      border-radius: 12px !important;\n    }\n    /* Ensure the modal is centered and has the right dimensions */\n    .connectkit-modal { \n      max-width: 420px !important; \n      width: 100% !important; \n      margin: 0 auto !important; \n    }\n    /* Adjust overlay */\n    .connectkit-overlay { \n      background: rgba(0,0,0,0.7) !important; \n    }\n  ";
+    var modalCss = "\n    /* Extremely aggressive shadow removal - target all possible elements */\n    .connectkit-modal,\n    .connectkit-overlay,\n    .connectkit-portal,\n    .connectkit-drawer,\n    .connectkit-card,\n    .connectkit-walletlist,\n    .connectkit-walletlist div,\n    .connectkit-walletlist button,\n    .connectkit-walletlist-scroll,\n    .connectkit-wallet-detector button,\n    .connectkit-button,\n    .connectkit-wallet,\n    div[class*=\"connectkit-\"],\n    button[class*=\"connectkit-\"],\n    span[class*=\"connectkit-\"],\n    ul[class*=\"connectkit-\"],\n    li[class*=\"connectkit-\"],\n    .ck-overlay,\n    .ck-modal,\n    .ck-* {\n      box-shadow: none !important;\n      -webkit-box-shadow: none !important;\n      -moz-box-shadow: none !important;\n      filter: none !important;\n      -webkit-filter: none !important;\n      -moz-filter: none !important;\n      backdrop-filter: none !important;\n      -webkit-backdrop-filter: none !important;\n      -moz-backdrop-filter: none !important;\n      text-shadow: none !important;\n      border-shadow: none !important;\n      outline-shadow: none !important;\n      drop-shadow: none !important;\n      -webkit-drop-shadow: none !important;\n      -moz-drop-shadow: none !important;\n    }\n\n    /* Target the main modal container and ensure flat edges */\n    .connectkit-modal,\n    div[class*=\"connectkit-modal\"] {\n      max-width: 420px !important;\n      width: 100% !important;\n      margin: 0 auto !important;\n      border-radius: 12px !important;\n      overflow: hidden !important;\n      border: 4px solid #3A1F16 !important;\n      background-color: #FFB949 !important;\n    }\n\n    /* Target buttons to remove any shadow effects */\n    .connectkit-modal button,\n    div[class*=\"connectkit-\"] button {\n      box-shadow: none !important;\n      filter: none !important;\n      text-shadow: none !important;\n    }\n\n    /* Reset overlay */\n    .connectkit-overlay,\n    div[class*=\"connectkit-overlay\"] {\n      background: rgba(0,0,0,0.7) !important;\n    }\n    \n    /* Make sure all elements have a flat border */\n    .connectkit-modal * {\n      border-radius: 8px !important;\n    }\n    \n    /* Override any SVG styles that might create shadows */\n    .connectkit-modal svg,\n    div[class*=\"connectkit-\"] svg {\n      filter: none !important;\n      drop-shadow: none !important;\n    }\n    \n    /* Use !important to override any shadow styles */\n    *[style*=\"box-shadow\"] {\n      box-shadow: none !important;\n    }\n    \n    *[style*=\"filter\"] {\n      filter: none !important;\n    }\n    \n    /* Final guarantee - apply to every descendant */\n    .connectkit-modal *,\n    .connectkit-modal * *,\n    .connectkit-modal * * *,\n    .connectkit-modal * * * * {\n      box-shadow: none !important;\n      filter: none !important;\n      border-radius: 8px !important;\n    }\n    \n    /* Add a custom border to the main modal instead of shadows */\n    .connectkit-modal {\n      border: 4px solid #3A1F16 !important;\n    }\n  ";
     return (react_1["default"].createElement(wagmi_1.WagmiProvider, { config: wagmi_2.config },
         react_1["default"].createElement(react_query_1.QueryClientProvider, { client: queryClient },
             react_1["default"].createElement("style", null, modalCss),
