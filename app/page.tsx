@@ -17,7 +17,7 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import MobileMenu from "@/components/mobile-menu"
 import FontFixer from "@/components/font-fixer"
 import FallbackFontLoader from "@/components/fallback-font-loader"
-import { ConnectKitButton } from "connectkit"
+import { ConnectKitButton, useModal } from "connectkit"
 import { useAccount } from "wagmi"
 
 export default function Home() {
@@ -33,7 +33,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { isConnected } = useAccount()
-  const modal = ConnectKitButton.useModal()
+  const modal = useModal()
 
   // Font family based on device
   const fontFamily = isMobile
