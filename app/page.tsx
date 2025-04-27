@@ -17,7 +17,8 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import MobileMenu from "@/components/mobile-menu"
 import FontFixer from "@/components/font-fixer"
 import FallbackFontLoader from "@/components/fallback-font-loader"
-import { ConnectKitButton, useModal } from "connectkit"
+import { ConnectKitButton } from "connectkit"
+import { useModal } from "connectkit"
 import { useAccount } from "wagmi"
 
 export default function Home() {

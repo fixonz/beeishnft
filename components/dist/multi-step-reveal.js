@@ -48,120 +48,98 @@ function MultiStepReveal(_a) {
     var _b = react_1.useState(0), step = _b[0], setStep = _b[1];
     var _c = react_1.useState(false), isLoading = _c[0], setIsLoading = _c[1];
     var _d = react_1.useState(null), error = _d[0], setError = _d[1];
-    var _e = react_1.useState(0), pressCount = _e[0], setPressCount = _e[1];
-    var _f = react_1.useState(false), showAnimation = _f[0], setShowAnimation = _f[1];
-    var _g = react_1.useState(null), revealedImage = _g[0], setRevealedImage = _g[1];
-    // Get the appropriate image based on press count
-    var getRevealImage = function () {
-        if (revealedImage)
-            return revealedImage;
-        if (pressCount === 2 && !showAnimation)
-            return unrevealedImageUrl;
-        if (showAnimation)
-            return "/images/reveal-press1.png";
-        if (pressCount === 0)
-            return "/images/reveal-press1.png";
-        if (pressCount === 1)
-            return "/images/reveal-press1.png";
-        return "/images/reveal-press1.png";
-    };
-    // Handle the reveal button press
-    var handleRevealPress = function () { return __awaiter(_this, void 0, void 0, function () {
+    var _e = react_1.useState(null), revealedImage = _e[0], setRevealedImage = _e[1];
+    var _f = react_1.useState(false), showOverlay = _f[0], setShowOverlay = _f[1];
+    // Overlay GIFs for each step
+    var overlayGifs = [
+        "/1reveal.gif",
+        "/2reveal.gif",
+        "/3reveal.gif"
+    ];
+    // Button labels
+    var buttonLabels = [
+        "Shoot the Hive",
+        "SHooT",
+        "Reveal"
+    ];
+    // Handle each step
+    var handleStep = function () { return __awaiter(_this, void 0, void 0, function () {
+        var _this = this;
         return __generator(this, function (_a) {
-            // First two presses just update the image
-            if (pressCount < 2) {
-                setPressCount(pressCount + 1);
-                return [2 /*return*/];
-            }
-            // On third (final) press, show the NFT image, then trigger the reveal animation
-            setShowAnimation(true);
-            setTimeout(function () {
-                startRevealProcess();
-            }, 1500);
+            setShowOverlay(true);
+            setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
+                var response, errorData, data_1, err_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            setShowOverlay(false);
+                            if (!(step < 2)) return [3 /*break*/, 1];
+                            setStep(step + 1);
+                            return [3 /*break*/, 9];
+                        case 1:
+                            // Final step: trigger reveal
+                            setIsLoading(true);
+                            setError(null);
+                            _a.label = 2;
+                        case 2:
+                            _a.trys.push([2, 7, 8, 9]);
+                            return [4 /*yield*/, fetch("/api/reveal", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        tokenId: tokenId,
+                                        address: address
+                                    })
+                                })];
+                        case 3:
+                            response = _a.sent();
+                            if (!!response.ok) return [3 /*break*/, 5];
+                            return [4 /*yield*/, response.json()];
+                        case 4:
+                            errorData = _a.sent();
+                            throw new Error(errorData.message || "Failed to reveal NFT");
+                        case 5: return [4 /*yield*/, response.json()];
+                        case 6:
+                            data_1 = _a.sent();
+                            setRevealedImage(data_1.imageUrl);
+                            setTimeout(function () {
+                                onComplete(data_1.imageUrl);
+                            }, 1000);
+                            return [3 /*break*/, 9];
+                        case 7:
+                            err_1 = _a.sent();
+                            setError(err_1.message || "An error occurred during the reveal process");
+                            return [3 /*break*/, 9];
+                        case 8:
+                            setIsLoading(false);
+                            return [7 /*endfinally*/];
+                        case 9: return [2 /*return*/];
+                    }
+                });
+            }); }, 1200);
             return [2 /*return*/];
         });
     }); };
-    // Start the actual reveal process
-    var startRevealProcess = function () { return __awaiter(_this, void 0, void 0, function () {
-        var response, errorData, data_1, err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setIsLoading(true);
-                    setError(null);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 6, 7, 8]);
-                    return [4 /*yield*/, fetch("/api/reveal", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                tokenId: tokenId,
-                                address: address
-                            })
-                        })];
-                case 2:
-                    response = _a.sent();
-                    if (!!response.ok) return [3 /*break*/, 4];
-                    return [4 /*yield*/, response.json()];
-                case 3:
-                    errorData = _a.sent();
-                    throw new Error(errorData.message || "Failed to reveal NFT");
-                case 4: return [4 /*yield*/, response.json()];
-                case 5:
-                    data_1 = _a.sent();
-                    setRevealedImage(data_1.imageUrl);
-                    // Wait for the animation to complete before calling onComplete
-                    setTimeout(function () {
-                        onComplete(data_1.imageUrl);
-                    }, 2000);
-                    return [3 /*break*/, 8];
-                case 6:
-                    err_1 = _a.sent();
-                    console.error("Error during reveal:", err_1);
-                    setError(err_1.message || "An error occurred during the reveal process");
-                    setShowAnimation(false);
-                    setPressCount(0);
-                    return [3 /*break*/, 8];
-                case 7:
-                    setIsLoading(false);
-                    return [7 /*endfinally*/];
-                case 8: return [2 /*return*/];
-            }
-        });
-    }); };
+    // Reset on cancel or new NFT
+    var handleCancel = function () {
+        setStep(0);
+        setShowOverlay(false);
+        setRevealedImage(null);
+        setError(null);
+        onCancel();
+    };
     return (React.createElement("div", { className: "flex flex-col items-center" },
         React.createElement("h2", { className: "text-xl font-bold text-center mb-4 text-[#3A1F16]" }, "Free Your Bee!"),
         React.createElement("div", { className: "relative w-full max-w-md mx-auto mb-6" },
             React.createElement(framer_motion_1.motion.div, { className: "relative aspect-square bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden", initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, transition: { type: "spring", damping: 12 } },
-                React.createElement(framer_motion_1.AnimatePresence, { mode: "wait" }, revealedImage ? (React.createElement(framer_motion_1.motion.div, { key: "revealed", initial: { opacity: 0, scale: 0.8 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.8 }, transition: { duration: 0.5, type: "spring", stiffness: 100 }, className: "absolute inset-0" },
-                    React.createElement(image_1["default"], { src: revealedImage, alt: "Your revealed bee", fill: true, className: "object-contain", priority: true }),
-                    React.createElement(framer_motion_1.motion.div, { className: "absolute inset-0 bg-gradient-to-b from-transparent via-amber-400/20 to-transparent", initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.5, delay: 0.3 } }))) : (React.createElement(framer_motion_1.motion.div, { key: "unrevealed", initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, className: "absolute inset-0" },
-                    React.createElement(image_1["default"], { src: getRevealImage() || "/placeholder.svg", alt: "Reveal your bee", fill: true, className: "object-contain", priority: true })))),
-                isLoading && (React.createElement("div", { className: "absolute inset-0 flex items-center justify-center bg-black/50" },
-                    React.createElement(lucide_react_1.Loader2, { className: "h-12 w-12 animate-spin text-amber-400" })))),
-            !revealedImage && (React.createElement(framer_motion_1.motion.div, { className: "absolute top-0 left-0 right-0 pointer-events-none", initial: { opacity: 0, y: -20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5 } },
-                React.createElement(image_1["default"], { src: "/images/honey-drip.png", alt: "", width: 400, height: 100, className: "w-full object-contain" })))),
-        React.createElement("p", { className: "text-center text-[#3A1F16] mb-6 max-w-md" }, revealedImage ? "Your bee has been freed!" : (pressCount === 0 ? "Press the button to free your bee from the honey!" :
-            pressCount === 1 ? "Press again! The honey is starting to break..." :
-                pressCount === 2 ? "One more press to free your bee!" :
-                    showAnimation ? "Your bee is breaking free!" : "")),
-        React.createElement("div", { className: "flex gap-4 justify-center" }, !isLoading ? (React.createElement(React.Fragment, null,
-            React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: onCancel, disabled: isLoading || showAnimation || !!revealedImage }, "Cancel"),
-            !revealedImage && (React.createElement(framer_motion_1.motion.div, { whileTap: { scale: 0.95 }, className: "relative" },
-                React.createElement(custom_button_1["default"], { variant: "mint", className: "w-[180px] relative overflow-hidden", onClick: handleRevealPress, disabled: isLoading },
-                    React.createElement("span", { className: "relative z-10" },
-                        pressCount === 0 && "Press to Free",
-                        pressCount === 1 && "Press Again",
-                        pressCount === 2 && "Final Press!",
-                        showAnimation && "Freeing..."),
-                    React.createElement("div", { className: "absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/30 to-transparent shimmer-effect" })))))) : (React.createElement("div", { className: "text-center" },
-            React.createElement("p", { className: "text-[#3A1F16] font-bold animate-pulse" }, "Freeing your bee...")))),
-        error && (React.createElement("div", { className: "mt-4 p-3 bg-red-100 border border-red-300 rounded-lg text-red-800 text-sm" },
-            error,
-            React.createElement("div", { className: "mt-2 flex justify-center" },
-                React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: function () { return setError(null); } }, "Try Again"))))));
+                React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", fill: true, className: "object-contain", priority: true }),
+                showOverlay && step <= 2 && (React.createElement(image_1["default"], { src: overlayGifs[step], alt: "Reveal overlay " + (step + 1), fill: true, className: "object-contain absolute inset-0 z-10 pointer-events-none", priority: true }))),
+            isLoading && (React.createElement("div", { className: "absolute inset-0 flex items-center justify-center bg-black/50" },
+                React.createElement(lucide_react_1.Loader2, { className: "h-12 w-12 animate-spin text-amber-400" })))),
+        React.createElement("div", { className: "flex gap-4 justify-center mb-4" }, buttonLabels.map(function (label, idx) { return (React.createElement(custom_button_1["default"], { key: label, variant: idx === step ? "mint" : "blank", className: "w-[140px]", onClick: handleStep, disabled: step !== idx || isLoading || !!revealedImage }, label)); })),
+        React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: handleCancel, disabled: isLoading }, "Cancel"),
+        error && React.createElement("p", { className: "text-red-500 mt-2" }, error)));
 }
 exports["default"] = MultiStepReveal;

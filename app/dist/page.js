@@ -55,6 +55,7 @@ var mobile_menu_1 = require("@/components/mobile-menu");
 var font_fixer_1 = require("@/components/font-fixer");
 var fallback_font_loader_1 = require("@/components/fallback-font-loader");
 var connectkit_1 = require("connectkit");
+var connectkit_2 = require("connectkit");
 var wagmi_1 = require("wagmi");
 function Home() {
     var _this = this;
@@ -70,7 +71,7 @@ function Home() {
     var _d = react_1.useState(true), loading = _d[0], setLoading = _d[1];
     var isMobile = use_media_query_1.useMediaQuery("(max-width: 768px)");
     var isConnected = wagmi_1.useAccount().isConnected;
-    var modal = connectkit_1.useModal();
+    var modal = connectkit_2.useModal();
     // Font family based on device
     var fontFamily = isMobile
         ? "'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif"

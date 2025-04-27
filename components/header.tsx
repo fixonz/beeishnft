@@ -1,1 +1,1 @@
-import { ConnectKitButton } from "connectkit" 
+import { ConnectKitButton } from "connectkit/ConnectKitButton" 
