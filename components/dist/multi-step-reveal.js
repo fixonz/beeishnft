@@ -178,12 +178,12 @@ function MultiStepReveal(_a) {
         React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: handleCancel, disabled: isLoading }, "Cancel"),
         error && React.createElement("p", { className: "text-red-500 mt-2" }, error),
         showStepModal && (React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/80" },
-            React.createElement("div", { className: "relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[50vw] md:h-[50vw] lg:w-[40vw] lg:h-[40vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-3" },
+            React.createElement("div", { className: "relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[45vw] md:h-[45vw] lg:w-[35vw] lg:h-[35vw] xl:w-[30vw] xl:h-[30vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-3" },
                 React.createElement("div", { className: "absolute inset-0 flex items-center justify-center" },
                     React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", fill: true, className: "object-contain rounded-lg p-2", priority: true }),
                     React.createElement(image_1["default"], { src: overlayGifs[modalStep], alt: "Reveal overlay " + (modalStep + 1), fill: true, className: "object-contain p-2", priority: true }))))),
         showRevealedModal && revealedImage && (React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/80" },
-            React.createElement("div", { className: "bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh] relative" },
+            React.createElement("div", { className: "bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[25vw] xl:w-[20vw] max-w-[90vw] max-h-[90vh] relative" },
                 React.createElement("button", { className: "absolute top-2 right-2 text-[#3A1F16] hover:text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center", onClick: function () {
                         setShowRevealedModal(false);
                         // Force page refresh to update the "Freed Bees" section

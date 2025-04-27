@@ -174,7 +174,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for each reveal step */}
       {showStepModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[50vw] md:h-[50vw] lg:w-[40vw] lg:h-[40vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-3">
+          <div className="relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[45vw] md:h-[45vw] lg:w-[35vw] lg:h-[35vw] xl:w-[30vw] xl:h-[30vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-3">
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
                 src={revealedImage || unrevealedImageUrl}
@@ -198,7 +198,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for revealed NFT */}
       {showRevealedModal && revealedImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh] relative">
+          <div className="bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[25vw] xl:w-[20vw] max-w-[90vw] max-h-[90vh] relative">
             <button
               className="absolute top-2 right-2 text-[#3A1F16] hover:text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center"
               onClick={() => {
