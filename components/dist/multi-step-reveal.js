@@ -56,11 +56,11 @@ function MultiStepReveal(_a) {
         if (pressCount === 2 && !showAnimation)
             return unrevealedImageUrl;
         if (showAnimation)
-            return "/images/reveal-animation.gif";
+            return "/images/reveal-press1.png"; // fallback to PNG
         if (pressCount === 0)
             return "/images/reveal-press1.png"; // honeycomb only
         if (pressCount === 1)
-            return "/images/reveal-press2.gif"; // honey drip only
+            return "/images/reveal-press1.png"; // fallback to PNG for honey drip
         return "/images/reveal-press1.png";
     };
     // Handle the reveal button press

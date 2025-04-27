@@ -46,7 +46,7 @@ function Providers(_a) {
     };
     // Custom CSS to ensure modal is compact and centered
     // This will be injected into the page
-    var modalCss = "\n    .connectkit-modal { max-width: 420px !important; width: 100% !important; margin: 0 auto !important; }\n    .connectkit-overlay { background: rgba(0,0,0,0.7) !important; }\n  ";
+    var modalCss = "\n    .connectkit-modal, .connectkit-overlay, .connectkit-modal * {\n      box-shadow: none !important;\n      filter: none !important;\n    }\n    .connectkit-modal { max-width: 420px !important; width: 100% !important; margin: 0 auto !important; }\n    .connectkit-overlay { background: rgba(0,0,0,0.7) !important; }\n  ";
     return (react_1["default"].createElement(wagmi_1.WagmiProvider, { config: wagmi_2.config },
         react_1["default"].createElement(react_query_1.QueryClientProvider, { client: queryClient },
             react_1["default"].createElement("style", null, modalCss),
