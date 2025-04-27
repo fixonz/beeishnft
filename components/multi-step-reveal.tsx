@@ -174,31 +174,40 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for each reveal step */}
       {showStepModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[45vw] md:h-[45vw] lg:w-[35vw] lg:h-[35vw] xl:w-[30vw] xl:h-[30vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-3">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Image
-                src={revealedImage || unrevealedImageUrl}
-                alt="NFT to reveal"
-                fill
-                className="object-contain rounded-lg p-2"
-                priority={true}
-              />
-              <Image
-                src={overlayGifs[modalStep]}
-                alt={`Reveal overlay ${modalStep + 1}`}
-                fill
-                className="object-contain p-2"
-                priority={true}
-              />
+          <div className="relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[45vw] md:h-[45vw] lg:w-[35vw] lg:h-[35vw] xl:w-[30vw] xl:h-[30vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl overflow-hidden">
+            <div className="relative w-full h-full">
+              {/* NFT Image */}
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <Image
+                  src={revealedImage || unrevealedImageUrl}
+                  alt="NFT to reveal"
+                  fill
+                  sizes="100%"
+                  style={{ objectFit: "contain" }}
+                  priority={true}
+                />
+              </div>
+              
+              {/* Overlay GIF - positioned same as NFT */}
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <Image
+                  src={overlayGifs[modalStep]}
+                  alt={`Reveal overlay ${modalStep + 1}`}
+                  fill
+                  sizes="100%"
+                  style={{ objectFit: "contain" }}
+                  priority={true}
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal for revealed NFT */}
+      {/* Modal for revealed NFT - 50% smaller */}
       {showRevealedModal && revealedImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[25vw] xl:w-[20vw] max-w-[90vw] max-h-[90vh] relative">
+          <div className="bg-[#FFB949] border-8 border-[#3A1F16] rounded-lg shadow-2xl p-4 flex flex-col items-center w-[60vw] sm:w-[45vw] md:w-[30vw] lg:w-[20vw] xl:w-[15vw] max-w-[90vw] max-h-[90vh] relative">
             <button
               className="absolute top-2 right-2 text-[#3A1F16] hover:text-[#FFB949] bg-[#3A1F16] hover:bg-[#5a3a2f] w-8 h-8 rounded-full flex items-center justify-center"
               onClick={() => {
@@ -209,14 +218,16 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
             >
               ×
             </button>
-            <h3 className="text-xl font-bold text-[#3A1F16] mb-3">Your Bee is Revealed!</h3>
-            <Image
-              src={revealedImage}
-              alt="Revealed NFT"
-              width={320}
-              height={320}
-              className="object-contain rounded-lg mb-4 border-4 border-[#3A1F16] p-1 bg-white"
-            />
+            <h3 className="text-lg font-bold text-[#3A1F16] mb-3">Your Bee is Revealed!</h3>
+            <div className="w-full h-auto relative">
+              <Image
+                src={revealedImage}
+                alt="Revealed NFT"
+                width={200}
+                height={200}
+                className="object-contain rounded-lg border-4 border-[#3A1F16] bg-white mx-auto"
+              />
+            </div>
           </div>
         </div>
       )}
