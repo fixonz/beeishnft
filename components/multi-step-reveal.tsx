@@ -40,8 +40,11 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
 
   // Handle each step
   const handleStep = async () => {
+    console.log("handleStep called, step:", step)
     setModalStep(step)
     setShowStepModal(true)
+    console.log("Modal should be showing now")
+    
     // Play sound
     setTimeout(() => {
       if (audioRef.current) {
@@ -49,6 +52,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
         audioRef.current.play()
       }
     }, 100)
+    
     setTimeout(async () => {
       setShowStepModal(false)
       if (step < 2) {
@@ -58,6 +62,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
         setIsLoading(true)
         setError(null)
         try {
+          console.log("Starting reveal API call")
           const response = await fetch("/api/reveal", {
             method: "POST",
             headers: {
@@ -76,6 +81,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           const metaRes = await fetch(`https://api.beeish.xyz/metadata/${tokenId}`)
           const meta = await metaRes.json()
           setRevealedImage(meta.image)
+          console.log("Got revealed image:", meta.image)
           
           // Store the revealed NFT token ID and image in localStorage
           const revealedTokens = JSON.parse(localStorage.getItem('beeish-revealed-tokens') || '[]')
@@ -99,12 +105,14 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           
           // Show the reveal modal
           setShowRevealedModal(true)
+          console.log("Revealed modal should be showing now")
           
           // Complete the reveal process
           setTimeout(() => {
             onComplete(meta.image)
           }, 1500)
         } catch (err: any) {
+          console.error("Error during reveal:", err)
           setError(err.message || "An error occurred during the reveal process")
         } finally {
           setIsLoading(false)
@@ -217,6 +225,42 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
                 className="object-contain mx-auto"
               />
             </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Debug buttons for development */}
+      {process.env.NODE_ENV !== 'production' && (
+        <div className="mt-6 border-t-2 border-[#3A1F16] pt-4 w-full">
+          <p className="text-sm text-[#3A1F16] mb-2">Debug Controls (dev only):</p>
+          <div className="flex gap-2 flex-wrap">
+            <button 
+              className="px-2 py-1 bg-amber-200 border border-[#3A1F16] rounded text-xs"
+              onClick={() => {
+                setModalStep(0);
+                setShowStepModal(true);
+              }}
+            >
+              Test Step 1 Modal
+            </button>
+            <button 
+              className="px-2 py-1 bg-amber-200 border border-[#3A1F16] rounded text-xs"
+              onClick={() => {
+                setModalStep(1);
+                setShowStepModal(true);
+              }}
+            >
+              Test Step 2 Modal
+            </button>
+            <button 
+              className="px-2 py-1 bg-amber-200 border border-[#3A1F16] rounded text-xs"
+              onClick={() => {
+                setRevealedImage(unrevealedImageUrl);
+                setShowRevealedModal(true);
+              }}
+            >
+              Test Revealed Modal
+            </button>
           </div>
         </div>
       )}

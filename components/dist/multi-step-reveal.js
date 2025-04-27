@@ -69,8 +69,10 @@ function MultiStepReveal(_a) {
     var handleStep = function () { return __awaiter(_this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
+            console.log("handleStep called, step:", step);
             setModalStep(step);
             setShowStepModal(true);
+            console.log("Modal should be showing now");
             // Play sound
             setTimeout(function () {
                 if (audioRef.current) {
@@ -94,6 +96,7 @@ function MultiStepReveal(_a) {
                             _a.label = 2;
                         case 2:
                             _a.trys.push([2, 8, 9, 10]);
+                            console.log("Starting reveal API call");
                             return [4 /*yield*/, fetch("/api/reveal", {
                                     method: "POST",
                                     headers: {
@@ -118,6 +121,7 @@ function MultiStepReveal(_a) {
                         case 7:
                             meta_1 = _a.sent();
                             setRevealedImage(meta_1.image);
+                            console.log("Got revealed image:", meta_1.image);
                             revealedTokens = JSON.parse(localStorage.getItem('beeish-revealed-tokens') || '[]');
                             if (!revealedTokens.includes(tokenId)) {
                                 revealedTokens.push(tokenId);
@@ -138,6 +142,7 @@ function MultiStepReveal(_a) {
                             localStorage.setItem('beeish-revealed-nfts', JSON.stringify(revealedNFTs));
                             // Show the reveal modal
                             setShowRevealedModal(true);
+                            console.log("Revealed modal should be showing now");
                             // Complete the reveal process
                             setTimeout(function () {
                                 onComplete(meta_1.image);
@@ -145,6 +150,7 @@ function MultiStepReveal(_a) {
                             return [3 /*break*/, 10];
                         case 8:
                             err_1 = _a.sent();
+                            console.error("Error during reveal:", err_1);
                             setError(err_1.message || "An error occurred during the reveal process");
                             return [3 /*break*/, 10];
                         case 9:
@@ -190,6 +196,21 @@ function MultiStepReveal(_a) {
                     } }, "\u00D7"),
                 React.createElement("h3", { className: "text-xl font-bold text-[#3A1F16] mb-3" }, "Your Bee is Revealed!"),
                 React.createElement("div", { className: "bg-white border-4 border-[#3A1F16] rounded-lg p-2 mx-auto" },
-                    React.createElement(image_1["default"], { src: revealedImage, alt: "Revealed NFT", width: 300, height: 300, className: "object-contain mx-auto" })))))));
+                    React.createElement(image_1["default"], { src: revealedImage, alt: "Revealed NFT", width: 300, height: 300, className: "object-contain mx-auto" }))))),
+        process.env.NODE_ENV !== 'production' && (React.createElement("div", { className: "mt-6 border-t-2 border-[#3A1F16] pt-4 w-full" },
+            React.createElement("p", { className: "text-sm text-[#3A1F16] mb-2" }, "Debug Controls (dev only):"),
+            React.createElement("div", { className: "flex gap-2 flex-wrap" },
+                React.createElement("button", { className: "px-2 py-1 bg-amber-200 border border-[#3A1F16] rounded text-xs", onClick: function () {
+                        setModalStep(0);
+                        setShowStepModal(true);
+                    } }, "Test Step 1 Modal"),
+                React.createElement("button", { className: "px-2 py-1 bg-amber-200 border border-[#3A1F16] rounded text-xs", onClick: function () {
+                        setModalStep(1);
+                        setShowStepModal(true);
+                    } }, "Test Step 2 Modal"),
+                React.createElement("button", { className: "px-2 py-1 bg-amber-200 border border-[#3A1F16] rounded text-xs", onClick: function () {
+                        setRevealedImage(unrevealedImageUrl);
+                        setShowRevealedModal(true);
+                    } }, "Test Revealed Modal"))))));
 }
 exports["default"] = MultiStepReveal;
