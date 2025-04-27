@@ -24,10 +24,10 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
   // Get the appropriate image based on press count
   const getRevealImage = () => {
     if (showAnimation) return "/images/reveal-animation.gif"
-    if (pressCount === 0) return unrevealedImageUrl
-    if (pressCount === 1) return "/images/reveal-press1.png"
-    if (pressCount === 2) return "/images/reveal-press2.png"
-    return unrevealedImageUrl
+    if (pressCount === 0) return "/images/reveal-press1.png" // honeycomb only
+    if (pressCount === 1) return "/images/reveal-press2.gif" // honey drip only
+    if (pressCount === 2) return unrevealedImageUrl // hive (bee silhouette)
+    return "/images/reveal-press1.png"
   }
 
   // Handle the reveal button press

@@ -12,7 +12,9 @@ export default function MintButton({ onClick }: MintButtonProps) {
 
   return (
     <div onClick={onClick} className="cursor-pointer">
-      <CustomButton variant="mint" className={buttonWidth} />
+      <CustomButton variant="mint" className={buttonWidth}>
+        minT a bEE
+      </CustomButton>
     </div>
   )
 }

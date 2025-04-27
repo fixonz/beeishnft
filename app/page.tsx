@@ -63,7 +63,7 @@ export default function Home() {
   const disabledButtonStyle = "opacity-50 cursor-not-allowed"
 
   return (
-    // Wrap in fragment since provider is commented out
+    // Remove boxed flex-col wrapper, use old structure
     <>
       <FontFixer />
       <FallbackFontLoader />
@@ -72,7 +72,7 @@ export default function Home() {
         <ForestBackground />
 
         {/* Content Container */}
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
+        <div className="relative z-10">
           {/* Header with wallet connection */}
           <header className="fixed top-0 left-0 right-0 h-[10vh] bg-[#FFB949] z-20 flex items-center justify-between px-2 md:px-6">
             <div className="flex items-center gap-2">
@@ -95,33 +95,27 @@ export default function Home() {
               />
             ) : (
               // Desktop header buttons
-              <div className="flex items-center space-x-4 flex-wrap justify-end">
+              <div className="flex items-center space-x-2 md:space-x-4 flex-wrap justify-end">
                 <div className={disabledButtonStyle}>
-                  <CustomButton variant="blank" className="w-[180px]">
+                  <CustomButton variant="blank" className="w-[120px] md:w-[180px]">
                     Hive
                   </CustomButton>
                 </div>
                 <div onClick={() => router.push("/photo-booth")} className="cursor-pointer">
-                  <CustomButton variant="photoBooth" className="w-[180px]" onClick={() => router.push("/photo-booth")}>
-                    Photo booth
-                  </CustomButton>
+                  <CustomButton variant="photoBooth" className="w-[120px] md:w-[180px]" onClick={() => router.push("/photo-booth")}>Photo booth</CustomButton>
                 </div>
                 <div onClick={() => router.push("/free-a-bee")} className="cursor-pointer">
-                  <CustomButton variant="mint" className="w-[180px]">
-                    free-A-BeE
-                  </CustomButton>
+                  <CustomButton variant="mint" className="w-[120px] md:w-[180px]">free-A-BeE</CustomButton>
                 </div>
                 <div className={disabledButtonStyle}>
-                  <CustomButton variant="blank" className="w-[180px]">
-                    BeE-Dega
-                  </CustomButton>
+                  <CustomButton variant="blank" className="w-[120px] md:w-[180px]">BeE-Dega</CustomButton>
                 </div>
                 <ConnectKitButton.Custom>
                   {({ isConnected, show, truncatedAddress, ensName }) => {
                     return (
                       <CustomButton
                         variant={isConnected ? "blank" : "connect"}
-                        className="w-auto min-w-[160px] px-4"
+                        className="w-auto min-w-[120px] md:min-w-[160px] px-4"
                         onClick={show}
                       >
                         {isConnected ? (ensName ?? truncatedAddress) : "Connect Wallet"}
@@ -156,14 +150,13 @@ export default function Home() {
                 />
               </div>
 
-              <div className="text-center mb-12">
-                <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white" style={{ fontFamily }}>
-                  Exclusive NFT Collection
-                </h1>
-                <p className="text-lg md:text-xl text-white max-w-2xl mx-auto" style={{ fontFamily }}>
-                  Join the hive and collect unique bee-inspired digital art on the Abstract Chain Network
-                </p>
-              </div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-primary" style={{ fontFamily }}>
+                Exclusive NFT Collection
+              </h1>
+
+              <p className="text-lg md:text-xl mb-8 max-w-2xl text-solid-white" style={{ fontFamily }}>
+                Join the hive and collect unique bee-inspired digital art on the Abstract Chain Network
+              </p>
 
               <MintButton onClick={() => setShowMintModal(true)} />
             </motion.div>
@@ -254,9 +247,7 @@ export default function Home() {
                                 <div
                                   onClick={() =>
                                     window.open(
-                                      `https://magiceden.io/item-details/abstract/0xc2d1370017d8171a31bce6bc5206f86c4322362e/${
-                                        index + 1
-                                      }`,
+                                      `https://magiceden.io/item-details/abstract/0xc2d1370017d8171a31bce6bc5206f86c4322362e/${index + 1}`,
                                       "_blank",
                                     )
                                   }
