@@ -89,180 +89,67 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Custom CSS to ensure modal is compact and centered
   // This will be injected into the page
   const modalCss = `
-    /* Target the specific styled-components classes from the DOM */
-    .sc-dhKdcB,
-    .sc-gFqAkR,
-    .sc-kpDqfm,
-    .sc-dAlyuH,
-    .sc-jEACwC,
-    .sc-eqUAAy,
-    .sc-dLMFU,
-    .sc-dcJsrY,
-    .sc-jlZhew,
-    .sc-cwHptR,
-    .sc-jnOGJG,
-    .sc-dZoequ,
-    .sc-hIUJlX,
-    .sc-ggpjZQ,
-    .sc-gFVvzn,
-    .sc-cmaqmh,
-    [class*="sc-"],
-    /* Existing general selectors */
-    .connectkit-modal,
-    .connectkit-overlay,
-    .connectkit-portal,
-    .connectkit-drawer,
-    .connectkit-card,
-    .connectkit-walletlist,
-    .connectkit-walletlist div,
-    .connectkit-walletlist button,
-    .connectkit-walletlist-scroll,
-    .connectkit-wallet-detector button,
-    .connectkit-button,
-    .connectkit-wallet,
-    div[class*="connectkit-"],
-    button[class*="connectkit-"],
-    span[class*="connectkit-"],
-    ul[class*="connectkit-"],
-    li[class*="connectkit-"],
-    .ck-overlay,
-    .ck-modal,
-    .ck-* {
-      box-shadow: none !important;
-      -webkit-box-shadow: none !important;
-      -moz-box-shadow: none !important;
-      filter: none !important;
-      -webkit-filter: none !important;
-      -moz-filter: none !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      -moz-backdrop-filter: none !important;
-      text-shadow: none !important;
-      border-shadow: none !important;
-      outline-shadow: none !important;
-      drop-shadow: none !important;
-      -webkit-drop-shadow: none !important;
-      -moz-drop-shadow: none !important;
-    }
-
-    /* Target the exact styled modal container from inspect */
-    .sc-gFqAkR, 
-    .cMtGuS,
-    [style*="--height"],
-    [style*="--width"] {
-      box-shadow: none !important;
-      filter: none !important;
-      border: 4px solid #3A1F16 !important;
-      background-color: #FFB949 !important;
-      overflow: hidden !important;
-    }
-
-    /* Remove the specific shadow div */
+    /* Completely remove all shadows and side elements */
     .sc-dhKdcB, 
     .jXJXoi, 
-    div[style*="pointer-events: none"],
-    div[style*="position: absolute"],
-    div[style*="transform: translateX"] {
+    [class*="sc-"].sc-dhKdcB,
+    div[style*="pointer-events: none"][style*="position: absolute"][style*="transform: translateX(-50%)"],
+    div[style*="pointer-events: none"] {
       display: none !important;
       opacity: 0 !important;
+      visibility: hidden !important;
+    }
+    
+    /* Make modal container have solid background with no shadows */
+    .sc-gFqAkR, 
+    .cMtGuS, 
+    [style*="--height"],
+    [style*="--width"],
+    .sc-kpDqfm,
+    div[class^="sc-"] {
       box-shadow: none !important;
+      -webkit-box-shadow: none !important;
       filter: none !important;
-      background-color: transparent !important;
-    }
-
-    /* Target the brown lines on the sides specifically */
-    .sc-gFqAkR:before,
-    .sc-gFqAkR:after,
-    .cMtGuS:before,
-    .cMtGuS:after,
-    [style*="--height"]:before,
-    [style*="--height"]:after,
-    [style*="--width"]:before,
-    [style*="--width"]:after,
-    .sc-kpDqfm:before,
-    .sc-kpDqfm:after {
-      display: none !important;
-      content: none !important;
-      opacity: 0 !important;
-      background: transparent !important;
-      border: none !important;
-    }
-
-    /* Target the main modal container and ensure flat edges */
-    .connectkit-modal,
-    div[class*="connectkit-modal"] {
-      max-width: 420px !important;
-      width: 100% !important;
-      margin: 0 auto !important;
-      border-radius: 12px !important;
-      overflow: hidden !important;
+      -webkit-filter: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
       border: 4px solid #3A1F16 !important;
       background-color: #FFB949 !important;
+      overflow: hidden !important;
     }
-
-    /* Target buttons to remove any shadow effects */
-    .connectkit-modal button,
-    div[class*="connectkit-"] button {
+    
+    /* Target wallet buttons to ensure they have proper styling */
+    button[class*="sc-hIUJlX"] {
       box-shadow: none !important;
       filter: none !important;
-      text-shadow: none !important;
-    }
-
-    /* Reset overlay */
-    .connectkit-overlay,
-    div[class*="connectkit-overlay"] {
-      background: rgba(0,0,0,0.7) !important;
     }
     
-    /* Make sure all elements have a flat border */
-    .connectkit-modal * {
-      border-radius: 8px !important;
+    /* Make the background completely solid */
+    div[class*="sc-"] {
+      background: #FFB949 !important;
     }
     
-    /* Override any SVG styles that might create shadows */
-    .connectkit-modal svg,
-    div[class*="connectkit-"] svg {
-      filter: none !important;
-      drop-shadow: none !important;
+    /* Hide any text about additional wallets */
+    div[class*="sc-kAkpmW"],
+    span:has(svg[width="11"][height="12"]) {
+      display: none !important;
     }
     
-    /* Use !important to override any shadow styles */
-    *[style*="box-shadow"] {
-      box-shadow: none !important;
+    /* Force hide any wallets we don't want */
+    button[class*="sc-hIUJlX"]:not(:nth-child(1)):not(:nth-child(2)) {
+      display: none !important;
     }
     
-    *[style*="filter"] {
-      filter: none !important;
+    /* Keep only the first two wallet buttons (Metamask and Abstract) */
+    div.sc-gFVvzn > div.sc-ggpjZQ {
+      display: flex;
+      flex-direction: column;
     }
     
-    /* Final guarantee - apply to every descendant */
-    .connectkit-modal *,
-    .connectkit-modal * *,
-    .connectkit-modal * * *,
-    .connectkit-modal * * * * {
-      box-shadow: none !important;
-      filter: none !important;
-      border-radius: 8px !important;
-    }
-    
-    /* Add a custom border to the main modal instead of shadows */
-    .connectkit-modal {
-      border: 4px solid #3A1F16 !important;
-    }
-    
-    /* Specifically target that element with translateX transform */
-    div[style*="transform: translateX(-50%)"] {
-      box-shadow: none !important;
-      filter: none !important;
+    div.sc-gFVvzn > div.sc-ggpjZQ > button:nth-child(n+3) {
       display: none !important;
     }
   `;
-
-  // List of wallet IDs to include (only MetaMask and Abstract)
-  const includedWalletIds = [
-    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
-    '26d3d9e7224a1eb49089aa5f03fb9f3b883e04050404594d980d4e1e74e1dbea', // Abstract
-  ]
 
   return (
     <WagmiProvider config={config}>
@@ -272,13 +159,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
           theme="custom"
           customTheme={connectKitTheme}
           options={{
-            // Only show the connectors we want (Abstract and Metamask)
             hideNoWalletCTA: true,
             hideQuestionMarkCTA: true,
             hideRecentBadge: true,
-            // Use includedWalletIds to only show specific wallets
-            includedWalletIds: includedWalletIds,
-            // Modal is dismissible by clicking outside by default
+            // Using CSS to enforce showing only two wallets since the
+            // API options don't seem to be working correctly
           }}
         >
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
