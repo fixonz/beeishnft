@@ -20,12 +20,13 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
   const [error, setError] = useState<string | null>(null)
   const [revealedImage, setRevealedImage] = useState<string | null>(null)
   const [showOverlay, setShowOverlay] = useState(false)
+  const [showRevealedModal, setShowRevealedModal] = useState(false)
 
-  // Overlay GIFs for each step
+  // Overlay GIFs for each step (corrected paths)
   const overlayGifs = [
-    "/1reveal.gif",
-    "/2reveal.gif",
-    "/3reveal.gif"
+    "/images/1reveal.gif",
+    "/images/2reveal.gif",
+    "/images/3reveal.gif"
   ]
 
   // Button labels
@@ -61,10 +62,13 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
             const errorData = await response.json()
             throw new Error(errorData.message || "Failed to reveal NFT")
           }
-          const data = await response.json()
-          setRevealedImage(data.imageUrl)
+          // Fetch fresh metadata from external API
+          const metaRes = await fetch(`https://api.beeish.xyz/metadata/${tokenId}`)
+          const meta = await metaRes.json()
+          setRevealedImage(meta.image)
+          setShowRevealedModal(true)
           setTimeout(() => {
-            onComplete(data.imageUrl)
+            onComplete(meta.image)
           }, 1000)
         } catch (err: any) {
           setError(err.message || "An error occurred during the reveal process")
@@ -80,6 +84,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
     setStep(0)
     setShowOverlay(false)
     setRevealedImage(null)
+    setShowRevealedModal(false)
     setError(null)
     onCancel()
   }
@@ -101,19 +106,22 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
             className="object-contain"
             priority={true}
           />
-          {/* Overlay GIF */}
+          {/* Overlay GIF with improved visibility */}
           {showOverlay && step <= 2 && (
-            <Image
-              src={overlayGifs[step]}
-              alt={`Reveal overlay ${step + 1}`}
-              fill
-              className="object-contain absolute inset-0 z-10 pointer-events-none"
-              priority={true}
-            />
+            <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+              <Image
+                src={overlayGifs[step]}
+                alt={`Reveal overlay ${step + 1}`}
+                fill
+                className="object-contain"
+                priority={true}
+                style={{ background: 'rgba(255,255,255,0.15)' }}
+              />
+            </div>
           )}
         </motion.div>
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
             <Loader2 className="h-12 w-12 animate-spin text-amber-400" />
           </div>
         )}
@@ -140,6 +148,28 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
         Cancel
       </CustomButton>
       {error && <p className="text-red-500 mt-2">{error}</p>}
+
+      {/* Modal for revealed NFT */}
+      {showRevealedModal && revealedImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center max-w-xs w-full relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+              onClick={() => setShowRevealedModal(false)}
+            >
+              ×
+            </button>
+            <Image
+              src={revealedImage}
+              alt="Revealed NFT"
+              width={320}
+              height={320}
+              className="object-contain rounded-lg mb-4"
+            />
+            <p className="text-lg font-bold text-[#3A1F16] text-center">Your Bee is Revealed!</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

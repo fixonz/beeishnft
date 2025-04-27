@@ -50,11 +50,12 @@ function MultiStepReveal(_a) {
     var _d = react_1.useState(null), error = _d[0], setError = _d[1];
     var _e = react_1.useState(null), revealedImage = _e[0], setRevealedImage = _e[1];
     var _f = react_1.useState(false), showOverlay = _f[0], setShowOverlay = _f[1];
-    // Overlay GIFs for each step
+    var _g = react_1.useState(false), showRevealedModal = _g[0], setShowRevealedModal = _g[1];
+    // Overlay GIFs for each step (corrected paths)
     var overlayGifs = [
-        "/1reveal.gif",
-        "/2reveal.gif",
-        "/3reveal.gif"
+        "/images/1reveal.gif",
+        "/images/2reveal.gif",
+        "/images/3reveal.gif"
     ];
     // Button labels
     var buttonLabels = [
@@ -68,21 +69,21 @@ function MultiStepReveal(_a) {
         return __generator(this, function (_a) {
             setShowOverlay(true);
             setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
-                var response, errorData, data_1, err_1;
+                var response, errorData, metaRes, meta_1, err_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             setShowOverlay(false);
                             if (!(step < 2)) return [3 /*break*/, 1];
                             setStep(step + 1);
-                            return [3 /*break*/, 9];
+                            return [3 /*break*/, 10];
                         case 1:
                             // Final step: trigger reveal
                             setIsLoading(true);
                             setError(null);
                             _a.label = 2;
                         case 2:
-                            _a.trys.push([2, 7, 8, 9]);
+                            _a.trys.push([2, 8, 9, 10]);
                             return [4 /*yield*/, fetch("/api/reveal", {
                                     method: "POST",
                                     headers: {
@@ -100,22 +101,26 @@ function MultiStepReveal(_a) {
                         case 4:
                             errorData = _a.sent();
                             throw new Error(errorData.message || "Failed to reveal NFT");
-                        case 5: return [4 /*yield*/, response.json()];
+                        case 5: return [4 /*yield*/, fetch("https://api.beeish.xyz/metadata/" + tokenId)];
                         case 6:
-                            data_1 = _a.sent();
-                            setRevealedImage(data_1.imageUrl);
-                            setTimeout(function () {
-                                onComplete(data_1.imageUrl);
-                            }, 1000);
-                            return [3 /*break*/, 9];
+                            metaRes = _a.sent();
+                            return [4 /*yield*/, metaRes.json()];
                         case 7:
+                            meta_1 = _a.sent();
+                            setRevealedImage(meta_1.image);
+                            setShowRevealedModal(true);
+                            setTimeout(function () {
+                                onComplete(meta_1.image);
+                            }, 1000);
+                            return [3 /*break*/, 10];
+                        case 8:
                             err_1 = _a.sent();
                             setError(err_1.message || "An error occurred during the reveal process");
-                            return [3 /*break*/, 9];
-                        case 8:
+                            return [3 /*break*/, 10];
+                        case 9:
                             setIsLoading(false);
                             return [7 /*endfinally*/];
-                        case 9: return [2 /*return*/];
+                        case 10: return [2 /*return*/];
                     }
                 });
             }); }, 1200);
@@ -127,6 +132,7 @@ function MultiStepReveal(_a) {
         setStep(0);
         setShowOverlay(false);
         setRevealedImage(null);
+        setShowRevealedModal(false);
         setError(null);
         onCancel();
     };
@@ -135,11 +141,17 @@ function MultiStepReveal(_a) {
         React.createElement("div", { className: "relative w-full max-w-md mx-auto mb-6" },
             React.createElement(framer_motion_1.motion.div, { className: "relative aspect-square bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden", initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, transition: { type: "spring", damping: 12 } },
                 React.createElement(image_1["default"], { src: revealedImage || unrevealedImageUrl, alt: "NFT to reveal", fill: true, className: "object-contain", priority: true }),
-                showOverlay && step <= 2 && (React.createElement(image_1["default"], { src: overlayGifs[step], alt: "Reveal overlay " + (step + 1), fill: true, className: "object-contain absolute inset-0 z-10 pointer-events-none", priority: true }))),
-            isLoading && (React.createElement("div", { className: "absolute inset-0 flex items-center justify-center bg-black/50" },
+                showOverlay && step <= 2 && (React.createElement("div", { className: "absolute inset-0 z-20 flex items-center justify-center pointer-events-none" },
+                    React.createElement(image_1["default"], { src: overlayGifs[step], alt: "Reveal overlay " + (step + 1), fill: true, className: "object-contain", priority: true, style: { background: 'rgba(255,255,255,0.15)' } })))),
+            isLoading && (React.createElement("div", { className: "absolute inset-0 flex items-center justify-center bg-black/50 z-30" },
                 React.createElement(lucide_react_1.Loader2, { className: "h-12 w-12 animate-spin text-amber-400" })))),
         React.createElement("div", { className: "flex gap-4 justify-center mb-4" }, buttonLabels.map(function (label, idx) { return (React.createElement(custom_button_1["default"], { key: label, variant: idx === step ? "mint" : "blank", className: "w-[140px]", onClick: handleStep, disabled: step !== idx || isLoading || !!revealedImage }, label)); })),
         React.createElement(custom_button_1["default"], { variant: "blank", className: "w-[120px]", onClick: handleCancel, disabled: isLoading }, "Cancel"),
-        error && React.createElement("p", { className: "text-red-500 mt-2" }, error)));
+        error && React.createElement("p", { className: "text-red-500 mt-2" }, error),
+        showRevealedModal && revealedImage && (React.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/70" },
+            React.createElement("div", { className: "bg-white rounded-lg shadow-lg p-6 flex flex-col items-center max-w-xs w-full relative" },
+                React.createElement("button", { className: "absolute top-2 right-2 text-gray-500 hover:text-gray-800", onClick: function () { return setShowRevealedModal(false); } }, "\u00D7"),
+                React.createElement(image_1["default"], { src: revealedImage, alt: "Revealed NFT", width: 320, height: 320, className: "object-contain rounded-lg mb-4" }),
+                React.createElement("p", { className: "text-lg font-bold text-[#3A1F16] text-center" }, "Your Bee is Revealed!"))))));
 }
 exports["default"] = MultiStepReveal;
