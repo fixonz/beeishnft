@@ -89,7 +89,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Custom CSS to ensure modal is compact and centered
   // This will be injected into the page
   const modalCss = `
-    /* Extremely aggressive shadow removal - target all possible elements */
+    /* Target the specific styled-components classes from the DOM */
+    .sc-dhKdcB,
+    .sc-gFqAkR,
+    .sc-kpDqfm,
+    .sc-dAlyuH,
+    .sc-jEACwC,
+    .sc-eqUAAy,
+    .sc-dLMFU,
+    .sc-dcJsrY,
+    .sc-jlZhew,
+    .sc-cwHptR,
+    .sc-jnOGJG,
+    .sc-dZoequ,
+    .sc-hIUJlX,
+    .sc-ggpjZQ,
+    .sc-gFVvzn,
+    .sc-cmaqmh,
+    [class*="sc-"],
+    /* Existing general selectors */
     .connectkit-modal,
     .connectkit-overlay,
     .connectkit-portal,
@@ -125,6 +143,28 @@ export function Providers({ children }: { children: React.ReactNode }) {
       drop-shadow: none !important;
       -webkit-drop-shadow: none !important;
       -moz-drop-shadow: none !important;
+    }
+
+    /* Target the exact styled modal container from inspect */
+    .sc-gFqAkR, 
+    .cMtGuS,
+    [style*="--height"],
+    [style*="--width"] {
+      box-shadow: none !important;
+      filter: none !important;
+      border: 4px solid #3A1F16 !important;
+    }
+
+    /* Remove the specific shadow div */
+    .sc-dhKdcB, 
+    .jXJXoi, 
+    div[style*="pointer-events: none"],
+    div[style*="position: absolute"],
+    div[style*="transform: translateX"] {
+      display: none !important;
+      opacity: 0 !important;
+      box-shadow: none !important;
+      filter: none !important;
     }
 
     /* Target the main modal container and ensure flat edges */
@@ -187,6 +227,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     /* Add a custom border to the main modal instead of shadows */
     .connectkit-modal {
       border: 4px solid #3A1F16 !important;
+    }
+    
+    /* Specifically target that element with translateX transform */
+    div[style*="transform: translateX(-50%)"] {
+      box-shadow: none !important;
+      filter: none !important;
+      display: none !important;
     }
   `;
 
