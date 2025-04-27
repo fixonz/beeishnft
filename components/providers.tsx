@@ -153,6 +153,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       box-shadow: none !important;
       filter: none !important;
       border: 4px solid #3A1F16 !important;
+      background-color: #FFB949 !important;
+      overflow: hidden !important;
     }
 
     /* Remove the specific shadow div */
@@ -165,6 +167,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
       opacity: 0 !important;
       box-shadow: none !important;
       filter: none !important;
+      background-color: transparent !important;
+    }
+
+    /* Target the brown lines on the sides specifically */
+    .sc-gFqAkR:before,
+    .sc-gFqAkR:after,
+    .cMtGuS:before,
+    .cMtGuS:after,
+    [style*="--height"]:before,
+    [style*="--height"]:after,
+    [style*="--width"]:before,
+    [style*="--width"]:after,
+    .sc-kpDqfm:before,
+    .sc-kpDqfm:after {
+      display: none !important;
+      content: none !important;
+      opacity: 0 !important;
+      background: transparent !important;
+      border: none !important;
     }
 
     /* Target the main modal container and ensure flat edges */
@@ -237,6 +258,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }
   `;
 
+  // List of wallet IDs to include (only MetaMask and Abstract)
+  const includedWalletIds = [
+    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
+    '26d3d9e7224a1eb49089aa5f03fb9f3b883e04050404594d980d4e1e74e1dbea', // Abstract
+  ]
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -249,6 +276,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             hideNoWalletCTA: true,
             hideQuestionMarkCTA: true,
             hideRecentBadge: true,
+            // Use includedWalletIds to only show specific wallets
+            includedWalletIds: includedWalletIds,
             // Modal is dismissible by clicking outside by default
           }}
         >
