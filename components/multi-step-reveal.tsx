@@ -77,6 +77,28 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           const meta = await metaRes.json()
           setRevealedImage(meta.image)
           setShowRevealedModal(true)
+          
+          // Store the revealed NFT token ID and image in localStorage
+          const revealedTokens = JSON.parse(localStorage.getItem('beeish-revealed-tokens') || '[]')
+          if (!revealedTokens.includes(tokenId)) {
+            revealedTokens.push(tokenId)
+            localStorage.setItem('beeish-revealed-tokens', JSON.stringify(revealedTokens))
+          }
+          
+          const revealedNFTs = JSON.parse(localStorage.getItem('beeish-revealed-nfts') || '[]')
+          const nftEntry = {
+            tokenId,
+            image: meta.image
+          }
+          const existingIndex = revealedNFTs.findIndex((nft: any) => nft.tokenId === tokenId)
+          if (existingIndex >= 0) {
+            revealedNFTs[existingIndex] = nftEntry
+          } else {
+            revealedNFTs.push(nftEntry)
+          }
+          localStorage.setItem('beeish-revealed-nfts', JSON.stringify(revealedNFTs))
+          
+          // Wait for animation to complete before calling onComplete
           setTimeout(() => {
             onComplete(meta.image)
           }, 1000)
@@ -150,7 +172,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for each reveal step */}
       {showStepModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="relative w-[85vw] h-[85vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
+          <div className="relative w-[85vw] h-[85vw] sm:w-[70vw] sm:h-[70vw] md:w-[50vw] md:h-[50vw] lg:w-[40vw] lg:h-[40vw] max-w-[90vw] max-h-[90vh] aspect-square flex items-center justify-center bg-white rounded-lg shadow-lg p-4">
             <div className="absolute inset-0">
               <Image
                 src={revealedImage || unrevealedImageUrl}
@@ -174,7 +196,7 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
       {/* Modal for revealed NFT */}
       {showRevealedModal && revealedImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center max-w-xs w-full relative">
+          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[30vw] max-w-[90vw] max-h-[90vh] relative">
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
               onClick={() => setShowRevealedModal(false)}
