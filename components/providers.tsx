@@ -46,17 +46,52 @@ export function Providers({ children }: { children: React.ReactNode }) {
     // Custom modal width (compact)
     '--ck-modal-max-width': '420px',
     '--ck-modal-width': '100%',
+    
+    // Additional shadow removal for all components
+    '--ck-body-box-shadow': 'none',
+    '--ck-connectbutton-box-shadow': 'none',
+    '--ck-connectbutton-hover-box-shadow': 'none',
+    '--ck-connectbutton-active-box-shadow': 'none',
+    '--ck-secondary-button-box-shadow': 'none',
+    '--ck-secondary-button-hover-box-shadow': 'none',
+    '--ck-focus-box-shadow': 'none',
+    '--ck-overlay-backdrop-filter': 'none',
+    '--ck-overlay-background-blur': '0px',
+    '--ck-dropdown-box-shadow': 'none',
+    '--ck-dropdown-active-box-shadow': 'none',
   };
 
   // Custom CSS to ensure modal is compact and centered
   // This will be injected into the page
   const modalCss = `
-    .connectkit-modal, .connectkit-overlay, .connectkit-modal * {
+    /* Remove all shadows, filters, and extra visual effects */
+    .connectkit-modal, 
+    .connectkit-overlay, 
+    .connectkit-modal *,
+    .connectkit-card *,
+    .connectkit-portal *,
+    .connectkit-drawer *,
+    .connectkit-card,
+    .connectkit-portal,
+    .connectkit-drawer {
       box-shadow: none !important;
       filter: none !important;
+      -webkit-filter: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      text-shadow: none !important;
+      border-radius: 12px !important;
     }
-    .connectkit-modal { max-width: 420px !important; width: 100% !important; margin: 0 auto !important; }
-    .connectkit-overlay { background: rgba(0,0,0,0.7) !important; }
+    /* Ensure the modal is centered and has the right dimensions */
+    .connectkit-modal { 
+      max-width: 420px !important; 
+      width: 100% !important; 
+      margin: 0 auto !important; 
+    }
+    /* Adjust overlay */
+    .connectkit-overlay { 
+      background: rgba(0,0,0,0.7) !important; 
+    }
   `;
 
   return (

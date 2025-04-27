@@ -42,11 +42,23 @@ function Providers(_a) {
         '--ck-connectbutton-hover-background': '#5a3a2f',
         // Custom modal width (compact)
         '--ck-modal-max-width': '420px',
-        '--ck-modal-width': '100%'
+        '--ck-modal-width': '100%',
+        // Additional shadow removal for all components
+        '--ck-body-box-shadow': 'none',
+        '--ck-connectbutton-box-shadow': 'none',
+        '--ck-connectbutton-hover-box-shadow': 'none',
+        '--ck-connectbutton-active-box-shadow': 'none',
+        '--ck-secondary-button-box-shadow': 'none',
+        '--ck-secondary-button-hover-box-shadow': 'none',
+        '--ck-focus-box-shadow': 'none',
+        '--ck-overlay-backdrop-filter': 'none',
+        '--ck-overlay-background-blur': '0px',
+        '--ck-dropdown-box-shadow': 'none',
+        '--ck-dropdown-active-box-shadow': 'none'
     };
     // Custom CSS to ensure modal is compact and centered
     // This will be injected into the page
-    var modalCss = "\n    .connectkit-modal, .connectkit-overlay, .connectkit-modal * {\n      box-shadow: none !important;\n      filter: none !important;\n    }\n    .connectkit-modal { max-width: 420px !important; width: 100% !important; margin: 0 auto !important; }\n    .connectkit-overlay { background: rgba(0,0,0,0.7) !important; }\n  ";
+    var modalCss = "\n    /* Remove all shadows, filters, and extra visual effects */\n    .connectkit-modal, \n    .connectkit-overlay, \n    .connectkit-modal *,\n    .connectkit-card *,\n    .connectkit-portal *,\n    .connectkit-drawer *,\n    .connectkit-card,\n    .connectkit-portal,\n    .connectkit-drawer {\n      box-shadow: none !important;\n      filter: none !important;\n      -webkit-filter: none !important;\n      backdrop-filter: none !important;\n      -webkit-backdrop-filter: none !important;\n      text-shadow: none !important;\n      border-radius: 12px !important;\n    }\n    /* Ensure the modal is centered and has the right dimensions */\n    .connectkit-modal { \n      max-width: 420px !important; \n      width: 100% !important; \n      margin: 0 auto !important; \n    }\n    /* Adjust overlay */\n    .connectkit-overlay { \n      background: rgba(0,0,0,0.7) !important; \n    }\n  ";
     return (react_1["default"].createElement(wagmi_1.WagmiProvider, { config: wagmi_2.config },
         react_1["default"].createElement(react_query_1.QueryClientProvider, { client: queryClient },
             react_1["default"].createElement("style", null, modalCss),
