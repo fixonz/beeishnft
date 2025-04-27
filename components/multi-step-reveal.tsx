@@ -108,14 +108,13 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
           />
           {/* Overlay GIF with improved visibility */}
           {showOverlay && step <= 2 && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 z-20 flex items-end justify-center pointer-events-none">
               <Image
                 src={overlayGifs[step]}
                 alt={`Reveal overlay ${step + 1}`}
                 fill
                 className="object-contain"
                 priority={true}
-                style={{ background: 'rgba(255,255,255,0.15)' }}
               />
             </div>
           )}
