@@ -70,7 +70,7 @@ function Home() {
     var _d = react_1.useState(true), loading = _d[0], setLoading = _d[1];
     var isMobile = use_media_query_1.useMediaQuery("(max-width: 768px)");
     var isConnected = wagmi_1.useAccount().isConnected;
-    var modal = connectkit_1.ConnectKitButton.useModal();
+    var modal = connectkit_1.useModal();
     // Font family based on device
     var fontFamily = isMobile
         ? "'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif"
