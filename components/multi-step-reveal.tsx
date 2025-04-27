@@ -132,56 +132,61 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
   }
 
   return (
-    <div className="flex flex-col items-center w-full max-w-5xl mx-auto px-4">
+    <div className="flex flex-col items-center">
       <audio ref={audioRef} src="/sound/shot.mp3" preload="auto" />
-      <h2 className="text-2xl font-bold text-center mb-6 text-[#3A1F16]">Free Your Bee!</h2>
+      <h2 className="text-2xl font-bold text-center mb-4 text-[#3A1F16]">Free Your Bee!</h2>
       
-      {/* Side-by-side layout for NFT and buttons - WIDER CONTAINER */}
-      <div className="w-full flex flex-col md:flex-row gap-8 mb-8">
-        {/* NFT Container - left side on desktop, top on mobile - LARGER */}
-        <div className="relative w-full md:w-1/2 md:max-w-xl">
-          <motion.div
-            className="relative aspect-square bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden shadow-xl"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", damping: 12 }}
-          >
+      {/* Main container - using the exact format from the screenshot */}
+      <div className="flex w-full max-w-[600px] mx-auto justify-center">
+        {/* NFT Container - left side */}
+        <div className="w-[220px] h-[220px] mr-4 border-4 border-[#3A1F16] rounded-lg bg-white overflow-hidden">
+          <div className="relative w-full h-full">
             <Image
               src={revealedImage || unrevealedImageUrl}
               alt="NFT to reveal"
               fill
-              className="object-contain p-2"
+              className="object-contain"
               priority={true}
             />
-          </motion.div>
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
-              <Loader2 className="h-16 w-16 animate-spin text-amber-400" />
-            </div>
-          )}
+          </div>
         </div>
         
-        {/* Buttons Container - right side on desktop, bottom on mobile - WIDER */}
-        <div className="w-full md:w-1/2 border-4 border-[#3A1F16] rounded-lg p-6 bg-[#fff3d4] flex flex-col justify-center shadow-xl">
-          <h3 className="text-center font-bold text-xl text-[#3A1F16] mb-6">Step {step + 1} of 3: {buttonLabels[step]}</h3>
-          <div className="grid grid-cols-1 gap-6">
-            {buttonLabels.map((label, idx) => (
-              <CustomButton
-                key={label}
-                variant={idx === step ? "mint" : "blank"}
-                className={`py-5 text-2xl font-bold ${
-                  idx === step ? "border-4 border-[#3A1F16] shadow-lg transform scale-105" : ""
-                }`}
-                onClick={handleStep}
-                disabled={step !== idx || isLoading || !!revealedImage}
-              >
-                {label}
-              </CustomButton>
-            ))}
+        {/* Buttons Container - right side */}
+        <div className="w-[220px] border-4 border-[#3A1F16] rounded-lg p-4 bg-[#FFF8E1]">
+          <h3 className="text-center font-bold text-lg text-[#3A1F16] mb-4">Step {step + 1} of 3: {buttonLabels[step]}</h3>
+          
+          {/* Vertically stacked buttons */}
+          <div className="flex flex-col gap-3">
+            <CustomButton
+              variant="mint"
+              className={`py-2 font-bold ${step === 0 ? "" : "opacity-50"}`}
+              onClick={handleStep}
+              disabled={step !== 0 || isLoading || !!revealedImage}
+            >
+              Shoot the Hive
+            </CustomButton>
             
             <CustomButton
               variant="blank"
-              className="py-4 text-xl mt-2"
+              className={`py-2 font-bold ${step === 1 ? "" : "opacity-50"}`}
+              onClick={handleStep}
+              disabled={step !== 1 || isLoading || !!revealedImage}
+            >
+              SHooT
+            </CustomButton>
+            
+            <CustomButton
+              variant="blank"
+              className={`py-2 font-bold ${step === 2 ? "" : "opacity-50"}`}
+              onClick={handleStep}
+              disabled={step !== 2 || isLoading || !!revealedImage}
+            >
+              Reveal
+            </CustomButton>
+            
+            <CustomButton
+              variant="blank"
+              className="py-2 mt-2"
               onClick={handleCancel}
               disabled={isLoading}
             >
@@ -189,9 +194,16 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
             </CustomButton>
           </div>
           
-          {error && <p className="text-red-500 mt-4 font-bold text-center text-lg">{error}</p>}
+          {error && <p className="text-red-500 mt-4 font-bold text-center">{error}</p>}
         </div>
       </div>
+
+      {/* Loading indicator shown on top of NFT when loading */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
+          <Loader2 className="h-12 w-12 animate-spin text-amber-400" />
+        </div>
+      )}
 
       {/* Modal for each reveal step */}
       {showStepModal && (
@@ -281,3 +293,4 @@ export default function MultiStepReveal({ tokenId, address, unrevealedImageUrl, 
     </div>
   )
 }
+
