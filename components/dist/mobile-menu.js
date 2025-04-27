@@ -8,7 +8,7 @@ var connectkit_1 = require("connectkit");
 var twitter_button_1 = require("./twitter-button");
 var custom_button_1 = require("./custom-button");
 function MobileMenu(_a) {
-    var onPhotoBoothClick = _a.onPhotoBoothClick, onFreeABeeClick = _a.onFreeABeeClick;
+    var onPhotoBoothClickAction = _a.onPhotoBoothClickAction, onFreeABeeClick = _a.onFreeABeeClick;
     return (React.createElement(sheet_1.Sheet, null,
         React.createElement(sheet_1.SheetTrigger, { asChild: true },
             React.createElement(button_1.Button, { variant: "ghost", size: "icon" },
@@ -22,7 +22,7 @@ function MobileMenu(_a) {
                     return (React.createElement(custom_button_1["default"], { variant: isConnected ? "blank" : "connect", className: "w-full px-4", onClick: show }, isConnected ? (ensName !== null && ensName !== void 0 ? ensName : truncatedAddress) : "Connect Wallet"));
                 }),
                 React.createElement("div", { className: "w-full" },
-                    React.createElement(custom_button_1["default"], { variant: "photoBooth", className: "w-full", onClick: onPhotoBoothClick }, "Photo booth")),
+                    React.createElement(custom_button_1["default"], { variant: "photoBooth", className: "w-full", onClick: onPhotoBoothClickAction }, "Photo booth")),
                 React.createElement("div", { className: "w-full" },
                     React.createElement(custom_button_1["default"], { variant: "mint", className: "w-full", onClick: onFreeABeeClick }, "free-A-BeE")),
                 React.createElement("div", { className: "w-full opacity-50" },

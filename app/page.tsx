@@ -109,7 +109,7 @@ export default function Home() {
             {isMobile ? (
               // Mobile hamburger menu only
               <MobileMenu
-                onPhotoBoothClick={handlePhotoBooth}
+                onPhotoBoothClickAction={handlePhotoBooth}
                 onFreeABeeClick={handleFreeABee}
               />
             ) : (

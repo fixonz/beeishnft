@@ -8,11 +8,11 @@ import TwitterButton from "./twitter-button"
 import CustomButton from "./custom-button"
 
 interface MobileMenuProps {
-  onPhotoBoothClick: () => void
+  onPhotoBoothClickAction: () => void
   onFreeABeeClick: () => void
 }
 
-export default function MobileMenu({ onPhotoBoothClick, onFreeABeeClick }: MobileMenuProps) {
+export default function MobileMenu({ onPhotoBoothClickAction, onFreeABeeClick }: MobileMenuProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -44,7 +44,7 @@ export default function MobileMenu({ onPhotoBoothClick, onFreeABeeClick }: Mobil
             }}
           </ConnectKitButton.Custom>
           <div className="w-full">
-            <CustomButton variant="photoBooth" className="w-full" onClick={onPhotoBoothClick}>
+            <CustomButton variant="photoBooth" className="w-full" onClick={onPhotoBoothClickAction}>
               Photo booth
             </CustomButton>
           </div>

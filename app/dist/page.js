@@ -141,7 +141,7 @@ function Home() {
                             react_1["default"].createElement(image_1["default"], { src: "/images/bee-mascot.png", alt: "Bee Mascot", width: 64, height: 64, className: "object-contain" }))),
                     isMobile ? (
                     // Mobile hamburger menu only
-                    react_1["default"].createElement(mobile_menu_1["default"], { onPhotoBoothClick: handlePhotoBooth, onFreeABeeClick: handleFreeABee })) : (
+                    react_1["default"].createElement(mobile_menu_1["default"], { onPhotoBoothClickAction: handlePhotoBooth, onFreeABeeClick: handleFreeABee })) : (
                     // Desktop header buttons
                     react_1["default"].createElement("div", { className: "flex items-center space-x-2 md:space-x-4 flex-wrap justify-end" },
                         react_1["default"].createElement("div", { className: disabledButtonStyle },
