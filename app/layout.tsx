@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
       </head>
-      <body className={cn("font-super-lobster")}>
+      <body className={cn("font-super-lobster min-h-screen overflow-y-auto")}>
         {/* Use the single Providers component */}
         <Providers>
           {children}

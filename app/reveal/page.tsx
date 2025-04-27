@@ -7,7 +7,7 @@ import { motion } from "framer-motion" // Import motion if needed for title anim
 export default function RevealPage() {
 
   return (
-    <div className="container mx-auto py-12 px-4">
+    <div className="container mx-auto py-8 px-4 h-full overflow-y-auto">
       <motion.h1
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

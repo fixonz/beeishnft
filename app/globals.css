@@ -48,11 +48,18 @@
   body {
     @apply bg-background text-[#F8F8F8];
     overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-primary);
+  }
+  
+  html {
+    height: 100%;
+    overflow-y: auto;
   }
 }
 

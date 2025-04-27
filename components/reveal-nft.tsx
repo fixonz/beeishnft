@@ -508,9 +508,9 @@ export default function RevealNFT() {
     }
 
     return (
-      <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] h-full">
+      <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] max-h-[80vh] overflow-y-auto">
         <h2
-          className="text-xl font-bold text-center mb-4"
+          className="text-xl font-bold text-center mb-4 sticky top-0 bg-bee-light-yellow pt-2"
           style={{
             color: "#3A1F16",
             fontFamily: "Super Lobster, cursive, sans-serif",
@@ -521,7 +521,7 @@ export default function RevealNFT() {
         </h2>
 
         {revealedNFTs.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 overflow-y-auto max-h-[500px] pr-2 -webkit-overflow-scrolling-touch">
+          <div className="grid grid-cols-2 gap-3 max-h-[calc(80vh-80px)] -webkit-overflow-scrolling-touch">
             {revealedNFTs.map((nft: RevealedNftData) => (
               <motion.div
                 key={nft.tokenId}
@@ -562,7 +562,7 @@ export default function RevealNFT() {
         )}
 
         {revealedNFTs.length > 0 && (
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center sticky bottom-0 bg-bee-light-yellow pb-2">
             <p className="text-[#3A1F16] text-sm">
               Your freed bees are saved in your browser. They will appear here when you return.
             </p>
@@ -614,10 +614,10 @@ export default function RevealNFT() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto overflow-y-auto">
       {isMobile && renderMobileTabs()}
 
-      <div className="space-y-8">
+      <div className="space-y-8 pb-8">
         {!isMobile && !isRevealing && !showRevealedNFT && (
           <>
             {renderUnrevealedSection()}

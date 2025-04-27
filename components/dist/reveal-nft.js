@@ -377,13 +377,13 @@ function RevealNFT() {
                 React.createElement("p", { className: "text-[#3A1F16] mb-4 text-center font-semibold" }, "Connect your wallet to see your freed bees!"),
                 React.createElement("p", null, "(Connect Button Removed)")));
         }
-        return (React.createElement("div", { className: "bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] h-full" },
-            React.createElement("h2", { className: "text-xl font-bold text-center mb-4", style: {
+        return (React.createElement("div", { className: "bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] max-h-[80vh] overflow-y-auto" },
+            React.createElement("h2", { className: "text-xl font-bold text-center mb-4 sticky top-0 bg-bee-light-yellow pt-2", style: {
                     color: "#3A1F16",
                     fontFamily: "Super Lobster, cursive, sans-serif",
                     textShadow: "none"
                 } }, "Your Freed Bees"),
-            revealedNFTs.length > 0 ? (React.createElement("div", { className: "grid grid-cols-2 gap-3 overflow-y-auto max-h-[500px] pr-2 -webkit-overflow-scrolling-touch" }, revealedNFTs.map(function (nft) { return (React.createElement(framer_motion_1.motion.div, { key: nft.tokenId, className: "border-4 border-[#3A1F16] rounded-lg overflow-hidden bg-white", initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, transition: { type: "spring", damping: 15 }, whileHover: { scale: 1.03, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" } },
+            revealedNFTs.length > 0 ? (React.createElement("div", { className: "grid grid-cols-2 gap-3 max-h-[calc(80vh-80px)] -webkit-overflow-scrolling-touch" }, revealedNFTs.map(function (nft) { return (React.createElement(framer_motion_1.motion.div, { key: nft.tokenId, className: "border-4 border-[#3A1F16] rounded-lg overflow-hidden bg-white", initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, transition: { type: "spring", damping: 15 }, whileHover: { scale: 1.03, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" } },
                 React.createElement("div", { className: "relative aspect-square" },
                     React.createElement(image_1["default"], { src: nft.image || "/placeholder.svg", alt: "NFT #" + nft.tokenId, fill: true, className: "object-contain" })),
                 React.createElement("div", { className: "bg-[#3A1F16] p-2" },
@@ -394,7 +394,7 @@ function RevealNFT() {
                 React.createElement("p", { className: "text-center text-[#3A1F16] mt-2" }, isMobile
                     ? 'Go to the "Free a Bee" tab to get started.'
                     : "Select a BEEISH NFT and free it to see it here."))),
-            revealedNFTs.length > 0 && (React.createElement("div", { className: "mt-4 text-center" },
+            revealedNFTs.length > 0 && (React.createElement("div", { className: "mt-4 text-center sticky bottom-0 bg-bee-light-yellow pb-2" },
                 React.createElement("p", { className: "text-[#3A1F16] text-sm" }, "Your freed bees are saved in your browser. They will appear here when you return.")))));
     };
     // Renders the single NFT that was just revealed
@@ -409,9 +409,9 @@ function RevealNFT() {
                     React.createElement(mint_button_1["default"], { onClick: function () { return setIsMintModalOpen(true); } }),
                     React.createElement(custom_button_1["default"], { variant: "blank", onClick: closeRevealedNFT }, "Close")))));
     };
-    return (React.createElement("div", { className: "w-full max-w-5xl mx-auto" },
+    return (React.createElement("div", { className: "w-full max-w-5xl mx-auto overflow-y-auto" },
         isMobile && renderMobileTabs(),
-        React.createElement("div", { className: "space-y-8" },
+        React.createElement("div", { className: "space-y-8 pb-8" },
             !isMobile && !isRevealing && !showRevealedNFT && (React.createElement(React.Fragment, null,
                 renderUnrevealedSection(),
                 revealedNFTs.length > 0 && renderRevealedSection())),
