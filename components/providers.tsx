@@ -28,6 +28,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     '--ck-modal-background': '#FFB949',
     '--ck-overlay-background': 'rgba(0, 0, 0, 0.7)',
     '--ck-modal-box-shadow': 'none',
+    '--ck-modal-shadow': 'none',
+    '--ck-overlay-box-shadow': 'none',
     '--ck-body-background': '#FFB949',
     '--ck-body-color': '#3A1F16',
     '--ck-body-color-muted': '#5a3a2f',
