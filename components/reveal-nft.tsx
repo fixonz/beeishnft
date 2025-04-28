@@ -296,7 +296,7 @@ export default function RevealNFT() {
   const renderUnrevealedSection = () => {
     if (!isConnected) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] min-h-[200px]">
+        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
           <p className="text-[#3A1F16] mb-4 text-center font-semibold text-lg">
             Please connect your wallet
           </p>
@@ -309,7 +309,7 @@ export default function RevealNFT() {
 
     if (isRevealing) {
       return (
-        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16]">
+        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
           <MultiStepReveal
             tokenId={selectedNFT!.tokenId}
             address={address!}
@@ -323,7 +323,7 @@ export default function RevealNFT() {
 
     if (showRevealedNFT) {
       return (
-        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16]">
+        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
           <div className="flex flex-col items-center">
             <motion.h3
               className="text-2xl font-bold text-center mb-4 text-[#3A1F16]"
@@ -396,7 +396,7 @@ export default function RevealNFT() {
 
     if (loading) {
       return (
-        <div className="flex justify-center items-center h-64 bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16]">
+        <div className="flex justify-center items-center h-[500px] bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16]">
           <Loader2 className="h-12 w-12 animate-spin text-[#3A1F16]" />
         </div>
       )
@@ -414,40 +414,38 @@ export default function RevealNFT() {
       // --- End Pagination Logic ---
 
       return (
-        <motion.div 
-          layout
-          className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16]"
-        >
+        <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
           <h2 className="text-center text-3xl font-bold text-[#3A1F16] mb-6 custom-button-text">
             Free Your Bee!
           </h2>
           {/* Grid for displayed NFTs */}
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-6 overflow-y-auto max-h-[60vh] pr-2 pb-2">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-6 overflow-y-auto" style={{ height: "330px" }}>
             {displayedNfts.map((nft: BeeishNFT) => (
-              <motion.div
+              <div
                 key={nft.tokenId}
-                className={`p-1 border-2 rounded-lg cursor-pointer transition-colors duration-200 ease-in-out ${selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500'}`}
+                className={`w-full border-2 rounded-lg cursor-pointer overflow-hidden flex flex-col ${
+                  selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500'
+                }`}
                 onClick={() => setSelectedNFT(nft)}
-                layout={false}
-                whileHover={{ 
-                  borderColor: selectedNFT?.tokenId === nft.tokenId ? '#d97706' : '#f59e0b' 
-                }}
+                style={{ aspectRatio: "1/1.15" }}
               >
-                <div className="aspect-square w-full overflow-hidden">
-                  <Image
-                    src={nft.image || "/placeholder.jpg"}
-                    alt={nft.name}
-                    width={200}
-                    height={200}
-                    className="w-full h-full object-cover"
-                    unoptimized
-                  />
+                <div className="flex-1 w-full" style={{ aspectRatio: "1/1" }}>
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={nft.image || "/placeholder.jpg"}
+                      alt={nft.name}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
                 </div>
-                <div className="h-10 flex flex-col justify-center">
-                  <p className="text-center text-xs font-semibold text-[#3A1F16] truncate">{nft.name}</p>
-                  <p className="text-center text-xs text-gray-600">Click to Select</p>
+                <div className="bg-[#3A1F16] p-1 w-full min-h-[24px] flex flex-col items-center justify-center">
+                  <p className="text-white text-center font-medium truncate text-xs w-full">
+                    {nft.name}
+                  </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
@@ -504,12 +502,12 @@ export default function RevealNFT() {
               </div>
             </div>
           )}
-        </motion.div>
+        </div>
       )
     }
 
     return (
-      <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16] flex flex-col items-center justify-center min-h-[200px]">
+      <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16] flex flex-col items-center justify-center min-h-[500px]">
         <p className="text-center text-[#3A1F16] font-medium mb-4">
           {status || "No unrevealed BEEISH NFTs found in your wallet"}
         </p>
@@ -532,7 +530,7 @@ export default function RevealNFT() {
   const renderRevealedSection = () => {
     if (!isConnected) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16]">
+        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
           <p className="text-[#3A1F16] mb-4 text-center font-semibold">Connect your wallet to see your freed bees!</p>
           <p>(Connect Button Removed)</p>
         </div>
@@ -540,7 +538,7 @@ export default function RevealNFT() {
     }
 
     return (
-      <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] overflow-hidden">
+      <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
         <h2
           className="text-xl font-bold text-center mb-4 bg-bee-light-yellow pt-2"
           style={{
@@ -553,37 +551,36 @@ export default function RevealNFT() {
         </h2>
 
         {revealedNFTs.length > 0 ? (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch overflow-y-auto max-h-[60vh] pr-2 pb-2">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch overflow-y-auto" style={{ height: "330px" }}>
             {revealedNFTs.map((nft: RevealedNftData) => (
-              <motion.div
+              <div
                 key={nft.tokenId}
-                className="border-2 border-[#3A1F16] rounded-lg overflow-hidden bg-white hover:border-amber-600"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: "spring", damping: 15 }}
-                whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                className="w-full border-2 border-[#3A1F16] rounded-lg overflow-hidden bg-white hover:border-amber-600 flex flex-col"
+                style={{ aspectRatio: "1/1.15" }}
               >
-                <div className="relative aspect-square">
-                  <Image
-                    src={nft.image || "/placeholder.svg"}
-                    alt={`NFT #${nft.tokenId}`}
-                    fill
-                    className="object-contain"
-                  />
+                <div className="flex-1 w-full" style={{ aspectRatio: "1/1" }}>
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={nft.image || "/placeholder.svg"}
+                      alt={`NFT #${nft.tokenId}`}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
                 </div>
-                <div className="bg-[#3A1F16] p-1">
+                <div className="bg-[#3A1F16] p-1 w-full min-h-[24px] flex items-center justify-center">
                   <p
-                    className="text-white text-center font-medium truncate text-xs"
+                    className="text-white text-center font-medium truncate text-xs w-full"
                     style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
                   >
                     BEEISH #{nft.tokenId}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-64">
+          <div className="flex flex-col items-center justify-center" style={{ height: "330px" }}>
             <p className="text-center text-[#3A1F16]">You haven't freed any bees yet!</p>
             <p className="text-center text-[#3A1F16] mt-2">
               {isMobile
