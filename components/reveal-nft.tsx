@@ -527,15 +527,15 @@ export default function RevealNFT() {
         </h2>
 
         {revealedNFTs.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 -webkit-overflow-scrolling-touch">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch">
             {revealedNFTs.map((nft: RevealedNftData) => (
               <motion.div
                 key={nft.tokenId}
-                className="border-4 border-[#3A1F16] rounded-lg overflow-hidden bg-white"
+                className="border-2 border-[#3A1F16] rounded-lg overflow-hidden bg-white hover:border-amber-600"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: "spring", damping: 15 }}
-                whileHover={{ scale: 1.03, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
+                whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
               >
                 <div className="relative aspect-square">
                   <Image
@@ -545,9 +545,9 @@ export default function RevealNFT() {
                     className="object-contain"
                   />
                 </div>
-                <div className="bg-[#3A1F16] p-2">
+                <div className="bg-[#3A1F16] p-1">
                   <p
-                    className="text-white text-center font-medium truncate text-sm"
+                    className="text-white text-center font-medium truncate text-xs"
                     style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
                   >
                     BEEISH #{nft.tokenId}
