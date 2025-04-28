@@ -133,11 +133,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       display: none !important;
     }
     
-    /* Hide wallet buttons beyond the first two */
-    .sc-ggpjZQ button:nth-child(n+3) {
-      display: none !important;
-    }
-    
     /* Explicitly hide unwanted wallets by name/logo */
     button:has(span:contains("Phantom")),
     button:has(img[alt="Phantom"]),
@@ -156,27 +151,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
       display: none !important;
     }
     
-    /* Hide by button text content directly */
+    /* Hide by button text content directly - except Browser wallet */
     button span:contains("Trust"),
     button span:contains("Brave"),
     button span:contains("Phantom") {
       display: none !important;
     }
     
-    /* Hide browser wallet if it appears */
-    button:has(span:contains("Browser")),
-    button:has(span:contains("browser")),
-    button:has(img[alt="Browser Wallet"]),
-    button:has(img[alt*="Browser"]) {
-      display: none !important;
+    /* RENAME Browser Wallet to MetaMask */
+    button span:contains("Browser") {
+      font-size: 0 !important;
     }
     
-    /* Ensure MetaMask and Abstract are visible */
-    button:has(img[alt="MetaMask"]),
-    button:has(span:contains("MetaMask")),
-    button:has(img[alt="Abstract"]),
-    button:has(span:contains("Abstract")) {
-      display: flex !important;
+    button span:contains("Browser")::before {
+      content: "MetaMask" !important;
+      font-size: 16px !important;
+      visibility: visible !important;
+      display: inline !important;
     }
     
     /* Style wallet buttons with brown theme */
@@ -224,18 +215,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
       font-family: 'Super Lobster', cursive !important;
     }
     
-    /* NUCLEAR APPROACH: Hide all wallets except Abstract and MetaMask */
-    div.sc-gFVvzn > div.sc-ggpjZQ > button {
+    /* Show only first two wallet buttons, hide the rest */
+    div.sc-gFVvzn > div.sc-ggpjZQ > button:nth-child(n+3) {
       display: none !important; 
     }
     
-    /* Only show Abstract */
-    div.sc-gFVvzn > div.sc-ggpjZQ > button:first-child {
-      display: flex !important;
-    }
-    
-    /* Display MetaMask as the second option if present */
-    div.sc-gFVvzn > div.sc-ggpjZQ > button:has(span:contains("MetaMask")) {
+    /* Ensure Abstract and Browser/MetaMask are visible */
+    div.sc-gFVvzn > div.sc-ggpjZQ > button:first-child,
+    div.sc-gFVvzn > div.sc-ggpjZQ > button:nth-child(2),
+    button:has(span:contains("Abstract")),
+    button:has(span:contains("Browser")) {
       display: flex !important;
     }
   `;
