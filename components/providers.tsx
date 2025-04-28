@@ -138,11 +138,28 @@ export function Providers({ children }: { children: React.ReactNode }) {
       display: none !important;
     }
     
-    /* Explicitly hide Phantom wallet */
+    /* Explicitly hide unwanted wallets by name/logo */
     button:has(span:contains("Phantom")),
     button:has(img[alt="Phantom"]),
     button:has(img[alt*="phantom"]),
-    button:has(img[src*="phantom"]) {
+    button:has(img[src*="phantom"]),
+    button:has(span:contains("Trust")),
+    button:has(span:contains("Trust Wallet")),
+    button:has(img[alt="Trust Wallet"]),
+    button:has(img[alt*="Trust"]),
+    button:has(img[src*="trust"]),
+    button:has(span:contains("Brave")),
+    button:has(span:contains("Brave Wallet")),
+    button:has(img[alt="Brave Wallet"]),
+    button:has(img[alt*="Brave"]),
+    button:has(img[src*="brave"]) {
+      display: none !important;
+    }
+    
+    /* Hide by button text content directly */
+    button span:contains("Trust"),
+    button span:contains("Brave"),
+    button span:contains("Phantom") {
       display: none !important;
     }
     
@@ -205,6 +222,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
     div.sc-jlZhew {
       color: #3A1F16 !important;
       font-family: 'Super Lobster', cursive !important;
+    }
+    
+    /* NUCLEAR APPROACH: Hide all wallets except Abstract and MetaMask */
+    div.sc-gFVvzn > div.sc-ggpjZQ > button {
+      display: none !important; 
+    }
+    
+    /* Only show Abstract */
+    div.sc-gFVvzn > div.sc-ggpjZQ > button:first-child {
+      display: flex !important;
+    }
+    
+    /* Display MetaMask as the second option if present */
+    div.sc-gFVvzn > div.sc-ggpjZQ > button:has(span:contains("MetaMask")) {
+      display: flex !important;
     }
   `;
 
