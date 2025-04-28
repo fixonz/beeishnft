@@ -100,6 +100,16 @@ export default function RevealNFT() {
     setCurrentPage(1);
   }, [nfts]);
 
+  // Extract token ID from NFT name regardless of format
+  const extractTokenId = (name: string): string => {
+    // If it's already just the ID, return it
+    if (/^\d+$/.test(name)) return name;
+    
+    // Try to extract ID from format "BEEISH #123" or "BEEISH # 123"
+    const match = name.match(/BEEISH\s*#\s*(\d+)/i);
+    return match ? match[1] : name;
+  }
+
   // Fetch user's BEEISH NFTs from the Abstract API
   const fetchUserNFTs = async (walletAddress: string) => {
     setLoading(true)
@@ -129,11 +139,21 @@ export default function RevealNFT() {
         tokenId: item.token.tokenId,
         name: item.token.name || `BEEISH #${item.token.tokenId}`,
         image: item.token.image,
-        revealed: revealedTokenIds.includes(item.token.tokenId),
       }))
 
-      // Filter out already revealed NFTs - Add BeeishNFT type here
-      const unrevealed = userNFTs.filter((nft: BeeishNFT) => !revealedTokenIds.includes(nft.tokenId))
+      // Create a set of normalized revealed token IDs for faster lookup
+      const normalizedRevealedIds = new Set(
+        revealedTokenIds.map(id => extractTokenId(id))
+      );
+
+      // Check if a token has been revealed using normalized IDs
+      const isRevealed = (nft: BeeishNFT) => {
+        const normalizedId = extractTokenId(nft.tokenId);
+        return normalizedRevealedIds.has(normalizedId);
+      };
+
+      // Filter out already revealed NFTs using normalized comparison
+      const unrevealed = userNFTs.filter((nft: BeeishNFT) => !isRevealed(nft));
 
       setNfts(unrevealed)
 
@@ -406,21 +426,27 @@ export default function RevealNFT() {
             {displayedNfts.map((nft: BeeishNFT) => (
               <motion.div
                 key={nft.tokenId}
-                className={`p-1 border-2 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200 scale-105 shadow-lg' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500 hover:scale-102'}`}
+                className={`p-1 border-2 rounded-lg cursor-pointer transition-colors duration-200 ease-in-out ${selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500'}`}
                 onClick={() => setSelectedNFT(nft)}
-                whileHover={{ scale: selectedNFT?.tokenId === nft.tokenId ? 1.05 : 1.02 }}
-                layout
+                layout={false}
+                whileHover={{ 
+                  borderColor: selectedNFT?.tokenId === nft.tokenId ? '#d97706' : '#f59e0b' 
+                }}
               >
-                <Image
-                  src={nft.image || "/placeholder.jpg"}
-                  alt={nft.name}
-                  width={200}
-                  height={200}
-                  className="w-full h-auto object-cover rounded-md mb-1"
-                  unoptimized
-                />
-                <p className="text-center text-xs font-semibold text-[#3A1F16] truncate">{nft.name}</p>
-                <p className="text-center text-xs text-gray-600">Click to Select</p>
+                <div className="aspect-square w-full overflow-hidden">
+                  <Image
+                    src={nft.image || "/placeholder.jpg"}
+                    alt={nft.name}
+                    width={200}
+                    height={200}
+                    className="w-full h-full object-cover"
+                    unoptimized
+                  />
+                </div>
+                <div className="h-10 flex flex-col justify-center">
+                  <p className="text-center text-xs font-semibold text-[#3A1F16] truncate">{nft.name}</p>
+                  <p className="text-center text-xs text-gray-600">Click to Select</p>
+                </div>
               </motion.div>
             ))}
           </div>
