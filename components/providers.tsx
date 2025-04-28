@@ -138,6 +138,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
       display: none !important;
     }
     
+    /* Explicitly hide Phantom wallet */
+    button:has(span:contains("Phantom")),
+    button:has(img[alt="Phantom"]),
+    button:has(img[alt*="phantom"]),
+    button:has(img[src*="phantom"]) {
+      display: none !important;
+    }
+    
     /* Hide browser wallet if it appears */
     button:has(span:contains("Browser")),
     button:has(span:contains("browser")),
@@ -152,6 +160,51 @@ export function Providers({ children }: { children: React.ReactNode }) {
     button:has(img[alt="Abstract"]),
     button:has(span:contains("Abstract")) {
       display: flex !important;
+    }
+    
+    /* Style wallet buttons with brown theme */
+    .sc-hIUJlX,
+    button[class*="sc-hIUJlX"] {
+      background-color: #3A1F16 !important;
+      color: white !important;
+      border: 2px solid #3A1F16 !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+    
+    /* Hover effect for buttons */
+    .sc-hIUJlX:hover,
+    button[class*="sc-hIUJlX"]:hover {
+      background-color: #5a3a2f !important;
+      transform: translateY(-2px) !important;
+    }
+    
+    /* Active effect for buttons */
+    .sc-hIUJlX:active,
+    button[class*="sc-hIUJlX"]:active {
+      transform: translateY(1px) !important;
+    }
+
+    /* Target wallet buttons to ensure proper styling */
+    div.sc-gFVvzn button,
+    div.sc-ggpjZQ button {
+      background-color: #3A1F16 !important;
+      color: white !important;
+      border: 2px solid #3A1F16 !important;
+      margin-bottom: 8px !important;
+    }
+    
+    /* Style the close button */
+    button.sc-dLMFU,
+    button[aria-label="Close"] {
+      color: #3A1F16 !important;
+      background: transparent !important;
+      border: none !important;
+    }
+    
+    /* Ensure clean text styling */
+    div.sc-jlZhew {
+      color: #3A1F16 !important;
+      font-family: 'Super Lobster', cursive !important;
     }
   `;
 
