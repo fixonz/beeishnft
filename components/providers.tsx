@@ -89,7 +89,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   // Custom CSS to ensure modal is compact and centered
   // This will be injected into the page
   const modalCss = `
-    /* Fixed Shadow Box Styles - Completely Override */
+    /* Fixed Shadow Box Styles - Completely Override - Only in the wallet selection menu */
     .sc-gFqAkR {
       box-shadow: none !important;
       -webkit-box-shadow: none !important;
@@ -102,17 +102,17 @@ export function Providers({ children }: { children: React.ReactNode }) {
       background: #FFB949 !important;
     }
     
-    /* Remove the shadow container completely */
+    /* Remove the shadow container completely - Only in the wallet selection menu */
     .sc-dhKdcB {
       display: none !important;
     }
     
-    /* Hide the transform container causing shadows */
+    /* Hide the transform container causing shadows - Only in the wallet selection menu */
     div[style*="pointer-events: none"][style*="transform: translateX(-50%)"] {
       display: none !important;
     }
     
-    /* Reset any unwanted borders or elements */
+    /* Reset any unwanted borders or elements - Only in the wallet selection menu */
     .sc-gFqAkR::before,
     .sc-gFqAkR::after,
     .sc-kpDqfm::before,
@@ -121,97 +121,33 @@ export function Providers({ children }: { children: React.ReactNode }) {
       content: none !important;
     }
     
-    /* Fix the inner container */
+    /* Fix the inner container - Only in the wallet selection menu */
     .sc-kpDqfm {
       border-radius: 8px !important;
       overflow: hidden !important;
       box-shadow: none !important;
     }
     
-    /* Hide all wallet options by default */
-    .sc-ggpjZQ button {
-      display: none !important;
-    }
-    
-    /* Show only Abstract, Browser Wallet, and WalletConnect */
-    button:has(span:contains("Abstract")),
-    button:has(img[alt*="Abstract"]),
-    button:has(img[src*="abstract"]),
-    button:has(span:contains("Browser")),
-    button:has(img[alt*="Browser"]),
-    button:has(img[src*="browser"]),
-    button:has(span:contains("WalletConnect")),
-    button:has(img[alt*="WalletConnect"]),
-    button:has(img[src*="walletconnect"]) {
-      display: flex !important;
-    }
-    
-    /* Style wallet buttons with brown theme */
-    .sc-hIUJlX,
-    button[class*="sc-hIUJlX"] {
-      background-color: #3A1F16 !important;
-      color: white !important;
-      border: 2px solid #3A1F16 !important;
-      transition: all 0.2s ease-in-out !important;
-    }
-    
-    /* Hover effect for buttons */
-    .sc-hIUJlX:hover,
-    button[class*="sc-hIUJlX"]:hover {
-      background-color: #5a3a2f !important;
-      transform: translateY(-2px) !important;
-    }
-    
-    /* Active effect for buttons */
-    .sc-hIUJlX:active,
-    button[class*="sc-hIUJlX"]:active {
-      transform: translateY(1px) !important;
-    }
-
-    /* Target wallet buttons to ensure proper styling */
-    div.sc-gFVvzn button,
-    div.sc-ggpjZQ button {
-      background-color: #3A1F16 !important;
-      color: white !important;
-      border: 2px solid #3A1F16 !important;
-      margin-bottom: 8px !important;
-    }
-    
-    /* Style the close button */
-    button.sc-dLMFU,
-    button[aria-label="Close"] {
-      color: #3A1F16 !important;
-      background: transparent !important;
-      border: none !important;
-    }
-    
-    /* Ensure clean text styling */
-    div.sc-jlZhew {
-      color: #3A1F16 !important;
-      font-family: 'Super Lobster', cursive !important;
-    }
-    
-    /* Style any buttons inside modals */
-    div[class*="sc-"] button {
-      color: white !important;
-      background-color: #3A1F16 !important;
-      border: 2px solid #3A1F16 !important;
-    }
-    
-    /* Explicitly make disconnect visible and styled */
-    div[class*="sc-"] a:has(span:contains("Disconnect")),
-    div[class*="sc-"] button:has(span:contains("Disconnect")) {
-      display: flex !important;
-      background-color: #3A1F16 !important;
-      color: white !important;
-      border: 2px solid #3A1F16 !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-    
-    /* Hide "more available" text */
+    /* Target additional wallets text - Only in the wallet selection menu */
     .sc-kAkpmW {
       display: none !important;
+    }
+    
+    /* ONLY hide wallet buttons beyond the first two in the wallet selection dialog */
+    div[class*="cwHptR"] button:nth-child(n+3),  /* Target the wallet list container */
+    .sc-ggpjZQ button:nth-child(n+3) {
+      display: none !important;
+    }
+    
+    /* Important: Preserve connected wallet menu and disconnect button */
+    /* This ensures the disconnect functionality remains available */
+    div[class*="connectkit-address"],
+    div[class*="connectkit-connected-container"],
+    button[class*="connectkit-disconnect"],
+    div[class*="connectkit-account"] {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
   `;
 
