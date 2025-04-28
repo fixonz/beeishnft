@@ -402,11 +402,11 @@ export default function RevealNFT() {
             Free Your Bee!
           </h2>
           {/* Grid for displayed NFTs */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6 overflow-y-auto max-h-[400px]">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-6 overflow-y-auto max-h-[60vh] pr-2 pb-2">
             {displayedNfts.map((nft: BeeishNFT) => (
               <motion.div
                 key={nft.tokenId}
-                className={`p-2 border-4 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200 scale-105 shadow-lg' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500 hover:scale-102'}`}
+                className={`p-1 border-2 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200 scale-105 shadow-lg' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500 hover:scale-102'}`}
                 onClick={() => setSelectedNFT(nft)}
                 whileHover={{ scale: selectedNFT?.tokenId === nft.tokenId ? 1.05 : 1.02 }}
                 layout
@@ -416,10 +416,10 @@ export default function RevealNFT() {
                   alt={nft.name}
                   width={200}
                   height={200}
-                  className="w-full h-auto object-cover rounded-md mb-2"
+                  className="w-full h-auto object-cover rounded-md mb-1"
                   unoptimized
                 />
-                <p className="text-center text-sm font-semibold text-[#3A1F16]">{nft.name}</p>
+                <p className="text-center text-xs font-semibold text-[#3A1F16] truncate">{nft.name}</p>
                 <p className="text-center text-xs text-gray-600">Click to Select</p>
               </motion.div>
             ))}
@@ -514,7 +514,7 @@ export default function RevealNFT() {
     }
 
     return (
-      <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] overflow-y-auto">
+      <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] overflow-hidden">
         <h2
           className="text-xl font-bold text-center mb-4 bg-bee-light-yellow pt-2"
           style={{
@@ -527,7 +527,7 @@ export default function RevealNFT() {
         </h2>
 
         {revealedNFTs.length > 0 ? (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch overflow-y-auto max-h-[60vh] pr-2 pb-2">
             {revealedNFTs.map((nft: RevealedNftData) => (
               <motion.div
                 key={nft.tokenId}
