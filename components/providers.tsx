@@ -128,48 +128,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       box-shadow: none !important;
     }
     
-    /* Target additional wallets text */
-    .sc-kAkpmW {
-      display: none !important;
-    }
-    
-    /* Explicitly hide unwanted wallets by name/logo */
-    button:has(span:contains("Phantom")),
-    button:has(img[alt="Phantom"]),
-    button:has(img[alt*="phantom"]),
-    button:has(img[src*="phantom"]),
-    button:has(span:contains("Trust")),
-    button:has(span:contains("Trust Wallet")),
-    button:has(img[alt="Trust Wallet"]),
-    button:has(img[alt*="Trust"]),
-    button:has(img[src*="trust"]),
-    button:has(span:contains("Brave")),
-    button:has(span:contains("Brave Wallet")),
-    button:has(img[alt="Brave Wallet"]),
-    button:has(img[alt*="Brave"]),
-    button:has(img[src*="brave"]) {
-      display: none !important;
-    }
-    
-    /* Hide by button text content directly - except Browser wallet */
-    button span:contains("Trust"),
-    button span:contains("Brave"),
-    button span:contains("Phantom") {
-      display: none !important;
-    }
-    
-    /* RENAME Browser Wallet to MetaMask */
-    button span:contains("Browser") {
-      font-size: 0 !important;
-    }
-    
-    button span:contains("Browser")::before {
-      content: "MetaMask" !important;
-      font-size: 16px !important;
-      visibility: visible !important;
-      display: inline !important;
-    }
-    
     /* Style wallet buttons with brown theme */
     .sc-hIUJlX,
     button[class*="sc-hIUJlX"] {
@@ -215,17 +173,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
       font-family: 'Super Lobster', cursive !important;
     }
     
-    /* Show only first two wallet buttons, hide the rest */
-    div.sc-gFVvzn > div.sc-ggpjZQ > button:nth-child(n+3) {
-      display: none !important; 
+    /* Style any buttons inside modals */
+    div[class*="sc-"] button {
+      color: white !important;
+      background-color: #3A1F16 !important;
+      border: 2px solid #3A1F16 !important;
     }
     
-    /* Ensure Abstract and Browser/MetaMask are visible */
-    div.sc-gFVvzn > div.sc-ggpjZQ > button:first-child,
-    div.sc-gFVvzn > div.sc-ggpjZQ > button:nth-child(2),
-    button:has(span:contains("Abstract")),
-    button:has(span:contains("Browser")) {
+    /* Explicitly make disconnect visible and styled */
+    div[class*="sc-"] a:has(span:contains("Disconnect")),
+    div[class*="sc-"] button:has(span:contains("Disconnect")) {
       display: flex !important;
+      background-color: #3A1F16 !important;
+      color: white !important;
+      border: 2px solid #3A1F16 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
   `;
 
