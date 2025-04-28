@@ -137,6 +137,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
     .sc-ggpjZQ button:nth-child(n+3) {
       display: none !important;
     }
+    
+    /* Hide browser wallet if it appears */
+    button:has(span:contains("Browser")),
+    button:has(span:contains("browser")),
+    button:has(img[alt="Browser Wallet"]),
+    button:has(img[alt*="Browser"]) {
+      display: none !important;
+    }
+    
+    /* Ensure MetaMask and Abstract are visible */
+    button:has(img[alt="MetaMask"]),
+    button:has(span:contains("MetaMask")),
+    button:has(img[alt="Abstract"]),
+    button:has(span:contains("Abstract")) {
+      display: flex !important;
+    }
   `;
 
   return (

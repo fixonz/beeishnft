@@ -1,6 +1,6 @@
 import { createConfig, http } from 'wagmi'
 import { abstract as abstractMainnet, mainnet, sepolia } from 'wagmi/chains'
-import { injected } from 'wagmi/connectors'
+import { injected, metaMask } from 'wagmi/connectors'
 import { abstractWalletConnector } from "@abstract-foundation/agw-react/connectors"
 
 // Retrieve WalletConnect Project ID from environment variables
@@ -16,7 +16,8 @@ export const config = createConfig({
   chains: [abstractMainnet, mainnet, sepolia], // Include Abstract mainnet and standard chains
   connectors: [
     abstractWalletConnector(), // AGW Connector
-    injected(),               // Metamask, etc.
+    metaMask(),                // Specifically MetaMask
+    // injected(),             // Commented out generic injected
     // Add walletConnect, coinbaseWallet etc. if needed, using the projectId
   ],
   transports: {
