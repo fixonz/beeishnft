@@ -1,13 +1,13 @@
 import { createConfig, http } from 'wagmi'
 import { abstract as abstractMainnet, mainnet, sepolia } from 'wagmi/chains'
-import { injected, metaMask } from 'wagmi/connectors'
+import { injected, walletConnect } from 'wagmi/connectors'
 import { abstractWalletConnector } from "@abstract-foundation/agw-react/connectors"
 
 // Retrieve WalletConnect Project ID from environment variables
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID'
 
-if (!projectId) {
-  console.warn("WalletConnect Project ID not found. WalletConnect connections may fail.")
+if (!projectId || projectId === 'YOUR_PROJECT_ID') {
+  console.warn("WalletConnect Project ID not found or not set. WalletConnect connections may fail.")
   // Optionally throw an error if WalletConnect is critical
   // throw new Error("WalletConnect Project ID is missing from environment variables.");
 }
@@ -16,9 +16,8 @@ export const config = createConfig({
   chains: [abstractMainnet, mainnet, sepolia], // Include Abstract mainnet and standard chains
   connectors: [
     abstractWalletConnector(), // AGW Connector
-    metaMask(),                // Specifically MetaMask
-    // injected(),             // Commented out generic injected
-    // Add walletConnect, coinbaseWallet etc. if needed, using the projectId
+    injected(),                // Browser extension wallets (MetaMask, etc)
+    walletConnect({ projectId }), // WalletConnect
   ],
   transports: {
     [abstractMainnet.id]: http(),

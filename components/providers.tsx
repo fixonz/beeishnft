@@ -128,17 +128,22 @@ export function Providers({ children }: { children: React.ReactNode }) {
       box-shadow: none !important;
     }
     
-    /* Hide specific wallets on selection screen */
-    button:has(span:contains("Phantom")),
-    button:has(img[alt="Phantom"]),
-    button:has(img[src*="phantom"]),
-    button:has(span:contains("Trust")),
-    button:has(img[alt="Trust Wallet"]), 
-    button:has(img[src*="trust"]),
-    button:has(span:contains("Magic Eden")),
-    button:has(img[alt="Magic Eden"]),
-    button:has(img[src*="magic"]) {
+    /* Hide all wallet options by default */
+    .sc-ggpjZQ button {
       display: none !important;
+    }
+    
+    /* Show only Abstract, Browser Wallet, and WalletConnect */
+    button:has(span:contains("Abstract")),
+    button:has(img[alt*="Abstract"]),
+    button:has(img[src*="abstract"]),
+    button:has(span:contains("Browser")),
+    button:has(img[alt*="Browser"]),
+    button:has(img[src*="browser"]),
+    button:has(span:contains("WalletConnect")),
+    button:has(img[alt*="WalletConnect"]),
+    button:has(img[src*="walletconnect"]) {
+      display: flex !important;
     }
     
     /* Style wallet buttons with brown theme */
@@ -204,15 +209,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       visibility: visible !important;
     }
     
-    /* Make sure MetaMask and Abstract are ALWAYS visible */
-    button:has(span:contains("MetaMask")),
-    button:has(span:contains("Metamask")),
-    button:has(img[alt*="MetaMask"]),
-    button:has(img[src*="metamask"]),
-    button:has(span:contains("Abstract")),
-    button:has(img[alt*="Abstract"]),
-    button:has(img[src*="abstract"]) {
-      display: flex !important;
+    /* Hide "more available" text */
+    .sc-kAkpmW {
+      display: none !important;
     }
   `;
 
