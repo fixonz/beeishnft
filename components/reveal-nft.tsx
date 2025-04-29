@@ -43,6 +43,8 @@ export default function RevealNFT() {
   const [isMintModalOpen, setIsMintModalOpen] = useState(false)
   // Add state for pagination
   const [currentPage, setCurrentPage] = useState(1);
+  // Add state for revealed NFTs pagination
+  const [revealedPage, setRevealedPage] = useState(1);
 
   // Check if we're on mobile
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -99,6 +101,11 @@ export default function RevealNFT() {
   useEffect(() => {
     setCurrentPage(1);
   }, [nfts]);
+
+  // Reset revealed page when revealed NFTs change
+  useEffect(() => {
+    setRevealedPage(1);
+  }, [revealedNFTs]);
 
   // Extract token ID from NFT name regardless of format
   const extractTokenId = (name: string): string => {
@@ -292,24 +299,35 @@ export default function RevealNFT() {
     )
   }
 
+  // Fixed container component for consistent sizing
+  const FixedContainer = ({ children }: { children: React.ReactNode }) => (
+    <div className="bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16]" style={{ height: '550px', overflow: 'hidden' }}>
+      <div className="p-4 w-full h-full flex flex-col">
+        {children}
+      </div>
+    </div>
+  );
+
   // Render the unrevealed NFTs section
   const renderUnrevealedSection = () => {
     if (!isConnected) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
-          <p className="text-[#3A1F16] mb-4 text-center font-semibold text-lg">
-            Please connect your wallet
-          </p>
-          <p className="text-[#3A1F16] text-center text-sm">
-            (Use the button in the header to connect and free your bees!)
-          </p>
-        </div>
+        <FixedContainer>
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <p className="text-[#3A1F16] mb-4 text-center font-semibold text-lg">
+              Please connect your wallet
+            </p>
+            <p className="text-[#3A1F16] text-center text-sm">
+              (Use the button in the header to connect and free your bees!)
+            </p>
+          </div>
+        </FixedContainer>
       )
     }
 
     if (isRevealing) {
       return (
-        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
+        <FixedContainer>
           <MultiStepReveal
             tokenId={selectedNFT!.tokenId}
             address={address!}
@@ -317,14 +335,14 @@ export default function RevealNFT() {
             onComplete={handleRevealComplete}
             onCancel={cancelReveal}
           />
-        </div>
+        </FixedContainer>
       )
     }
 
     if (showRevealedNFT) {
       return (
-        <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
-          <div className="flex flex-col items-center">
+        <FixedContainer>
+          <div className="flex-1 flex flex-col items-center">
             <motion.h3
               className="text-2xl font-bold text-center mb-4 text-[#3A1F16]"
               style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
@@ -390,15 +408,17 @@ export default function RevealNFT() {
               </CustomButton>
             </motion.div>
           </div>
-        </div>
+        </FixedContainer>
       )
     }
 
     if (loading) {
       return (
-        <div className="flex justify-center items-center h-[500px] bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16]">
-          <Loader2 className="h-12 w-12 animate-spin text-[#3A1F16]" />
-        </div>
+        <FixedContainer>
+          <div className="flex-1 flex justify-center items-center">
+            <Loader2 className="h-12 w-12 animate-spin text-[#3A1F16]" />
+          </div>
+        </FixedContainer>
       )
     }
 
@@ -414,12 +434,15 @@ export default function RevealNFT() {
       // --- End Pagination Logic ---
 
       return (
-        <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
-          <h2 className="text-center text-3xl font-bold text-[#3A1F16] mb-6 custom-button-text">
+        <FixedContainer>
+          <h2 
+            className="text-center text-3xl font-bold text-[#3A1F16] mb-4"
+            style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
+          >
             Free Your Bee!
           </h2>
           {/* Grid for displayed NFTs */}
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-6 overflow-y-auto" style={{ height: "330px" }}>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "330px" }}>
             {displayedNfts.map((nft: BeeishNFT) => (
               <div
                 key={nft.tokenId}
@@ -451,7 +474,7 @@ export default function RevealNFT() {
 
           {/* --- Pagination Controls --- */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-4 mb-6">
+            <div className="flex justify-center items-center gap-4 mb-4">
               <CustomButton 
                 variant="blank" 
                 onClick={goToPreviousPage} 
@@ -475,7 +498,7 @@ export default function RevealNFT() {
           )}
           {/* --- End Pagination Controls --- */}
 
-          <div className="flex justify-center">
+          <div className="mt-auto flex justify-center">
             <CustomButton
               variant="mint"
               className="w-full md:w-[200px] relative overflow-hidden group"
@@ -488,7 +511,7 @@ export default function RevealNFT() {
           </div>
 
           {selectedNFT && !isRevealing && (
-            <div className="mt-8 flex flex-col items-center gap-4">
+            <div className="mt-4 flex flex-col items-center gap-2">
               <p className="text-center text-[#3A1F16]">
                 Press the button to free your bee from the honey!
               </p>
@@ -502,27 +525,29 @@ export default function RevealNFT() {
               </div>
             </div>
           )}
-        </div>
+        </FixedContainer>
       )
     }
 
     return (
-      <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16] flex flex-col items-center justify-center min-h-[500px]">
-        <p className="text-center text-[#3A1F16] font-medium mb-4">
-          {status || "No unrevealed BEEISH NFTs found in your wallet"}
-        </p>
-        {revealedNFTs.length > 0 && (
-          <p className="text-center text-[#3A1F16]">
-            You've already freed all your bees! {/* Show a button to switch to Freed Bees tab */}
-            <button 
-              className="ml-2 underline font-bold hover:text-amber-700"
-              onClick={() => setActiveTab("revealed")}
-            >
-              View your freed bees
-            </button>
+      <FixedContainer>
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <p className="text-center text-[#3A1F16] font-medium mb-4">
+            {status || "No unrevealed BEEISH NFTs found in your wallet"}
           </p>
-        )}
-      </div>
+          {revealedNFTs.length > 0 && (
+            <p className="text-center text-[#3A1F16]">
+              You've already freed all your bees! {/* Show a button to switch to Freed Bees tab */}
+              <button 
+                className="ml-2 underline font-bold hover:text-amber-700"
+                onClick={() => setActiveTab("revealed")}
+              >
+                View your freed bees
+              </button>
+            </p>
+          )}
+        </div>
+      </FixedContainer>
     )
   }
 
@@ -530,19 +555,20 @@ export default function RevealNFT() {
   const renderRevealedSection = () => {
     if (!isConnected) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
-          <p className="text-[#3A1F16] mb-4 text-center font-semibold">Connect your wallet to see your freed bees!</p>
-          <p>(Connect Button Removed)</p>
-        </div>
+        <FixedContainer>
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <p className="text-[#3A1F16] mb-4 text-center font-semibold">Connect your wallet to see your freed bees!</p>
+            <p>(Connect Button Removed)</p>
+          </div>
+        </FixedContainer>
       )
     }
 
     return (
-      <div className="bg-bee-light-yellow p-4 rounded-lg border-4 border-[#3A1F16] min-h-[500px]">
+      <FixedContainer>
         <h2
-          className="text-xl font-bold text-center mb-4 bg-bee-light-yellow pt-2"
+          className="text-center text-3xl font-bold text-[#3A1F16] mb-4"
           style={{
-            color: "#3A1F16",
             fontFamily: "Super Lobster, cursive, sans-serif",
             textShadow: "none",
           }}
@@ -551,36 +577,75 @@ export default function RevealNFT() {
         </h2>
 
         {revealedNFTs.length > 0 ? (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch overflow-y-auto" style={{ height: "330px" }}>
-            {revealedNFTs.map((nft: RevealedNftData) => (
-              <div
-                key={nft.tokenId}
-                className="w-full border-2 border-[#3A1F16] rounded-lg overflow-hidden bg-white hover:border-amber-600 flex flex-col"
-                style={{ aspectRatio: "1/1.15" }}
-              >
-                <div className="flex-1 w-full" style={{ aspectRatio: "1/1" }}>
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={nft.image || "/placeholder.svg"}
-                      alt={`NFT #${nft.tokenId}`}
-                      fill
-                      className="object-contain"
-                    />
+          <>
+            {/* --- Pagination Logic for Revealed NFTs --- */}
+            {(() => {
+              const totalRevealedPages = Math.ceil(revealedNFTs.length / ITEMS_PER_PAGE);
+              const startRevealedIndex = (revealedPage - 1) * ITEMS_PER_PAGE;
+              const endRevealedIndex = startRevealedIndex + ITEMS_PER_PAGE;
+              const displayedRevealedNfts = revealedNFTs.slice(startRevealedIndex, endRevealedIndex);
+              
+              return (
+                <>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch overflow-y-auto" style={{ height: "330px" }}>
+                    {displayedRevealedNfts.map((nft: RevealedNftData) => (
+                      <div
+                        key={nft.tokenId}
+                        className="w-full border-2 border-[#3A1F16] rounded-lg overflow-hidden bg-white hover:border-amber-600 flex flex-col"
+                        style={{ aspectRatio: "1/1.15" }}
+                      >
+                        <div className="flex-1 w-full" style={{ aspectRatio: "1/1" }}>
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={nft.image || "/placeholder.svg"}
+                              alt={`NFT #${nft.tokenId}`}
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        </div>
+                        <div className="bg-[#3A1F16] p-1 w-full min-h-[24px] flex items-center justify-center">
+                          <p
+                            className="text-white text-center font-medium truncate text-xs w-full"
+                            style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
+                          >
+                            BEEISH #{nft.tokenId}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-                <div className="bg-[#3A1F16] p-1 w-full min-h-[24px] flex items-center justify-center">
-                  <p
-                    className="text-white text-center font-medium truncate text-xs w-full"
-                    style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
-                  >
-                    BEEISH #{nft.tokenId}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+
+                  {/* --- Pagination Controls for Revealed NFTs --- */}
+                  {totalRevealedPages > 1 && (
+                    <div className="flex justify-center items-center gap-4 mt-4">
+                      <CustomButton 
+                        variant="blank" 
+                        onClick={() => setRevealedPage((prev) => Math.max(1, prev - 1))} 
+                        disabled={revealedPage === 1}
+                        className="w-auto px-4 h-10"
+                      >
+                        Previous
+                      </CustomButton>
+                      <span className="text-[#3A1F16] font-semibold">
+                        Page {revealedPage} of {totalRevealedPages}
+                      </span>
+                      <CustomButton 
+                        variant="blank" 
+                        onClick={() => setRevealedPage((prev) => Math.min(totalRevealedPages, prev + 1))} 
+                        disabled={revealedPage === totalRevealedPages}
+                        className="w-auto px-4 h-10"
+                      >
+                        Next
+                      </CustomButton>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </>
         ) : (
-          <div className="flex flex-col items-center justify-center" style={{ height: "330px" }}>
+          <div className="flex-1 flex flex-col items-center justify-center" style={{ height: "330px" }}>
             <p className="text-center text-[#3A1F16]">You haven't freed any bees yet!</p>
             <p className="text-center text-[#3A1F16] mt-2">
               {isMobile
@@ -591,13 +656,13 @@ export default function RevealNFT() {
         )}
 
         {revealedNFTs.length > 0 && (
-          <div className="mt-4 text-center bg-bee-light-yellow pb-2">
+          <div className="mt-auto text-center">
             <p className="text-[#3A1F16] text-sm">
               Your freed bees are saved in your browser. They will appear here when you return.
             </p>
           </div>
         )}
-      </div>
+      </FixedContainer>
     )
   }
 

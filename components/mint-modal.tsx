@@ -9,6 +9,7 @@ import { Loader2, CheckCircle2, AlertCircle } from "lucide-react"
 import { useAccount } from "wagmi"
 import CustomButton from "@/components/custom-button"
 import { useMintNFT } from "@/lib/mint-service"
+import { checkWhitelistedAddress } from "@/lib/whitelist-service"
 import Image from "next/image"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
@@ -23,9 +24,11 @@ export default function MintModal({ open, onClose }: MintModalProps) {
   const [error, setError] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [price, setPrice] = useState<bigint>(BigInt(0))
+  const [isWhitelisted, setIsWhitelisted] = useState<boolean | null>(null)
+  const [isCheckingWhitelist, setIsCheckingWhitelist] = useState(false)
   // Comment out Abstract hooks
   // const { login } = useLoginWithAbstract()
-  const { isConnected } = useAccount()
+  const { isConnected, address } = useAccount()
   // const { data: client } = useAbstractClient() // Assuming client is not strictly needed or obtained differently
   const { mintNFT, getPrice, pricePerNFT } = useMintNFT()
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -42,12 +45,42 @@ export default function MintModal({ open, onClose }: MintModalProps) {
     }
   }, [quantity, open, getPrice])
 
+  // Check whitelist status when the user connects their wallet
+  useEffect(() => {
+    const checkWhitelist = async () => {
+      if (isConnected && address) {
+        setIsCheckingWhitelist(true);
+        try {
+          const whitelisted = await checkWhitelistedAddress(address);
+          setIsWhitelisted(whitelisted);
+        } catch (err) {
+          console.error("Error checking whitelist:", err);
+          setIsWhitelisted(false);
+        } finally {
+          setIsCheckingWhitelist(false);
+        }
+      } else {
+        setIsWhitelisted(null);
+      }
+    };
+
+    if (open) {
+      checkWhitelist();
+    }
+  }, [isConnected, address, open]);
+
   const handleMint = async () => {
     if (!isConnected) {
       // Cannot automatically log in without the hook - prompt user
       setError("Please connect your wallet first."); 
       // await login()
       return
+    }
+
+    // Verify the address is whitelisted
+    if (isWhitelisted === false) {
+      setError("Your address is not on the whitelist.");
+      return;
     }
 
     // Commented out client check - Proceed with caution if client was essential
@@ -130,6 +163,37 @@ export default function MintModal({ open, onClose }: MintModalProps) {
                 </div>
               )}
 
+              {isConnected && isCheckingWhitelist && (
+                <div className="bg-bee-light-yellow p-3 md:p-4 rounded-lg border border-[#3A1F16] mb-2 md:mb-4 flex items-center justify-center">
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin text-dark" />
+                  <p className="text-dark font-medium text-sm md:text-base">
+                    Checking whitelist status...
+                  </p>
+                </div>
+              )}
+
+              {isConnected && !isCheckingWhitelist && isWhitelisted === false && (
+                <div className="bg-red-50 p-3 md:p-4 rounded-lg border border-red-200 mb-2 md:mb-4">
+                  <div className="flex items-start">
+                    <AlertCircle className="h-4 w-4 md:h-5 md:w-5 text-red-500 mr-2 mt-0.5" />
+                    <p className="text-red-800 font-medium text-sm md:text-base">
+                      Your address is not on the whitelist
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {isConnected && !isCheckingWhitelist && isWhitelisted === true && (
+                <div className="bg-green-50 p-3 md:p-4 rounded-lg border border-green-200 mb-2 md:mb-4">
+                  <div className="flex items-start">
+                    <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-green-500 mr-2 mt-0.5" />
+                    <p className="text-green-800 font-medium text-sm md:text-base">
+                      Your address is whitelisted!
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div className="bg-red-50 p-3 md:p-4 rounded-lg border border-red-200 mb-2 md:mb-4">
                   <div className="flex items-start">
@@ -206,7 +270,10 @@ export default function MintModal({ open, onClose }: MintModalProps) {
                     Cancel
                   </CustomButton>
                 </div>
-                <div onClick={handleMint} className={`cursor-pointer ${minting ? "opacity-70" : ""}`}>
+                <div 
+                  onClick={handleMint} 
+                  className={`cursor-pointer ${minting || isWhitelisted === false || isCheckingWhitelist ? "opacity-70" : ""}`}
+                >
                   {minting ? (
                     <div
                       className={`flex items-center justify-center ${buttonWidth} h-12 bg-[#FFB949] border-4 border-[#3A1F16] rounded-full`}
@@ -214,7 +281,11 @@ export default function MintModal({ open, onClose }: MintModalProps) {
                       <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin text-[#3A1F16]" />
                     </div>
                   ) : (
-                    <CustomButton variant="mint" className={buttonWidth} />
+                    <CustomButton 
+                      variant="mint" 
+                      className={buttonWidth}
+                      disabled={isWhitelisted === false || isCheckingWhitelist} 
+                    />
                   )}
                 </div>
               </>
