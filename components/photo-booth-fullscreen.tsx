@@ -148,6 +148,9 @@ const defaultBees: BeeishNFT[] = [
   },
 ];
 
+// 1. Set sensible default scale and position for NFT
+const DEFAULT_NFT_POSITION: NFTPosition = { x: 50, y: 50, scale: 1.0 };
+
 export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothFullscreenProps) {
   const { nfts, defaultNFT, loading, loadingDefaultNFT, error } = useBearishNFTs()
   const [selectedNFT, setSelectedNFT] = useState<BearishNFT | null>(null)
@@ -294,7 +297,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
   const scaleNFT = (increase: boolean) => {
     setNftPosition((prev) => ({
       ...prev,
-      scale: increase ? prev.scale + 0.1 : Math.max(prev.scale - 0.1, 0.3),
+      scale: increase ? Math.min(prev.scale + 0.1, 1.5) : Math.max(prev.scale - 0.1, 0.5),
     }))
   }
 
@@ -440,7 +443,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
     setSelectedNFT(nft)
     setBees([]) // Reset bees when selecting a new NFT
     setActiveBeeId(null)
-    setNftPosition({ x: 50, y: 50, scale: 1.2 }) // Center the NFT with larger scale
+    setNftPosition(DEFAULT_NFT_POSITION) // Center the NFT with default scale
   }
 
   // Use default NFT
@@ -462,7 +465,7 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
 
   // Center the NFT
   const centerNFT = () => {
-    setNftPosition({ x: 50, y: 50, scale: 1.2 })
+    setNftPosition(DEFAULT_NFT_POSITION)
   }
 
   // Use bee mascot instead of BEARISH NFT
@@ -940,6 +943,13 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
               ))}
             </div>
           </div>
+        </div>
+      )}
+      {selectedNFT && (
+        <div className="flex justify-center mt-4">
+          <CustomButton variant="blank" className="w-[160px]" onClick={centerNFT}>
+            Center NFT
+          </CustomButton>
         </div>
       )}
       <style jsx global>{`
