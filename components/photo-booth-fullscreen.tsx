@@ -847,28 +847,28 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
           <div className="w-[280px] flex-shrink-0 flex flex-col pt-4 overflow-y-auto"> {/* Width adjusted */}
             {selectedNFT && (
                  <div className="w-full p-4 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16]">
-                   <h4 className="font-bold mb-3 text-center text-lg text-[#3A1F16]" style={{ fontFamily }}>Customize</h4>
+                   <h4 className="font-bold mb-3 text-center text-base text-[#3A1F16]" style={{ fontFamily }}>Customize</h4>
                    {/* NFT Controls */}
                    <div className="grid grid-cols-2 gap-2 mb-3"> {/* Changed to 2 columns */}
-                     <CustomButton title="Move NFT" variant="blank" onClick={() => setIsMovingNFT(!isMovingNFT)}> <Move size={18}/> Move </CustomButton>
-                     <CustomButton title="Zoom In NFT" variant="blank" onClick={() => scaleNFT(true)}> <ZoomIn size={18}/> Zoom + </CustomButton>
-                     <CustomButton title="Zoom Out NFT" variant="blank" onClick={() => scaleNFT(false)}> <ZoomOut size={18}/> Zoom - </CustomButton>
-                     <CustomButton title="Center NFT" variant="blank" onClick={centerNFT}> <ImageIcon size={18}/> Center </CustomButton>
+                     <CustomButton title="Move NFT" variant="blank" className="text-xs" onClick={() => setIsMovingNFT(!isMovingNFT)}> <Move size={16}/> Move </CustomButton>
+                     <CustomButton title="Zoom In NFT" variant="blank" className="text-xs" onClick={() => scaleNFT(true)}> <ZoomIn size={16}/> Zoom + </CustomButton>
+                     <CustomButton title="Zoom Out NFT" variant="blank" className="text-xs" onClick={() => scaleNFT(false)}> <ZoomOut size={16}/> Zoom - </CustomButton>
+                     <CustomButton title="Center NFT" variant="blank" className="text-xs" onClick={centerNFT}> <ImageIcon size={16}/> Center </CustomButton>
                    </div>
 
                    {/* Placeholder for Bee Controls to prevent layout shift */}
-                   <div className="min-h-[160px]"> {/* Adjust min-height as needed based on actual control height */}
+                   <div className="min-h-[140px]"> {/* Reduced placeholder height */}
                      {activeBeeId !== null && (
                         <div className="mb-3 p-3 border-2 border-[#3A1F16] rounded-md bg-white">
-                           <h5 className="font-semibold mb-2 text-center text-md text-[#3A1F16]" style={{ fontFamily }}>Selected Bee</h5>
+                           <h5 className="font-semibold mb-2 text-center text-sm text-[#3A1F16]" style={{ fontFamily }}>Selected Bee</h5>
                            <div className="grid grid-cols-2 gap-2"> {/* Changed to 2 columns */}
-                              <CustomButton title="Move Bee" variant="blank" onClick={() => { /* Dragging handled by mouse down */ }}> <Move size={18}/> Move </CustomButton>
-                              <CustomButton title="Zoom In Bee" variant="blank" onClick={() => scaleBee(true)}> <ZoomIn size={18}/> + </CustomButton>
-                              <CustomButton title="Zoom Out Bee" variant="blank" onClick={() => scaleBee(false)}> <ZoomOut size={18}/> - </CustomButton>
-                              <CustomButton title="Rotate Clockwise" variant="blank" onClick={() => rotateBee(true)}> <RotateCw size={18}/> Rot + </CustomButton>
-                              <CustomButton title="Rotate Counter-Clockwise" variant="blank" onClick={() => rotateBee(false)}> <RotateCcw size={18}/> Rot - </CustomButton>
-                              <CustomButton title="Flip Bee" variant="blank" onClick={flipBee}> <FlipHorizontal size={18}/> Flip </CustomButton>
-                              <CustomButton title="Remove Bee" variant="blank" className="text-red-600 hover:text-red-800 col-span-2" onClick={removeBee}> Remove Bee </CustomButton> {/* Span 2 cols */}
+                              <CustomButton title="Move Bee" variant="blank" className="text-xs" onClick={() => { /* Dragging handled by mouse down */ }}> <Move size={16}/> Move </CustomButton>
+                              <CustomButton title="Zoom In Bee" variant="blank" className="text-xs" onClick={() => scaleBee(true)}> <ZoomIn size={16}/> + </CustomButton>
+                              <CustomButton title="Zoom Out Bee" variant="blank" className="text-xs" onClick={() => scaleBee(false)}> <ZoomOut size={16}/> - </CustomButton>
+                              <CustomButton title="Rotate Clockwise" variant="blank" className="text-xs" onClick={() => rotateBee(true)}> <RotateCw size={16}/> Rot + </CustomButton>
+                              <CustomButton title="Rotate Counter-Clockwise" variant="blank" className="text-xs" onClick={() => rotateBee(false)}> <RotateCcw size={16}/> Rot - </CustomButton>
+                              <CustomButton title="Flip Bee" variant="blank" className="text-xs" onClick={flipBee}> <FlipHorizontal size={16}/> Flip </CustomButton>
+                              <CustomButton title="Remove Bee" variant="blank" className="text-red-600 hover:text-red-800 col-span-2 text-xs" onClick={removeBee}> Remove Bee </CustomButton> {/* Span 2 cols */}
                            </div>
                         </div>
                      )}
@@ -878,21 +878,21 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                    <div className="grid grid-cols-1 gap-3">
                       {/* Background Selector */}
                       <div>
-                        <label className="block font-semibold mb-1 text-sm text-[#3A1F16]" style={{ fontFamily }}>Background:</label>
+                        <label className="block font-semibold mb-1 text-xs text-[#3A1F16]" style={{ fontFamily }}>Background:</label>
                         <select
                           value={selectedBackground.id}
                           onChange={(e) => setSelectedBackground(backgrounds.find(bg => bg.id === e.target.value) || backgrounds[0])}
-                          className="w-full p-2 border-2 border-[#3A1F16] rounded-md bg-white"
+                          className="w-full p-2 border-2 border-[#3A1F16] rounded-md bg-white text-xs"
                         >
                           {backgrounds.map(bg => <option key={bg.id} value={bg.id}>{bg.name}</option>)}
                         </select>
                       </div>
                       {/* Bee Presets */}
                       <div>
-                        <label className="block font-semibold mb-1 text-sm text-[#3A1F16]" style={{ fontFamily }}>Bee Patterns:</label>
+                        <label className="block font-semibold mb-1 text-xs text-[#3A1F16]" style={{ fontFamily }}>Bee Patterns:</label>
                         <div className="grid grid-cols-2 gap-2">
                            {beePresets.map((preset) => (
-                              <CustomButton key={preset.id} variant="blank" onClick={() => applyBeePreset(preset.id)}>
+                              <CustomButton key={preset.id} variant="blank" className="text-xs" onClick={() => applyBeePreset(preset.id)}>
                                 {preset.name}
                               </CustomButton>
                            ))}
@@ -901,11 +901,11 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                       {/* Download Button */}
                       <CustomButton
                        variant="blank"
-                       className="w-full mt-2 bg-[#FFB949] hover:bg-amber-400 text-[#3A1F16] font-bold"
+                       className="w-full mt-2 bg-[#FFB949] hover:bg-amber-400 text-[#3A1F16] font-bold text-sm"
                        onClick={downloadImage}
                        disabled={isDownloading || !html2canvasLoaded}
                      >
-                       {isDownloading ? <Loader2 className="animate-spin mr-2"/> : <Camera size={18} className="mr-2"/>}
+                       {isDownloading ? <Loader2 className="animate-spin mr-2"/> : <Camera size={16} className="mr-2"/>}
                        {isDownloading ? "Downloading..." : "Download Image"}
                      </CustomButton>
                      {!html2canvasLoaded && <p className="text-xs text-center text-red-600 mt-1">Capture library loading...</p>}
