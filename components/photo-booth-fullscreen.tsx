@@ -4,6 +4,7 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { useBearishNFTs, type BearishNFT, getDefaultNFT } from "@/lib/bearish-api"
+import { useBeeishNFTs, type BeeishNFT, getDefaultBeeishNFT } from "@/lib/beeish-api"
 import CustomButton from "./custom-button"
 import {
   Loader2,
@@ -31,14 +32,16 @@ interface PhotoBoothFullscreenProps {
 // Define bee types
 type BeeType = "normal" | "zombie" | "robot"
 
-interface BeeOverlay {
+// Update BeeOverlay type
+type BeeOverlay = {
   id: number
   x: number
   y: number
   scale: number
   rotation: number
-  type: BeeType
   flipped: boolean
+  beeishNFT?: BeeishNFT // If present, use this NFT's image
+  type?: BeeType // Fallback to default bee type
 }
 
 interface NFTPosition {
@@ -148,6 +151,15 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
   const [activeTab, setActiveTab] = useState<"nft" | "bees">("nft")
   const [selectedBeeType, setSelectedBeeType] = useState<BeeType>("normal")
+  const [selectedBeeishNFTs, setSelectedBeeishNFTs] = useState<BeeishNFT[]>([])
+  const {
+    nfts: beeishNFTs,
+    total: beeishTotal,
+    page: beeishPage,
+    setPage: setBeeishPage,
+    loading: beeishLoading,
+    error: beeishError
+  } = useBeeishNFTs(20)
 
   // Font family based on device
   const fontFamily = isMobile
@@ -599,8 +611,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
           onTouchStart={(e) => handleBeeMouseDown(e, bee.id)}
         >
           <Image
-            src={beeImages[bee.type] || "/placeholder.svg"}
-            alt={`${bee.type} Bee`}
+            src={bee.beeishNFT?.image || beeImages[bee.type || "normal"] || "/placeholder.svg"}
+            alt={`${bee.type || "normal"} Bee`}
             width={BEE_SIZE * 2}
             height={BEE_SIZE * 2}
             className="pointer-events-none w-full h-full"
@@ -864,125 +876,32 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                             Choose Bee Type
                           </p>
                           <div className="grid grid-cols-3 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedBeeType("normal")
-                                if (activeBeeId !== null) changeBeeType("normal")
-                              }}
-                              className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
-                                (activeBeeId === null && selectedBeeType === "normal") ||
-                                (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "normal")
-                                  ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
-                                  : "bg-[#FFB949] hover:bg-amber-400"
-                              }`}
-                            >
-                              <div className="flex flex-col items-center">
-                                <div className="relative w-10 h-10">
-                                  <Image
-                                    src={beeImages.normal || "/placeholder.svg"}
-                                    alt="Normal Bee"
-                                    width={40}
-                                    height={40}
-                                    className="w-full h-full"
-                                  />
+                            {beeishNFTs.map((nft) => (
+                              <button
+                                key={nft.tokenId}
+                                type="button"
+                                onClick={() => setBees([...bees, { id: Date.now(), x: 50, y: 50, scale: 1, rotation: 0, flipped: false, beeishNFT: nft }])}
+                                className="p-2 border-2 border-[#3A1F16] rounded-lg text-center bg-[#FFB949] hover:bg-amber-400"
+                              >
+                                <div className="flex flex-col items-center">
+                                  <div className="relative w-10 h-10">
+                                    <Image
+                                      src={nft.image || "/images/bee-mascot.png"}
+                                      alt={nft.name}
+                                      width={40}
+                                      height={40}
+                                      className="w-full h-full"
+                                    />
+                                  </div>
+                                  <span
+                                    className="text-xs font-medium mt-1"
+                                    style={{ fontFamily }}
+                                  >
+                                    {nft.name}
+                                  </span>
                                 </div>
-                                <span
-                                  className={`${(
-                                    (activeBeeId === null && selectedBeeType === "normal") ||
-                                    (
-                                      activeBeeId !== null &&
-                                        bees.find((bee) => bee.id === activeBeeId)?.type === "normal"
-                                    )
-                                  )
-                                    ? "text-white"
-                                    : "text-[#3A1F16]"
-                                  } text-xs font-medium mt-1`}
-                                  style={{ fontFamily }}
-                                >
-                                  Normal
-                                </span>
-                              </div>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedBeeType("zombie")
-                                if (activeBeeId !== null) changeBeeType("zombie")
-                              }}
-                              className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
-                                (activeBeeId === null && selectedBeeType === "zombie") ||
-                                (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "zombie")
-                                  ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
-                                  : "bg-[#FFB949] hover:bg-amber-400"
-                              }`}
-                            >
-                              <div className="flex flex-col items-center">
-                                <div className="relative w-10 h-10">
-                                  <Image
-                                    src={beeImages.zombie || "/placeholder.svg"}
-                                    alt="Zombie Bee"
-                                    width={40}
-                                    height={40}
-                                    className="w-full h-full"
-                                  />
-                                </div>
-                                <span
-                                  className={`${(
-                                    (activeBeeId === null && selectedBeeType === "zombie") ||
-                                    (
-                                      activeBeeId !== null &&
-                                        bees.find((bee) => bee.id === activeBeeId)?.type === "zombie"
-                                    )
-                                  )
-                                    ? "text-white"
-                                    : "text-[#3A1F16]"
-                                  } text-xs font-medium mt-1`}
-                                  style={{ fontFamily }}
-                                >
-                                  Zombie
-                                </span>
-                              </div>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedBeeType("robot")
-                                if (activeBeeId !== null) changeBeeType("robot")
-                              }}
-                              className={`p-2 border-2 border-[#3A1F16] rounded-lg text-center ${
-                                (activeBeeId === null && selectedBeeType === "robot") ||
-                                (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "robot")
-                                  ? "bg-[#3A1F16] ring-2 ring-amber-500 text-white" // Brown background for selected
-                                  : "bg-[#FFB949] hover:bg-amber-400"
-                              }`}
-                            >
-                              <div className="flex flex-col items-center">
-                                <div className="relative w-10 h-10">
-                                  <Image
-                                    src={beeImages.robot || "/placeholder.svg"}
-                                    alt="Robot Bee"
-                                    width={40}
-                                    height={40}
-                                    className="w-full h-full"
-                                  />
-                                </div>
-                                <span
-                                  className={`${(
-                                    (activeBeeId === null && selectedBeeType === "robot") ||
-                                    (activeBeeId !== null && bees.find((bee) => bee.id === activeBeeId)?.type === "robot")
-                                  )
-                                    ? "text-white"
-                                    : "text-[#3A1F16]"
-                                  } text-xs font-medium mt-1`}
-                                  style={{ fontFamily }}
-                                >
-                                  Robot
-                                </span>
-                              </div>
-                            </button>
+                              </button>
+                            ))}
                           </div>
                         </div>
 
@@ -1145,9 +1064,9 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
 
                   <div className="bg-white p-6 rounded-lg border-4 border-[#3A1F16] overflow-y-auto">
                     <p className="text-dark font-medium text-lg mb-6 text-center" style={{ fontFamily }}>
-                      {nfts.length === 0 ? "You don't own any BEARISH NFTs yet." : "Choose an NFT to customize:"}
+                      {beeishNFTs.length === 0 ? "You don't own any BEARISH NFTs yet." : "Choose an NFT to customize:"}
                     </p>
-                    {nfts.length === 0 && (
+                    {beeishNFTs.length === 0 && (
                       <div className="grid md:grid-cols-2 gap-6 mb-6">
                         <div className="flex flex-col items-center">
                           <p className="text-dark font-medium text-lg mb-3 text-center" style={{ fontFamily }}>
@@ -1204,11 +1123,11 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     )}
 
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
-                      {nfts.map((nft) => (
+                      {beeishNFTs.map((nft) => (
                         <div
                           key={nft.tokenId}
                           className="aspect-square rounded-lg overflow-hidden cursor-pointer hover:ring-4 hover:ring-amber-500 transition-all border-4 border-[#3A1F16]"
-                          onClick={() => selectNFT(nft)}
+                          onClick={() => setBees([...bees, { id: Date.now(), x: 50, y: 50, scale: 1, rotation: 0, flipped: false, beeishNFT: nft }])}
                         >
                           <div className="relative w-full h-full">
                             <Image
