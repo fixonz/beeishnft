@@ -5,15 +5,14 @@ import { BEEISH_CONTRACT_ABI, BEEISH_CONTRACT_ADDRESS } from "./contract-abi"
 import { encodeFunctionData } from "viem"
 import { useAccount, useWalletClient } from "wagmi" // Import useWalletClient
 
-// Public mint parameters
-// These are simplified parameters for the public mint
-const PUBLIC_MINT_KEY = "0x0000000000000000000000000000000000000000000000000000000000000000" // Public mint key
-const PUBLIC_MINT_PROOF: string[] = [] // Empty proof for public mint
-const PUBLIC_MINT_AFFILIATE = "0x0000000000000000000000000000000000000000" // No affiliate
-const PUBLIC_MINT_SIGNATURE = "0x" // Empty signature
+// Updated mint parameters - removed whitelist and public mint references
+const MINT_KEY = "0x0000000000000000000000000000000000000000000000000000000000000000"
+const MINT_PROOF: string[] = []
+const MINT_AFFILIATE = "0x0000000000000000000000000000000000000000"
+const MINT_SIGNATURE = "0x"
 
-// Public mint price from the contract (0.004 ETH)
-const PUBLIC_MINT_PRICE = BigInt(4000000000000000) // 0.004 ETH in wei
+// Mint price from the contract (0.004 ETH)
+const MINT_PRICE = BigInt(4000000000000000) // 0.004 ETH in wei
 
 export interface MintParams {
   quantity: number
@@ -31,17 +30,17 @@ export function useMintNFT() {
     }
 
     try {
-      // Prepare mint function parameters for public mint
+      // Prepare mint function parameters
       const auth = {
-        key: PUBLIC_MINT_KEY,
-        proof: PUBLIC_MINT_PROOF,
+        key: MINT_KEY,
+        proof: MINT_PROOF,
       }
       const quantity = params.quantity
-      const affiliate = PUBLIC_MINT_AFFILIATE
-      const signature = PUBLIC_MINT_SIGNATURE
+      const affiliate = MINT_AFFILIATE
+      const signature = MINT_SIGNATURE
 
       // Calculate total price
-      const totalPrice = PUBLIC_MINT_PRICE * BigInt(quantity)
+      const totalPrice = MINT_PRICE * BigInt(quantity)
 
       console.log("Minting with parameters:", {
         auth,
@@ -94,12 +93,12 @@ export function useMintNFT() {
 
   // Get the price for the given quantity
   const getPrice = (quantity: number): bigint => {
-    return PUBLIC_MINT_PRICE * BigInt(quantity)
+    return MINT_PRICE * BigInt(quantity)
   }
 
   return {
     mintNFT,
     getPrice,
-    pricePerNFT: PUBLIC_MINT_PRICE,
+    pricePerNFT: MINT_PRICE,
   }
 }

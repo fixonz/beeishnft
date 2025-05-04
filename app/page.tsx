@@ -20,7 +20,6 @@ import FallbackFontLoader from "@/components/fallback-font-loader"
 import { ConnectKitButton } from "connectkit"
 import { useModal } from "connectkit"
 import { useAccount } from "wagmi"
-import Link from "next/link"
 
 export default function Home() {
   const router = useRouter()
@@ -128,9 +127,6 @@ export default function Home() {
                 <div onClick={handleFreeABee} className="cursor-pointer">
                   <CustomButton variant="mint" className="w-[120px] md:w-[180px]">free-A-BeE</CustomButton>
                 </div>
-                <Link href="/whitelist-check">
-                  <CustomButton variant="blank" className="w-[120px] md:w-[180px]">Whitelist Check</CustomButton>
-                </Link>
                 <div className={disabledButtonStyle}>
                   <CustomButton variant="blank" className="w-[120px] md:w-[180px]">BeE-Dega</CustomButton>
                 </div>

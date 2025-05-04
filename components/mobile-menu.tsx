@@ -6,7 +6,6 @@ import { MenuIcon } from "lucide-react"
 import { ConnectKitButton } from "connectkit"
 import TwitterButton from "./twitter-button"
 import CustomButton from "./custom-button"
-import Link from "next/link"
 
 interface MobileMenuProps {
   onPhotoBoothClickAction: () => void
@@ -54,11 +53,6 @@ export default function MobileMenu({ onPhotoBoothClickAction, onFreeABeeClick }:
               free-A-BeE
             </CustomButton>
           </div>
-          <Link href="/whitelist-check" className="w-full">
-            <CustomButton variant="blank" className="w-full">
-              Whitelist Check
-            </CustomButton>
-          </Link>
           <div className="w-full opacity-50">
             <CustomButton variant="blank" className="w-full" disabled>
               Hive (Soon)
