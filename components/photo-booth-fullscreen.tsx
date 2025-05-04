@@ -162,7 +162,6 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
   const [isMovingNFT, setIsMovingNFT] = useState(false)
   const canvasCaptureRef = useRef<HTMLDivElement>(null)
   const canvasDisplayRef = useRef<HTMLDivElement>(null)
-  const controlsPanelRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
   const [usingDefaultNFT, setUsingDefaultNFT] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -212,40 +211,13 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
     }
   }, [selectedNFT])
 
-  // Effect to match panel height to canvas height - runs on NFT, tab, or bee changes
-  useEffect(() => {
-    const setPanelHeight = () => {
-      if (canvasDisplayRef.current && controlsPanelRef.current) {
-        const canvasHeight = canvasDisplayRef.current.offsetHeight;
-        // Only set height if canvasHeight is positive to avoid issues during render
-        if (canvasHeight > 0) {
-           controlsPanelRef.current.style.height = `${canvasHeight}px`;
-        }
-      }
-    }
-
-    // Set height initially and whenever dependencies change
-    if (selectedNFT) {
-      // Use requestAnimationFrame for potentially smoother updates after render
-      const id = requestAnimationFrame(setPanelHeight);
-      // Add resize listener
-      window.addEventListener("resize", setPanelHeight);
-
-      // Cleanup
-      return () => {
-        cancelAnimationFrame(id);
-        window.removeEventListener("resize", setPanelHeight);
-      };
-    }
-  }, [selectedNFT]); // Rerun when NFT changes
-
   // Add a new bee to the canvas
   const addBee = () => {
     const newBee: BeeOverlay = {
       id: Date.now(),
       x: 50, // center of canvas
       y: 50, // center of canvas
-      scale: 1,
+      scale: 0.5, // Start bees smaller
       rotation: 0,
       type: selectedBeeType,
       flipped: false, // Initialize as not flipped
@@ -711,108 +683,113 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
           </div>
         </div>
       ) : (
-        <div className="flex flex-row w-full max-w-[1400px] px-4 mx-auto h-full gap-4">
-          {/* Left: BEARISH NFT Selection */}
-          <div className="w-[250px] flex-shrink-0 flex flex-col items-center">
-            <h4 className="font-bold mb-2">Choose your BEARISH NFT</h4>
-            <div className="grid grid-cols-1 gap-4">
+        // Main 3-Column Layout Container
+        <div className="flex flex-row w-full max-w-[1600px] px-4 mx-auto h-[calc(100vh-100px)] gap-4"> {/* Increased max-width, adjusted height */}
+
+          {/* Left Column: BEARISH NFT Selection */}
+          <div className="w-[260px] flex-shrink-0 flex flex-col items-center pt-4 overflow-y-auto border-r-2 border-[#3A1F16] pr-4"> {/* Added border */}
+            <h4 className="font-bold mb-4 text-lg text-[#3A1F16]" style={{ fontFamily }}>Choose BEARISH</h4>
+            <div className="grid grid-cols-1 gap-4 w-full">
               {(nfts.length > 0 ? nfts : [defaultNFT]).filter((nft): nft is BearishNFT => nft !== null && nft !== undefined).map((nft) => (
                 <div
                   key={nft.tokenId}
                   className={`aspect-square rounded-lg overflow-hidden cursor-pointer border-4 ${selectedNFT?.tokenId === nft.tokenId ? "border-amber-500 ring-4 ring-amber-500" : "border-[#3A1F16]"}`}
                   onClick={() => selectNFT(nft)}
                 >
-                  <Image src={nft.image || "/images/bee-mascot.png"} alt={nft.name} fill className="object-cover" />
-                  <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] p-2">
-                    <p className="text-white text-sm truncate text-center">{nft.name}</p>
+                  <div className="relative w-full h-full">
+                    <Image src={nft.image || "/images/bee-mascot.png"} alt={nft.name} fill className="object-contain p-1 bg-white" /> {/* Ensure contain */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] p-1">
+                      <p className="text-white text-xs truncate text-center" style={{ fontFamily }}>{nft.name}</p>
+                    </div>
                   </div>
                 </div>
               ))}
+              {/* Add Bee Mascot option here if needed */}
+              <div
+                key="bee-mascot-selector"
+                className={`aspect-square rounded-lg overflow-hidden cursor-pointer border-4 ${selectedNFT?.tokenId === 'bee-mascot' ? "border-amber-500 ring-4 ring-amber-500" : "border-[#3A1F16]"}`}
+                onClick={handleUseBeeInstead}
+               >
+                 <div className="relative w-full h-full">
+                   <Image src="/images/bee-mascot.png" alt="BEEISH Mascot" fill className="object-contain p-1 bg-white"/>
+                   <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] p-1">
+                     <p className="text-white text-xs truncate text-center" style={{ fontFamily }}>BEEISH Mascot</p>
+                   </div>
+                 </div>
+               </div>
             </div>
             {isDemoMode && (
-              <div className="bg-yellow-100 text-yellow-900 p-2 rounded mt-2 text-center">
-                You don't own any BEARISH NFTs. Customizing the demo BEARISH NFT below!
+              <div className="bg-yellow-100 text-yellow-900 p-2 rounded mt-4 text-center text-sm w-full">
+                Using demo BEARISH NFT!
               </div>
             )}
           </div>
 
-          {/* Center: Main Canvas */}
-          <div className="flex-grow flex flex-col items-center justify-center">
-            {/* Place your main canvas and overlay controls here */}
+          {/* Center Column: Canvas and Controls */}
+          <div className="flex-grow flex flex-col items-center pt-4">
             {selectedNFT ? (
-              // Make this container fill the height provided by the parent and stretch items
-              <div className="flex flex-row w-full justify-center gap-4 h-full items-stretch">
-                {/* Canvas for editing - Assign ref */}
+              <>
+                {/* Canvas Area */}
                 <div
                   ref={canvasDisplayRef}
-                  className="aspect-square border-4 border-[#3A1F16] rounded-xl overflow-hidden"
+                  className="aspect-square border-4 border-[#3A1F16] rounded-xl overflow-hidden w-full max-w-[600px] mb-4" // Added overflow-hidden
                   style={{
                     backgroundColor: selectedBackground.color,
                     position: "relative",
+                    overflow: "hidden", // Explicitly hide overflow
                   }}
                 >
-                  {/* Inner canvas with fixed positioning - Assign renamed ref for capture */}
+                  {/* Inner canvas for capture */}
                   <div
                     ref={canvasCaptureRef}
-                    className="w-full relative"
+                    className="w-full h-full"
                     style={{
-                      height: "calc(100% + 50px)",
-                      marginTop: "-25px", // Center the extra height
                       position: "relative",
-                      overflow: "visible", // Allow content to overflow
-                      paddingTop: "50px",
-                      paddingBottom: "50px",
+                      overflow: "hidden",
                     }}
                   >
-                    {/* Base NFT image - draggable and scalable */}
+                    {/* Base NFT image */}
                     <div
                       className={`absolute cursor-move ${isMovingNFT ? "ring-2 ring-amber-500" : ""}`}
                       style={{
                         left: `${nftPosition.x}%`,
                         top: `${nftPosition.y}%`,
-                        width: 0,
-                        height: 0,
+                        width: '100%',
+                        height: '100%',
                         zIndex: 0,
                         display: "block",
                         visibility: "visible",
+                        transform: `translate(-50%, -50%) scale(${nftPosition.scale})`, // Apply scale here
+                        transformOrigin: "center",
                       }}
                       onMouseDown={handleNFTMouseDown}
                       onTouchStart={handleNFTMouseDown}
                     >
-                      <div
-                        style={{
-                          position: "absolute",
-                          transform: `translate(-50%, -50%) scale(${nftPosition.scale})`,
-                          transformOrigin: "center",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: "100%", // Force container width
-                          height: "100%", // Force container height
-                          maxWidth: "100%",
-                          maxHeight: "100%",
-                          visibility: "visible",
-                        }}
-                      >
+                      {/* Remove the inner scaling div - Image directly inside */}
                         <Image
                           src={selectedNFT.image || "/images/bee-mascot.png"}
                           alt={selectedNFT.name}
-                          width={400} // Base width, object-fit will handle scaling
-                          height={400} // Base height, object-fit will handle scaling
+                          width={500}
+                          height={500}
                           className="pointer-events-none"
                           style={{
-                            maxWidth: "none", // Allow object-fit to work without constraint here
-                            objectFit: "contain", // Ensure image fits within the container above
+                            position: "absolute", // Position image within the scaled container
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)', // Center image within its container
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                            objectFit: "contain",
                             display: "block",
                             visibility: "visible",
-                            width: "auto", // Let object-fit determine final size
-                            height: "auto", // Let object-fit determine final size
+                            width: "auto", 
+                            height: "auto",
                           }}
+                          priority
                         />
-                      </div>
                     </div>
 
-                    {/* Bee overlays - using SVG for better scaling */}
+                    {/* Bee overlays */}
                     {bees.map(renderBee)}
 
                     {/* Flash effect */}
@@ -826,138 +803,144 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                     )}
                   </div>
                 </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-center w-full h-full">
-                  <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16] max-w-4xl w-[95%] mx-auto overflow-y-auto max-h-[80vh]">
-                    <h3 className="text-2xl font-bold mb-4 text-primary text-center" style={{ fontFamily }}>
-                      Your BEARISH NFTs
-                    </h3>
 
-                    <div className="bg-white p-6 rounded-lg border-4 border-[#3A1F16] overflow-y-auto">
-                      <p className="text-dark font-medium text-lg mb-6 text-center" style={{ fontFamily }}>
-                        {revealedBeeishNFTs.length === 0 ? "You don't own any BEARISH NFTs yet." : "Choose an NFT to customize:"}
-                      </p>
-                      {revealedBeeishNFTs.length === 0 && (
-                        <div className="grid md:grid-cols-2 gap-6 mb-6">
-                          <div className="flex flex-col items-center">
-                            <p className="text-dark font-medium text-lg mb-3 text-center" style={{ fontFamily }}>
-                              Try with our demo BEARISH NFT:
-                            </p>
-                            <div className="flex justify-center">
-                              <div
-                                className="aspect-square w-64 max-w-full bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden cursor-pointer hover:border-amber-500 transition-all"
-                                onClick={handleUseDefaultNFT}
-                              >
-                                <div className="relative w-full h-full">
-                                  <Image
-                                    src={defaultNFT?.image || "/images/bee-mascot.png"}
-                                    alt={defaultNFT?.name || "BEARISH Demo NFT"}
-                                    fill
-                                    className="object-contain brightness-110 p-2"
-                                  />
-                                  <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] p-2">
-                                    <p className="text-white text-sm truncate text-center" style={{ fontFamily }}>
-                                      {defaultNFT?.name || "BEARISH Demo NFT"}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                {/* Controls Area */}
+                <div className="w-full max-w-[600px] p-4 bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16]">
+                  <h4 className="font-bold mb-3 text-center text-lg text-[#3A1F16]" style={{ fontFamily }}>Customize</h4>
 
-                          <div className="flex flex-col items-center">
-                            <p className="text-dark font-medium text-lg mb-3 text-center" style={{ fontFamily }}>
-                              Or use our BEEISH mascot:
-                            </p>
-                            <div className="flex justify-center">
-                              <div
-                                className="aspect-square w-64 max-w-full bg-white border-4 border-[#3A1F16] rounded-lg overflow-hidden cursor-pointer hover:border-amber-500 transition-all"
-                                onClick={handleUseBeeInstead}
-                              >
-                                <div className="relative w-full h-full">
-                                  <Image
-                                    src="/images/bee-mascot.png"
-                                    alt="BEEISH Mascot"
-                                    fill
-                                    className="object-contain brightness-110 p-2"
-                                  />
-                                  <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] p-2">
-                                    <p className="text-white text-sm truncate text-center" style={{ fontFamily }}>
-                                      BEEISH Mascot
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                  {/* NFT Controls */}
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    <CustomButton title="Move NFT" variant="blank" onClick={() => setIsMovingNFT(!isMovingNFT)}> <Move size={18}/> </CustomButton>
+                    <CustomButton title="Zoom In NFT" variant="blank" onClick={() => scaleNFT(true)}> <ZoomIn size={18}/> </CustomButton>
+                    <CustomButton title="Zoom Out NFT" variant="blank" onClick={() => scaleNFT(false)}> <ZoomOut size={18}/> </CustomButton>
+                     <CustomButton title="Center NFT" variant="blank" onClick={centerNFT}> Center </CustomButton>
+                  </div>
+
+
+                  {/* Bee Controls (only show if a bee is selected) */}
+                  {activeBeeId !== null && (
+                     <div className="mb-4 p-3 border-2 border-[#3A1F16] rounded-md bg-white">
+                        <h5 className="font-semibold mb-2 text-center text-md text-[#3A1F16]" style={{ fontFamily }}>Selected Bee</h5>
+                        <div className="grid grid-cols-3 gap-2">
+                           <CustomButton title="Move Bee" variant="blank" onClick={() => { /* Dragging is handled by mouse down */ }}> <Move size={18}/> </CustomButton>
+                           <CustomButton title="Zoom In Bee" variant="blank" onClick={() => scaleBee(true)}> <ZoomIn size={18}/> </CustomButton>
+                           <CustomButton title="Zoom Out Bee" variant="blank" onClick={() => scaleBee(false)}> <ZoomOut size={18}/> </CustomButton>
+                           <CustomButton title="Rotate Clockwise" variant="blank" onClick={() => rotateBee(true)}> <RotateCw size={18}/> </CustomButton>
+                           <CustomButton title="Rotate Counter-Clockwise" variant="blank" onClick={() => rotateBee(false)}> <RotateCcw size={18}/> </CustomButton>
+                           <CustomButton title="Flip Bee" variant="blank" onClick={flipBee}> <FlipHorizontal size={18}/> </CustomButton>
+                           <CustomButton title="Remove Bee" variant="blank" className="text-red-600 hover:text-red-800" onClick={removeBee}> Remove </CustomButton>
+                           {/* Add change type buttons here if needed, maybe based on defaultBees */}
                         </div>
-                      )}
+                     </div>
+                  )}
 
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
-                        {revealedBeeishNFTs.map((nft: BeeishNFT) => (
-                          <div
-                            key={nft.tokenId}
-                            className="aspect-square rounded-lg overflow-hidden cursor-pointer hover:ring-4 hover:ring-amber-500 transition-all border-4 border-[#3A1F16]"
-                            onClick={() => setBees([...bees, { id: Date.now(), x: 50, y: 50, scale: 1, rotation: 0, flipped: false, beeishNFT: nft }])}
-                          >
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={nft.image || "/images/bee-mascot.png"}
-                                alt={nft.name}
-                                fill
-                                className="object-cover brightness-110"
-                                style={{ objectFit: "contain", padding: "4px", backgroundColor: "#ffffff" }}
-                              />
-                              <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] p-2">
-                                <p className="text-white text-sm truncate text-center" style={{ fontFamily }}>
-                                  {nft.name}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                  {/* General Controls */}
+                  <div className="grid grid-cols-1 gap-3">
+                     {/* Background Selector */}
+                     <div>
+                       <label className="block font-semibold mb-1 text-sm text-[#3A1F16]" style={{ fontFamily }}>Background:</label>
+                       <select
+                         value={selectedBackground.id}
+                         onChange={(e) => setSelectedBackground(backgrounds.find(bg => bg.id === e.target.value) || backgrounds[0])}
+                         className="w-full p-2 border-2 border-[#3A1F16] rounded-md bg-white"
+                       >
+                         {backgrounds.map(bg => <option key={bg.id} value={bg.id}>{bg.name}</option>)}
+                       </select>
+                     </div>
+
+                     {/* Bee Presets */}
+                     <div>
+                       <label className="block font-semibold mb-1 text-sm text-[#3A1F16]" style={{ fontFamily }}>Bee Patterns:</label>
+                       <div className="grid grid-cols-2 gap-2">
+                          {beePresets.map((preset) => (
+                             <CustomButton key={preset.id} variant="blank" onClick={() => applyBeePreset(preset.id)}>
+                               {preset.name}
+                             </CustomButton>
+                          ))}
+                       </div>
+                     </div>
+
+
+                     {/* Download Button */}
+                     <CustomButton
+                      variant="blank"
+                      className="w-full mt-2 bg-[#FFB949] hover:bg-amber-400 text-[#3A1F16] font-bold"
+                      onClick={downloadImage}
+                      disabled={isDownloading || !html2canvasLoaded}
+                    >
+                      {isDownloading ? <Loader2 className="animate-spin mr-2"/> : <Camera size={18} className="mr-2"/>}
+                      {isDownloading ? "Downloading..." : "Download Image"}
+                    </CustomButton>
+                    {!html2canvasLoaded && <p className="text-xs text-center text-red-600 mt-1">Capture library loading...</p>}
+                    {downloadError && <p className="text-xs text-center text-red-600 mt-1">{downloadError}</p>}
                   </div>
                 </div>
               </>
+            ) : (
+              // Initial State: No NFT Selected - Show selection prompt in center
+              <div className="flex items-center justify-center w-full h-full">
+                 <div className="bg-bee-light-yellow p-6 rounded-lg border-4 border-[#3A1F16] text-center">
+                    <h3 className="text-2xl font-bold mb-4 text-[#3A1F16]" style={{ fontFamily }}>
+                      Welcome to the Photo Booth!
+                    </h3>
+                    <p className="text-lg text-[#3A1F16]" style={{ fontFamily }}>
+                       Please select a BEARISH NFT or the Mascot from the left column to begin.
+                    </p>
+                 </div>
+              </div>
             )}
           </div>
 
-          {/* Right: BEEISH NFT Selection */}
-          <div className="w-[250px] flex-shrink-0 flex flex-col items-center">
-            <h4 className="font-bold mb-2">Add your BEEISH bees</h4>
-            <div className="grid grid-cols-2 gap-2">
+          {/* Right Column: BEEISH NFT Selection */}
+          <div className="w-[260px] flex-shrink-0 flex flex-col items-center pt-4 overflow-y-auto border-l-2 border-[#3A1F16] pl-4"> {/* Added border */}
+            <h4 className="font-bold mb-4 text-lg text-[#3A1F16]" style={{ fontFamily }}>Add BEEISH</h4>
+            {beeishLoading && <Loader2 className="animate-spin my-4" />}
+            {beeishError && <p className="text-red-500 text-sm">{beeishError}</p>}
+            <div className="grid grid-cols-2 gap-3 w-full">
               {(revealedBeeishNFTs.length > 0 ? revealedBeeishNFTs : defaultBees).map((nft: BeeishNFT) => (
                 <button
                   key={nft.tokenId}
                   type="button"
-                  onClick={() => setBees([...bees, { id: Date.now(), x: 50, y: 50, scale: 1, rotation: 0, flipped: false, beeishNFT: nft }])}
-                  className="aspect-square rounded-lg overflow-hidden border-2 border-[#3A1F16] bg-[#FFB949] hover:bg-amber-400"
+                  title={`Add ${nft.name}`}
+                  onClick={() => setBees([...bees, { id: Date.now(), x: Math.random()*10 + 45, y: Math.random()*10 + 45, scale: 0.4, rotation: 0, flipped: false, beeishNFT: nft }])} // Add with small random offset and smaller scale
+                  className="aspect-square rounded-lg overflow-hidden border-2 border-[#3A1F16] bg-[#FFB949] hover:bg-amber-400 relative p-1" // Added padding
                 >
-                  <Image src={nft.image || "/images/bee-mascot.png"} alt={nft.name} fill className="object-cover" />
-                  <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] p-1">
-                    <p className="text-white text-xs truncate text-center">{nft.name}</p>
-                  </div>
+                   <div className="relative w-full h-full">
+                     <Image src={nft.image || "/images/bee-mascot.png"} alt={nft.name} fill className="object-contain" /> {/* Ensure contain */}
+                     <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] bg-opacity-80 p-0.5">
+                       <p className="text-white text-[10px] truncate text-center" style={{ fontFamily }}>{nft.name}</p>
+                     </div>
+                   </div>
                 </button>
               ))}
             </div>
+             {/* BEEISH Pagination */}
+             {revealedBeeishNFTs.length > 0 && beeishTotal > revealedBeeishNFTs.length && (
+                <div className="mt-4 flex justify-center items-center gap-2 w-full">
+                   <CustomButton variant="blank" onClick={() => setBeeishPage(beeishPage - 1)} disabled={beeishPage === 1}>Prev</CustomButton>
+                   <span className="text-sm text-[#3A1F16]">Page {beeishPage}</span>
+                   <CustomButton variant="blank" onClick={() => setBeeishPage(beeishPage + 1)} disabled={beeishNFTs.length < 20 /* Assuming limit is 20 */}>Next</CustomButton>
+                </div>
+             )}
           </div>
-        </div>
-      )}
-      {selectedNFT && (
-        <div className="flex justify-center mt-4">
-          <CustomButton variant="blank" className="w-[160px]" onClick={centerNFT}>
-            Center NFT
-          </CustomButton>
+
         </div>
       )}
       <style jsx global>{`
         @keyframes flash {
           0% { opacity: 0.8; }
           100% { opacity: 0; }
+        }
+        /* Add styles for scrollbars if needed */
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 8px;
+        }
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: #FFEDD5; /* Light yellow */
+        }
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: #e1a135; /* Darker yellow/brown */
+          border-radius: 4px;
         }
       `}</style>
     </div>
