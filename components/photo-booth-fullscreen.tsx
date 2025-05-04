@@ -148,8 +148,8 @@ const defaultBees: BeeishNFT[] = [
   },
 ];
 
-// 1. Set sensible default scale and position for NFT
-const DEFAULT_NFT_POSITION: NFTPosition = { x: 50, y: 50, scale: 1.0 };
+// 1. Set sensible default scale and position for NFT - try smaller scale
+const DEFAULT_NFT_POSITION: NFTPosition = { x: 50, y: 50, scale: 0.9 };
 
 export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothFullscreenProps) {
   const { nfts, defaultNFT, loading, loadingDefaultNFT, error } = useBearishNFTs()
@@ -787,8 +787,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          width: "100%",
-                          height: "100%",
+                          width: "100%", // Force container width
+                          height: "100%", // Force container height
                           maxWidth: "100%",
                           maxHeight: "100%",
                           visibility: "visible",
@@ -797,14 +797,16 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                         <Image
                           src={selectedNFT.image || "/images/bee-mascot.png"}
                           alt={selectedNFT.name}
-                          width={400}
-                          height={400}
+                          width={400} // Base width, object-fit will handle scaling
+                          height={400} // Base height, object-fit will handle scaling
                           className="pointer-events-none"
                           style={{
-                            maxWidth: "none",
-                            objectFit: "contain",
+                            maxWidth: "none", // Allow object-fit to work without constraint here
+                            objectFit: "contain", // Ensure image fits within the container above
                             display: "block",
                             visibility: "visible",
+                            width: "auto", // Let object-fit determine final size
+                            height: "auto", // Let object-fit determine final size
                           }}
                         />
                       </div>
