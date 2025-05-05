@@ -611,14 +611,6 @@ export default function RevealNFT() {
             </p>
           </div>
         )}
-
-        {revealedNFTs.length > 0 && (
-          <div className="mt-auto pt-4 text-center shrink-0">
-            <p className="text-[#3A1F16] text-xs">
-              Your freed bees are saved in your browser. They will appear here when you return.
-            </p>
-          </div>
-        )}
       </FixedContainer>
     )
   }
