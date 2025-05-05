@@ -168,12 +168,12 @@ export default function RevealNFT() {
 
       if (unrevealed.length === 0) {
         if (userNFTs.length > 0) {
-          setStatus("All your owned Bee Boxes have been revealed!")
+          setStatus("")
           if (isMobile && revealedNFTs.length > 0) {
             setActiveTab("revealed")
           }
         } else {
-          setStatus("You don't own any Bee Boxes currently.")
+          setStatus("You don't own any Bee Hives currently.")
         }
       } else {
         setStatus("")
@@ -504,20 +504,21 @@ export default function RevealNFT() {
     return (
       <FixedContainer>
         <div className="flex-1 flex flex-col items-center justify-center">
-          <p className="text-center text-[#3A1F16] font-medium mb-4">
-            {status || "No unrevealed BEEISH NFTs found in your wallet"}
-          </p>
-          {revealedNFTs.length > 0 && (
-            <p className="text-center text-[#3A1F16]">
-              You've already freed all your bees! {/* Show a button to switch to Freed Bees tab */}
-              <button 
-                className="ml-2 underline font-bold hover:text-amber-700"
-                onClick={() => setActiveTab("revealed")}
-              >
-                View your freed bees
-              </button>
+          {revealedNFTs.length > 0 ? (
+            // Case: Owned bees, but all are revealed
+            <p className="text-center text-[#3A1F16] font-medium mb-4">
+              You've already freed all your bees!
+            </p>
+          ) : (
+            // Case: Owns no bees OR hasn't revealed any yet
+            <p className="text-center text-[#3A1F16] font-medium mb-4">
+              {status || "No unrevealed BEEISH NFTs found in your wallet."}
             </p>
           )}
+          {/* Add Mint Button in both cases */}
+          <div className="mt-2">
+             <MintButton onClick={() => setIsMintModalOpen(true)} />
+          </div>
         </div>
       </FixedContainer>
     )
