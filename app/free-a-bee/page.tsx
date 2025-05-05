@@ -69,9 +69,10 @@ export default function FreeABeePage() {
           <div className="flex flex-col items-center justify-center">
             <RevealNFT />
             {/* Replace placeholder button with functional MintButton */}
-            <div className="mt-4"> 
+            {/* Remove this MintButton - Logic is handled inside RevealNFT */}
+            {/* <div className="mt-4">
               <MintButton onClick={openMintModal} />
-            </div>
+            </div> */}
           </div>
         </div>
 
