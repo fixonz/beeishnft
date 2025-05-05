@@ -13,6 +13,9 @@ import SuccessAnimation from "./success-animation"
 import MintButton from "./mint-button"
 import MintModal from "./mint-modal"
 
+// IPFS Base URL and CID for revealed images - Using Pinata Gateway
+const IPFS_REVEALED_BASE_URL = "https://gateway.pinata.cloud/ipfs/QmX2f9ykSYMtJmdhbXPf326GbUJC1rWR4hQAV5ZLGjy9x2";
+
 // Define items per page
 const ITEMS_PER_PAGE = 20;
 
@@ -35,7 +38,6 @@ export default function RevealNFT() {
   const [loading, setLoading] = useState(false)
   const [selectedNFT, setSelectedNFT] = useState<BeeishNFT | null>(null)
   const [status, setStatus] = useState("")
-  const [revealedImage, setRevealedImage] = useState("")
   const [isRevealing, setIsRevealing] = useState(false)
   const [showRevealedNFT, setShowRevealedNFT] = useState(false)
   const [activeTab, setActiveTab] = useState<"unrevealed" | "revealed">("unrevealed")
@@ -194,60 +196,31 @@ export default function RevealNFT() {
     setIsRevealing(true)
   }
 
-  // Handle reveal completion
-  const handleRevealComplete = (imageUrl: string) => {
-    setRevealedImage(imageUrl)
+  // Handle reveal completion - simplified, no polling
+  const handleRevealComplete = (/* oldImageUrl: string - no longer needed */) => {
+    // Just show the success animation, the final image URL will be constructed later
     setShowSuccessAnimation(true)
-
-    // Poll for updated metadata after reveal
-    if (selectedNFT) {
-      pollForRevealedImage(selectedNFT.tokenId, imageUrl)
-    }
-  }
-
-  // Polling function to check for updated metadata
-  const pollForRevealedImage = async (tokenId: string, oldImageUrl: string) => {
-    const MAX_ATTEMPTS = 10
-    const DELAY_MS = 1000
-    let attempts = 0
-    let updated = false
-    while (attempts < MAX_ATTEMPTS && !updated) {
-      await new Promise((res) => setTimeout(res, DELAY_MS))
-      try {
-        // Fetch metadata from your API (update this URL if needed)
-        const response = await fetch(`/api/metadata/${tokenId}`)
-        if (response.ok) {
-          const data = await response.json()
-          if (data.image && data.image !== oldImageUrl) {
-            setRevealedImage(data.image)
-            updated = true
-            break
-          }
-        }
-      } catch (e) {
-        // Ignore errors and keep polling
-      }
-      attempts++
-    }
-    if (!updated) {
-      setStatus("Reveal complete, but new image is not available yet. Please refresh in a few seconds.")
-    }
   }
 
   // Handle success animation completion
   const handleSuccessAnimationComplete = () => {
+    if (!selectedNFT) return; // Should not happen, but safety check
+
+    // Construct the final IPFS URL
+    const finalImageUrl = `${IPFS_REVEALED_BASE_URL}/${selectedNFT.tokenId}.png`;
+
     setShowSuccessAnimation(false)
-    setShowRevealedNFT(true)
+    setShowRevealedNFT(true) // Show the modal displaying the revealed NFT
 
     // Add the token ID to the revealed list
     setRevealedTokenIds((prev) => [...prev, selectedNFT!.tokenId])
 
-    // Add to revealed NFTs with image
+    // Add to revealed NFTs list with the constructed IPFS image URL
     setRevealedNFTs((prev) => [
       ...prev,
       {
         tokenId: selectedNFT!.tokenId,
-        image: revealedImage,
+        image: finalImageUrl, // Store the constructed URL
       },
     ])
 
@@ -266,7 +239,6 @@ export default function RevealNFT() {
   // Close revealed NFT view
   const closeRevealedNFT = () => {
     setShowRevealedNFT(false)
-    setRevealedImage("")
     setSelectedNFT(null)
 
     // If no more unrevealed NFTs, switch to revealed tab on mobile
@@ -365,7 +337,7 @@ export default function RevealNFT() {
               <div className="absolute inset-0 pulse-glow"></div>
 
               <div className="relative aspect-square bg-white">
-                <Image src={revealedImage || "/placeholder.svg"} alt="Revealed NFT" fill className="object-contain" />
+                <Image src={selectedNFT ? `${IPFS_REVEALED_BASE_URL}/${selectedNFT.tokenId}.png` : "/placeholder.svg"} alt="Revealed NFT" fill className="object-contain" />
               </div>
             </motion.div>
             <motion.div
@@ -597,7 +569,8 @@ export default function RevealNFT() {
                         <div className="flex-1 w-full" style={{ aspectRatio: "1/1" }}>
                           <div className="relative w-full h-full">
                             <Image
-                              src={nft.image || "/placeholder.svg"}
+                              // Always construct the URL from tokenId for display
+                              src={`${IPFS_REVEALED_BASE_URL}/${nft.tokenId}.png` || "/placeholder.svg"}
                               alt={`NFT #${nft.tokenId}`}
                               fill
                               className="object-contain"
@@ -721,7 +694,7 @@ export default function RevealNFT() {
         <p className="mt-6 text-center text-lg font-semibold text-red-700">{status}</p>
       )}
 
-      {showRevealedNFT && selectedNFT && revealedImage && renderRevealedNFTDisplay(selectedNFT, revealedImage)}
+      {showRevealedNFT && selectedNFT && renderRevealedNFTDisplay(selectedNFT, selectedNFT.image)}
 
       <MintModal open={isMintModalOpen} onClose={() => setIsMintModalOpen(false)} />
     </div>
