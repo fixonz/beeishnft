@@ -23,6 +23,9 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query"
 import Script from "next/script"
 
+// IPFS Base URL and CID for Photo Booth bee images
+const IPFS_PHOTOBOOTH_BASE_URL = "https://gateway.pinata.cloud/ipfs/QmbgHF4KSzcrtTrRG9mVd4ApHVkwTujkXtRvf9e3Jhkzai";
+
 // Define component props
 interface PhotoBoothFullscreenProps {
   isConnected: boolean;
@@ -596,7 +599,8 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
           onTouchStart={(e) => handleBeeMouseDown(e, bee.id)}
         >
           <Image
-            src={bee.beeishNFT?.image || beeImages[bee.type || "normal"] || "/placeholder.svg"}
+            // Use the specific photobooth IPFS gateway URL if beeishNFT exists
+            src={bee.beeishNFT ? `${IPFS_PHOTOBOOTH_BASE_URL}/${bee.beeishNFT.tokenId}.png` : beeImages[bee.type || "normal"] || "/placeholder.svg"}
             alt={`${bee.type || "normal"} Bee`}
             width={BEE_SIZE * 2}
             height={BEE_SIZE * 2}
@@ -745,7 +749,13 @@ export default function PhotoBoothFullscreen({ isConnected, login }: PhotoBoothF
                      className="aspect-square rounded-lg overflow-hidden border-2 border-[#3A1F16] bg-[#FFB949] hover:bg-amber-400 active:bg-amber-500 relative p-1"
                    >
                       <div className="relative w-full h-full">
-                        <Image src={nft.image || "/images/bee-mascot.png"} alt={nft.name} fill className="object-contain" />
+                        <Image 
+                          // Use the specific photobooth IPFS gateway URL
+                          src={`${IPFS_PHOTOBOOTH_BASE_URL}/${nft.tokenId}.png` || "/images/bee-mascot.png"} 
+                          alt={nft.name} 
+                          fill 
+                          className="object-contain" 
+                        />
                         <div className="absolute bottom-0 left-0 right-0 bg-[#3A1F16] bg-opacity-80 p-0.5">
                           <p className="text-white text-[10px] truncate text-center" style={{ fontFamily }}>{nft.name}</p>
                         </div>
