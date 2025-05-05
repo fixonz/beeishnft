@@ -273,10 +273,11 @@ export default function RevealNFT() {
 
   // Fixed container component for consistent sizing
   const FixedContainer = ({ children }: { children: React.ReactNode }) => (
-    <div className="bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16]" style={{ height: '550px', overflow: 'hidden' }}>
-      <div className="p-4 w-full h-full flex flex-col">
-        {children}
-      </div>
+    <div 
+      className="bg-bee-light-yellow rounded-lg border-4 border-[#3A1F16] flex flex-col p-4 overflow-y-auto"
+      style={{ maxHeight: 'calc(100vh - 220px)', minHeight: '450px' }}
+    >
+      {children}
     </div>
   );
 
@@ -408,24 +409,24 @@ export default function RevealNFT() {
       return (
         <FixedContainer>
           <h2 
-            className="text-center text-3xl font-bold text-[#3A1F16] mb-4"
+            className="text-center text-3xl font-bold text-[#3A1F16] mb-4 shrink-0"
             style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
           >
             Free Your Bee!
           </h2>
-          {/* Grid for displayed NFTs */}
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "330px" }}>
-            {displayedNfts.map((nft: BeeishNFT) => (
-              <div
-                key={nft.tokenId}
-                className={`w-full border-2 rounded-lg cursor-pointer overflow-hidden flex flex-col ${
-                  selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500'
-                }`}
-                onClick={() => setSelectedNFT(nft)}
-                style={{ aspectRatio: "1/1.15" }}
-              >
-                <div className="flex-1 w-full" style={{ aspectRatio: "1/1" }}>
-                  <div className="relative w-full h-full">
+          <div className="flex-grow flex flex-col">
+            {/* Grid for displayed NFTs */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "360px" }}>
+              {displayedNfts.map((nft: BeeishNFT) => (
+                <div
+                  key={nft.tokenId}
+                  className={`w-full border-2 rounded-lg cursor-pointer overflow-hidden flex flex-col ${
+                    selectedNFT?.tokenId === nft.tokenId ? 'border-amber-600 bg-amber-200' : 'border-[#3A1F16] bg-amber-100 hover:border-amber-500'
+                  }`}
+                  onClick={() => setSelectedNFT(nft)}
+                  style={{ aspectRatio: "1/1.15" }}
+                >
+                  <div className="relative w-full flex-1">
                     <Image
                       src={nft.image || "/placeholder.jpg"}
                       alt={nft.name}
@@ -434,69 +435,54 @@ export default function RevealNFT() {
                       unoptimized
                     />
                   </div>
+                  <div className="bg-[#3A1F16] p-1 w-full shrink-0">
+                    <p className="text-white text-center font-medium truncate text-xs w-full">
+                      {nft.name}
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-[#3A1F16] p-1 w-full min-h-[24px] flex flex-col items-center justify-center">
-                  <p className="text-white text-center font-medium truncate text-xs w-full">
-                    {nft.name}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* --- Pagination Controls --- */}
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-4 mb-4">
-              <CustomButton 
-                variant="blank" 
-                onClick={goToPreviousPage} 
-                disabled={currentPage === 1}
-                className="w-auto px-4 h-10" // Adjust size
-              >
-                Previous
-              </CustomButton>
-              <span className="text-[#3A1F16] font-semibold">
-                Page {currentPage} of {totalPages}
-              </span>
-              <CustomButton 
-                variant="blank" 
-                onClick={goToNextPage} 
-                disabled={currentPage === totalPages}
-                className="w-auto px-4 h-10" // Adjust size
-              >
-                Next
-              </CustomButton>
+              ))}
             </div>
-          )}
-          {/* --- End Pagination Controls --- */}
 
-          <div className="mt-auto flex justify-center">
-            <CustomButton
-              variant="mint"
-              className="w-full md:w-[200px] relative overflow-hidden group"
-              onClick={startReveal}
-              disabled={!selectedNFT}
-            >
-              <span className="relative z-10 group-hover:text-white">Free This Bee</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/30 to-transparent shimmer-effect"></div>
-            </CustomButton>
-          </div>
-
-          {selectedNFT && !isRevealing && (
-            <div className="mt-4 flex flex-col items-center gap-2">
-              <p className="text-center text-[#3A1F16]">
-                Press the button to free your bee from the honey!
-              </p>
-              <div className="flex items-center gap-4">
-                <CustomButton variant="blank" onClick={() => setSelectedNFT(null)}>
-                  Cancel
+            {/* --- Pagination Controls --- */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mb-4 shrink-0">
+                <CustomButton 
+                  variant="blank" 
+                  onClick={goToPreviousPage} 
+                  disabled={currentPage === 1}
+                  className="w-auto px-4 h-10" // Adjust size
+                >
+                  Previous
                 </CustomButton>
-                <CustomButton variant="free" onClick={startReveal}>
-                  Press to free
+                <span className="text-[#3A1F16] font-semibold">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <CustomButton 
+                  variant="blank" 
+                  onClick={goToNextPage} 
+                  disabled={currentPage === totalPages}
+                  className="w-auto px-4 h-10" // Adjust size
+                >
+                  Next
                 </CustomButton>
               </div>
+            )}
+            {/* --- End Pagination Controls --- */}
+
+            <div className="mt-auto flex flex-col items-center pt-2 shrink-0">
+              <CustomButton
+                variant="mint"
+                className="w-full md:w-[200px] relative overflow-hidden group mb-2"
+                onClick={startReveal}
+                disabled={!selectedNFT}
+              >
+                <span className="relative z-10 group-hover:text-white">Free This Bee</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/30 to-transparent shimmer-effect"></div>
+              </CustomButton>
+              {!selectedNFT && <p className="text-xs text-[#3A1F16]">Select a Hive above to free!</p>}
             </div>
-          )}
+          </div>
         </FixedContainer>
       )
     }
@@ -540,7 +526,7 @@ export default function RevealNFT() {
     return (
       <FixedContainer>
         <h2
-          className="text-center text-3xl font-bold text-[#3A1F16] mb-4"
+          className="text-center text-3xl font-bold text-[#3A1F16] mb-4 shrink-0"
           style={{
             fontFamily: "Super Lobster, cursive, sans-serif",
             textShadow: "none",
@@ -560,25 +546,22 @@ export default function RevealNFT() {
               
               return (
                 <>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 -webkit-overflow-scrolling-touch overflow-y-auto" style={{ height: "330px" }}>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "360px" }}>
                     {displayedRevealedNfts.map((nft: RevealedNftData) => (
                       <div
                         key={nft.tokenId}
                         className="w-full border-2 border-[#3A1F16] rounded-lg overflow-hidden bg-white hover:border-amber-600 flex flex-col"
                         style={{ aspectRatio: "1/1.15" }}
                       >
-                        <div className="flex-1 w-full" style={{ aspectRatio: "1/1" }}>
-                          <div className="relative w-full h-full">
-                            <Image
-                              // Always construct the URL from tokenId for display
-                              src={`${IPFS_REVEALED_BASE_URL}/${nft.tokenId}.png` || "/placeholder.svg"}
-                              alt={`NFT #${nft.tokenId}`}
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
+                        <div className="relative w-full flex-1">
+                          <Image
+                             src={`${IPFS_REVEALED_BASE_URL}/${nft.tokenId}.png` || "/placeholder.svg"}
+                             alt={`NFT #${nft.tokenId}`}
+                             fill
+                             className="object-contain"
+                           />
                         </div>
-                        <div className="bg-[#3A1F16] p-1 w-full min-h-[24px] flex items-center justify-center">
+                        <div className="bg-[#3A1F16] p-1 w-full shrink-0">
                           <p
                             className="text-white text-center font-medium truncate text-xs w-full"
                             style={{ fontFamily: "Super Lobster, cursive, sans-serif", textShadow: "none" }}
@@ -592,7 +575,7 @@ export default function RevealNFT() {
 
                   {/* --- Pagination Controls for Revealed NFTs --- */}
                   {totalRevealedPages > 1 && (
-                    <div className="flex justify-center items-center gap-4 mt-4">
+                    <div className="flex justify-center items-center gap-4 mt-auto pt-4 shrink-0">
                       <CustomButton 
                         variant="blank" 
                         onClick={() => setRevealedPage((prev) => Math.max(1, prev - 1))} 
@@ -619,7 +602,7 @@ export default function RevealNFT() {
             })()}
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center" style={{ height: "330px" }}>
+          <div className="flex-grow flex flex-col items-center justify-center">
             <p className="text-center text-[#3A1F16]">You haven't freed any bees yet!</p>
             <p className="text-center text-[#3A1F16] mt-2">
               {isMobile
@@ -630,8 +613,8 @@ export default function RevealNFT() {
         )}
 
         {revealedNFTs.length > 0 && (
-          <div className="mt-auto text-center">
-            <p className="text-[#3A1F16] text-sm">
+          <div className="mt-auto pt-4 text-center shrink-0">
+            <p className="text-[#3A1F16] text-xs">
               Your freed bees are saved in your browser. They will appear here when you return.
             </p>
           </div>
