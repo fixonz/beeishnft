@@ -414,9 +414,9 @@ export default function RevealNFT() {
           >
             Free Your Bee!
           </h2>
-          <div className="flex-grow flex flex-col">
+          <div className="flex-grow flex flex-col h-[450px]">
             {/* Grid for displayed NFTs */}
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "360px" }}>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "330px" }}>
               {displayedNfts.map((nft: BeeishNFT) => (
                 <div
                   key={nft.tokenId}
@@ -546,7 +546,7 @@ export default function RevealNFT() {
               
               return (
                 <>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "360px" }}>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 mb-4 overflow-y-auto" style={{ height: "330px" }}>
                     {displayedRevealedNfts.map((nft: RevealedNftData) => (
                       <div
                         key={nft.tokenId}
