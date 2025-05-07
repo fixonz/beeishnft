@@ -116,10 +116,10 @@ export default function MintModal({ open, onClose }: MintModalProps) {
 
         <div className="p-4 md:p-6 flex flex-col items-center">
           <DialogHeader className="mb-4 w-full text-center">
-            <DialogTitle className="text-xl md:text-2xl font-bold text-primary custom-button-text">
+            <DialogTitle className="text-xl md:text-2xl font-bold text-black custom-button-text">
               Mint Your BEEISH NFT
             </DialogTitle>
-            <DialogDescription className="text-dark font-medium text-sm md:text-base">
+            <DialogDescription className="text-black font-medium text-sm md:text-base">
               Connect your wallet and mint your unique BEEISH NFT.
             </DialogDescription>
           </DialogHeader>
@@ -128,10 +128,10 @@ export default function MintModal({ open, onClose }: MintModalProps) {
             <div className="grid gap-4 py-2 md:py-4">
               {!isConnected && (
                 <div className="bg-bee-light-yellow p-3 md:p-4 rounded-lg border border-[#3A1F16] mb-2 md:mb-4">
-                  <p className="text-dark font-medium text-sm md:text-base">
+                  <p className="text-black font-medium text-sm md:text-base">
                     Please connect your wallet to mint
                   </p>
-                  <p className="text-xs text-center mt-1">(Connect using header button)</p> 
+                  <p className="text-xs text-center mt-1 text-black">(Connect using header button)</p> 
                 </div>
               )}
 
@@ -149,7 +149,7 @@ export default function MintModal({ open, onClose }: MintModalProps) {
               {isConnected && (
                 <>
                   <div className="grid gap-2">
-                    <label className="text-dark font-bold text-sm md:text-base">Quantity</label>
+                    <label className="text-black font-bold text-sm md:text-base">Quantity</label>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
@@ -178,18 +178,18 @@ export default function MintModal({ open, onClose }: MintModalProps) {
 
                   <div className="bg-bee-light-yellow p-3 md:p-4 rounded-lg border border-[#3A1F16]">
                     <div className="flex justify-between mb-2">
-                      <span className="text-dark font-medium text-sm md:text-base">Price per NFT:</span>
-                      <span className="font-bold text-primary text-sm md:text-base">
+                      <span className="text-black font-medium text-sm md:text-base">Price per NFT:</span>
+                      <span className="font-bold text-black text-sm md:text-base">
                         {formatPricePerNFT(pricePerNFT)} ETH
                       </span>
                     </div>
                     <div className="flex justify-between mb-2">
-                      <span className="text-dark font-medium text-sm md:text-base">Quantity:</span>
-                      <span className="font-bold text-primary text-sm md:text-base">{quantity}</span>
+                      <span className="text-black font-medium text-sm md:text-base">Quantity:</span>
+                      <span className="font-bold text-black text-sm md:text-base">{quantity}</span>
                     </div>
                     <div className="flex justify-between pt-2 border-t border-[#3A1F16]">
-                      <span className="text-dark font-bold text-sm md:text-base">Total:</span>
-                      <span className="font-bold text-primary text-sm md:text-base">{formatPrice(price)} ETH</span>
+                      <span className="text-black font-bold text-sm md:text-base">Total:</span>
+                      <span className="font-bold text-black text-sm md:text-base">{formatPrice(price)} ETH</span>
                     </div>
                   </div>
                 </>
@@ -198,8 +198,8 @@ export default function MintModal({ open, onClose }: MintModalProps) {
           ) : (
             <div className="py-4 md:py-6 flex flex-col items-center justify-center w-full">
               <CheckCircle2 className="h-12 w-12 md:h-16 md:w-16 text-green-500 mb-4" />
-              <h3 className="text-lg md:text-xl font-bold text-primary mb-2 custom-button-text">Minting Successful!</h3>
-              <p className="text-center text-dark font-medium text-sm md:text-base">
+              <h3 className="text-lg md:text-xl font-bold text-black mb-2 custom-button-text">Minting Successful!</h3>
+              <p className="text-center text-black font-medium text-sm md:text-base">
                 Your BEEISH NFT has been successfully minted and will appear in your wallet shortly.
               </p>
             </div>
