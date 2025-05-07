@@ -164,7 +164,7 @@ export default function MintModal({ open, onClose }: MintModalProps) {
                         max="10"
                         value={quantity}
                         onChange={(e) => setQuantity(Number.parseInt(e.target.value) || 1)}
-                        className="text-center border-[#3A1F16] bg-bee-light-yellow"
+                        className="text-center border-[#3A1F16] bg-bee-light-yellow text-black"
                       />
                       <button
                         type="button"
